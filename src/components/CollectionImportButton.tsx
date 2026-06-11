@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
+import { protocolSupports, useCollectionTask } from "./collectionTask";
 
 const IMPORT_DEFAULT_LABEL_TEXT = "Queue Import";
 const IMPORT_FORCED_FULL_LABEL_TEXT = "Force full re-import";
@@ -26,55 +27,28 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   disabled,
 }) => {
   const [force, setForce] = React.useState(false);
-  const [importing, setImporting] = React.useState(false);
-  const [feedback, setFeedback] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState(false);
+  const { busy, feedback, success, run } = useCollectionTask(collection?.id);
 
   React.useEffect(() => {
     setForce(false);
-    setImporting(false);
-    setFeedback(null);
-    setSuccess(false);
   }, [collection?.id]);
 
-  const supportsImport = (): boolean => {
-    if (!collection?.id || !collection?.protocol) {
-      return false;
-    }
-    const protocol = protocols.find((p) => p.name === collection.protocol);
-    return !!protocol?.supports_import;
-  };
+  const handleImport = (): Promise<void> =>
+    run(
+      () => importCollection(collection.id, force),
+      force
+        ? "Full re-import task queued. All items will be re-processed — this may take longer than a regular import. Changes will appear in the catalog once processing completes."
+        : "Import task queued. New and updated items will appear in the catalog once processing completes.",
+      "Failed to queue import task."
+    );
 
-  const handleImport = async (): Promise<void> => {
-    setImporting(true);
-    setFeedback(null);
-    try {
-      await importCollection(collection.id, force);
-      setImporting(false);
-      setFeedback(
-        force
-          ? "Full re-import task queued. All items will be re-processed — this may take longer than a regular import. Changes will appear in the catalog once processing completes."
-          : "Import task queued. New and updated items will appear in the catalog once processing completes."
-      );
-      setSuccess(true);
-    } catch (e) {
-      const message =
-        e && typeof e === "object" && "response" in e
-          ? String((e as { response: string }).response)
-          : "Failed to queue import task.";
-      setImporting(false);
-      setFeedback(message);
-      setSuccess(false);
-    }
-  };
-
-  if (!supportsImport()) {
+  if (!protocolSupports(collection, protocols, "supports_import")) {
     return null;
   }
 
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
-  const buttonLabel = getButtonLabel(force, importing);
+  const buttonLabel = getButtonLabel(force, busy);
 
   const buttonClass = force
     ? "btn btn-default collection-import-button force"
@@ -85,7 +59,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
       <div className="collection-import-controls">
         <button
           className={buttonClass}
-          disabled={disabled || importing}
+          disabled={disabled || busy}
           onClick={handleImport}
         >
           {buttonLabel}
@@ -95,7 +69,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             type="checkbox"
             checked={force}
             onChange={(e) => setForce(e.target.checked)}
-            disabled={disabled || importing}
+            disabled={disabled || busy}
           />{" "}
           {IMPORT_FORCED_FULL_LABEL_TEXT}
         </label>

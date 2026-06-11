@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
+import { protocolSupports, useCollectionTask } from "./collectionTask";
 
 const REAP_LABEL_TEXT = "Queue Reap";
 
@@ -22,54 +23,30 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
   reapCollection,
   disabled,
 }) => {
-  const [reaping, setReaping] = React.useState(false);
-  const [feedback, setFeedback] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState(false);
+  const { busy, feedback, success, run } = useCollectionTask(collection?.id);
 
-  React.useEffect(() => {
-    setReaping(false);
-    setFeedback(null);
-    setSuccess(false);
-  }, [collection?.id]);
-
-  const handleReap = async (): Promise<void> => {
-    setReaping(true);
-    setFeedback(null);
-    try {
-      await reapCollection(collection.id);
-      setReaping(false);
-      setFeedback(
-        "Reap task queued. Titles that are no longer in the collection's feed will be removed from the catalog once processing completes."
-      );
-      setSuccess(true);
-    } catch (e) {
-      const message =
-        e && typeof e === "object" && "response" in e
-          ? String((e as { response: string }).response)
-          : "Failed to queue reap task.";
-      setReaping(false);
-      setFeedback(message);
-      setSuccess(false);
-    }
-  };
-
-  if (!supportsReap(collection, protocols)) {
+  if (!protocolSupports(collection, protocols, "supports_reap")) {
     return null;
   }
+
+  const handleReap = (): Promise<void> =>
+    run(
+      () => reapCollection(collection.id),
+      "Reap task queued. Titles that are no longer in the collection's feed will be removed from the catalog once processing completes.",
+      "Failed to queue reap task."
+    );
 
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
   const panelContent = (
     <div className="collection-reap">
-      <div className="collection-reap-controls">
-        <button
-          className="btn btn-default collection-reap-button"
-          disabled={disabled || reaping}
-          onClick={handleReap}
-        >
-          {reaping ? "Queuing..." : REAP_LABEL_TEXT}
-        </button>
-      </div>
+      <button
+        className="btn btn-default collection-reap-button"
+        disabled={disabled || busy}
+        onClick={handleReap}
+      >
+        {busy ? "Queuing..." : REAP_LABEL_TEXT}
+      </button>
       {feedback && <div className={feedbackClass}>{feedback}</div>}
       <p className="description">
         {REAP_LABEL_TEXT} removes titles that are no longer in the collection's
@@ -95,16 +72,5 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
     <Panel id="collection-reap" headerText="Reap" content={panelContent} />
   );
 };
-
-function supportsReap(
-  collection: CollectionData,
-  protocols: ProtocolData[]
-): boolean {
-  if (!collection?.id || !collection?.protocol) {
-    return false;
-  }
-  const protocol = protocols.find((p) => p.name === collection.protocol);
-  return !!protocol?.supports_reap;
-}
 
 export default CollectionReapButton;

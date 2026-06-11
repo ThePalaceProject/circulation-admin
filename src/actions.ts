@@ -461,8 +461,7 @@ export default class ActionCreator extends BaseActionCreator {
 
   reapCollection(collectionId: string | number) {
     const url = `/admin/collection/${collectionId}/reap`;
-    const data = new FormData();
-    return this.postForm(ActionCreator.REAP_COLLECTION, url, data).bind(this);
+    return this.postForm(ActionCreator.REAP_COLLECTION, url, null).bind(this);
   }
 
   fetchIndividualAdmins() {
