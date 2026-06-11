@@ -10,21 +10,9 @@
   }
 }
 
-.collection-import {
-  .collection-import-button.force {
-    background: darken($yellow, 8%);
-    border-color: darken($yellow, 20%);
-    color: $dark-gray;
-
-    &:hover,
-    &:focus-visible {
-      background: $yellow;
-      border-color: darken($yellow, 25%);
-      color: $dark-gray;
-    }
-  }
-
-  details.collection-import-details {
+// Shared layout for collection task panels (import, reap, ...).
+.collection-task {
+  details.collection-task-details {
     margin-bottom: 1em;
 
     summary {
@@ -46,7 +34,7 @@
     }
   }
 
-  .collection-import-docs {
+  .collection-task-docs {
     font-size: 0.8rem;
     margin-bottom: 1em;
 
@@ -64,12 +52,29 @@
       color: $dark-gray;
     }
   }
+}
 
-  .collection-import-controls {
-    display: flex;
-    align-items: center;
-    gap: 1em;
+// Cautionary treatment for heavyweight tasks (forced re-import, reap).
+// Scoped under .collection-task and qualified with .btn-default so the rule
+// keeps enough specificity (0,3,0) to win over Bootstrap's own .btn-default
+// interactive states (:focus/:active, 0,2,0), which also set a background.
+.collection-task .btn-default.collection-task-caution {
+  background: darken($yellow, 8%);
+  border-color: darken($yellow, 20%);
+  color: $dark-gray;
+
+  &:hover,
+  &:focus-visible {
+    background: $yellow;
+    border-color: darken($yellow, 25%);
+    color: $dark-gray;
   }
+}
+
+.collection-import-controls {
+  display: flex;
+  align-items: center;
+  gap: 1em;
 
   label {
     margin: 0;
