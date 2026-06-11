@@ -55,18 +55,22 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
       description={
         <>
           {REAP_LABEL_TEXT} removes titles that are no longer in the
-          collection's feed from the catalog.
+          collection's feed from the catalog — a slow, processing-intensive
+          task.
         </>
       }
       docs={
         <>
           <dt>{REAP_LABEL_TEXT}</dt>
           <dd>
-            Schedules a background job that re-reads the collection's feed and
-            marks any titles that are no longer present in it as unavailable,
-            removing them from the catalog. Use this when items have been
-            accidentally added to the catalog and need to be removed without
-            waiting for the collection's scheduled reap.
+            Schedules a background job that re-reads the collection's entire
+            feed and marks any titles that are no longer present in it as
+            unavailable, removing them from the catalog. Because it re-reads
+            every title rather than just recent changes, reaping is slow and
+            processing-intensive, so queue it only when you need to clear out
+            titles that should no longer appear — for example, when items have
+            been accidentally added to the catalog and need to be removed
+            without waiting for the collection's scheduled reap.
           </dd>
         </>
       }

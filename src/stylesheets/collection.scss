@@ -54,7 +54,9 @@
   }
 }
 
-.collection-import-button.force {
+// Cautionary treatment for heavyweight tasks (forced re-import, reap).
+.collection-import-button.force,
+.btn-default.collection-reap-button {
   background: darken($yellow, 8%);
   border-color: darken($yellow, 20%);
   color: $dark-gray;
