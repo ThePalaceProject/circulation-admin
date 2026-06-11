@@ -45,7 +45,7 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
       success={success}
       controls={
         <button
-          className="btn btn-default collection-reap-button"
+          className="btn btn-default collection-reap-button collection-task-caution"
           disabled={disabled || busy}
           onClick={handleReap}
         >
