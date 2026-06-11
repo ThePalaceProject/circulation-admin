@@ -66,6 +66,19 @@ describe("CollectionReapButton", () => {
     expect(container.innerHTML).toBe("");
   });
 
+  it("does not render when the backend omits supports_reap (older CM)", () => {
+    // A circulation manager that predates reaping won't include the
+    // supports_reap flag at all. The admin must degrade gracefully and hide
+    // the panel rather than offering a button that would 404.
+    const legacyProtocol: ProtocolData = {
+      name: "OPDS 2.0",
+      label: "OPDS 2.0",
+      settings: [],
+    };
+    const { container } = renderButton({ protocols: [legacyProtocol] });
+    expect(container.innerHTML).toBe("");
+  });
+
   it("renders panel header when supported", () => {
     renderButton();
     expect(screen.getByText("Reap")).toBeInTheDocument();
