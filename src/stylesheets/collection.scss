@@ -52,6 +52,16 @@
       color: $dark-gray;
     }
   }
+
+  .collection-import-controls {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    label {
+      margin: 0;
+    }
+  }
 }
 
 // Cautionary treatment for heavyweight tasks (forced re-import, reap).
@@ -68,16 +78,6 @@
     background: $yellow;
     border-color: darken($yellow, 25%);
     color: $dark-gray;
-  }
-}
-
-.collection-import-controls {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-
-  label {
-    margin: 0;
   }
 }
 

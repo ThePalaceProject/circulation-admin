@@ -39,11 +39,16 @@ const CollectionTaskPanel: React.FC<CollectionTaskPanelProps> = ({
   docs,
 }) => {
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
+  const feedbackAriaLive = success ? "polite" : "assertive";
 
   const content = (
     <div className="collection-task">
       {controls}
-      {feedback && <div className={feedbackClass}>{feedback}</div>}
+      {feedback && (
+        <div className={feedbackClass} aria-live={feedbackAriaLive}>
+          {feedback}
+        </div>
+      )}
       <p className="description">{description}</p>
       <details className="collection-task-details" key={collectionId}>
         <summary>More details</summary>
