@@ -49,6 +49,7 @@ describe("Collections", () => {
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
           importCollection={stub().resolves()}
+          reapCollection={stub().resolves()}
         />,
         { context: { admin: systemAdmin } }
       );
@@ -88,6 +89,7 @@ describe("Collections", () => {
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
           importCollection={stub().resolves()}
+          reapCollection={stub().resolves()}
         />,
         { context: { admin: systemAdmin } }
       );

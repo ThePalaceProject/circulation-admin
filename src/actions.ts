@@ -66,6 +66,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
   static readonly DELETE_COLLECTION = "DELETE_COLLECTION";
   static readonly IMPORT_COLLECTION = "IMPORT_COLLECTION";
+  static readonly REAP_COLLECTION = "REAP_COLLECTION";
   static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
   static readonly DELETE_INDIVIDUAL_ADMIN = "DELETE_INDIVIDUAL_ADMIN";
@@ -456,6 +457,11 @@ export default class ActionCreator extends BaseActionCreator {
     const data = new FormData();
     data.append("force", String(force));
     return this.postForm(ActionCreator.IMPORT_COLLECTION, url, data).bind(this);
+  }
+
+  reapCollection(collectionId: string | number) {
+    const url = `/admin/collection/${collectionId}/reap`;
+    return this.postForm(ActionCreator.REAP_COLLECTION, url, null).bind(this);
   }
 
   fetchIndividualAdmins() {
