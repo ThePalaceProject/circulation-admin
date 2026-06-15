@@ -130,6 +130,18 @@ describe("CollectionReapButton", () => {
     expect(reapCollection).toHaveBeenCalledWith(42);
   });
 
+  it("keeps the feedback live region mounted before any feedback appears", async () => {
+    const user = userEvent.setup();
+    const { container } = renderButton();
+    await expandPanel(user);
+    // The live region must already exist when its content mutates; several
+    // screen readers won't announce a region inserted alongside its text.
+    const liveRegion = container.querySelector(".collection-task-feedback");
+    expect(liveRegion).toBeInTheDocument();
+    expect(liveRegion).toBeEmptyDOMElement();
+    expect(liveRegion).toHaveAttribute("aria-live");
+  });
+
   it("shows success feedback after queuing", async () => {
     const user = userEvent.setup();
     renderButton();

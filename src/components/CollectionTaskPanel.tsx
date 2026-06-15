@@ -44,11 +44,13 @@ const CollectionTaskPanel: React.FC<CollectionTaskPanelProps> = ({
   const content = (
     <div className="collection-task">
       {controls}
-      {feedback && (
-        <div className={feedbackClass} aria-live={feedbackAriaLive}>
-          {feedback}
-        </div>
-      )}
+      {/* Keep the live region mounted at all times and toggle only its inner
+          content. Several screen readers won't announce a region inserted into
+          the DOM together with its text; the region must already exist when its
+          content mutates. */}
+      <div className="collection-task-feedback" aria-live={feedbackAriaLive}>
+        {feedback && <div className={feedbackClass}>{feedback}</div>}
+      </div>
       <p className="description">{description}</p>
       <details className="collection-task-details" key={collectionId}>
         <summary>More details</summary>
