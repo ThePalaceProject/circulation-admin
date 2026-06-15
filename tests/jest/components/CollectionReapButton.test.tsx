@@ -130,16 +130,19 @@ describe("CollectionReapButton", () => {
     expect(reapCollection).toHaveBeenCalledWith(42);
   });
 
-  it("keeps the feedback live region mounted before any feedback appears", async () => {
+  it("keeps both feedback live regions mounted before any feedback appears", async () => {
     const user = userEvent.setup();
     const { container } = renderButton();
     await expandPanel(user);
-    // The live region must already exist when its content mutates; several
-    // screen readers won't announce a region inserted alongside its text.
-    const liveRegion = container.querySelector(".collection-task-feedback");
-    expect(liveRegion).toBeInTheDocument();
-    expect(liveRegion).toBeEmptyDOMElement();
-    expect(liveRegion).toHaveAttribute("aria-live");
+    // Both regions must already exist at a fixed politeness when their content
+    // mutates; several screen readers won't announce a region inserted
+    // alongside its text, nor a politeness change on an already-mounted node.
+    const politeRegion = container.querySelector('[aria-live="polite"]');
+    const assertiveRegion = container.querySelector('[aria-live="assertive"]');
+    expect(politeRegion).toBeInTheDocument();
+    expect(politeRegion).toBeEmptyDOMElement();
+    expect(assertiveRegion).toBeInTheDocument();
+    expect(assertiveRegion).toBeEmptyDOMElement();
   });
 
   it("shows success feedback after queuing", async () => {
@@ -151,6 +154,11 @@ describe("CollectionReapButton", () => {
       const feedback = screen.getByText(/reap task queued\./i);
       expect(feedback).toBeInTheDocument();
       expect(feedback).toHaveClass("alert", "alert-success");
+      // Success routes to the permanently-polite region.
+      expect(feedback.closest("[aria-live]")).toHaveAttribute(
+        "aria-live",
+        "polite"
+      );
     });
   });
 
@@ -166,6 +174,11 @@ describe("CollectionReapButton", () => {
       const feedback = screen.getByText("Something went wrong");
       expect(feedback).toBeInTheDocument();
       expect(feedback).toHaveClass("alert", "alert-danger");
+      // Errors route to the permanently-assertive region.
+      expect(feedback.closest("[aria-live]")).toHaveAttribute(
+        "aria-live",
+        "assertive"
+      );
     });
   });
 
