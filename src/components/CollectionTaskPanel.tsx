@@ -39,16 +39,28 @@ const CollectionTaskPanel: React.FC<CollectionTaskPanelProps> = ({
   docs,
 }) => {
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
-  const feedbackAriaLive = success ? "polite" : "assertive";
 
   const content = (
     <div className="collection-task">
       {controls}
-      {feedback && (
-        <div className={feedbackClass} aria-live={feedbackAriaLive}>
-          {feedback}
+      {/* Keep both live regions mounted at all times, each at a fixed
+          politeness, and toggle only their inner content. Several screen
+          readers won't announce a region inserted into the DOM alongside its
+          text, nor a politeness change on an already-mounted node — so success
+          feedback routes to the permanently-polite region and errors to the
+          permanently-assertive one. */}
+      <div className="collection-task-feedback">
+        <div aria-live="polite">
+          {feedback && success && (
+            <div className={feedbackClass}>{feedback}</div>
+          )}
         </div>
-      )}
+        <div aria-live="assertive">
+          {feedback && !success && (
+            <div className={feedbackClass}>{feedback}</div>
+          )}
+        </div>
+      </div>
       <p className="description">{description}</p>
       <details className="collection-task-details" key={collectionId}>
         <summary>More details</summary>
