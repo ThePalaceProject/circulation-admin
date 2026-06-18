@@ -158,8 +158,10 @@ describe("editorAdapter", () => {
       id: "id",
       updated: "updated",
       title: "title",
+      subtitle: "subtitle",
       authors: [],
       contributors: [],
+      series: new Series({ name: "series", position: 2 }),
       categories: [
         new Category({ term: "term", scheme: "scheme", label: "label" }),
         new Category({
@@ -188,8 +190,10 @@ describe("editorAdapter", () => {
       id: "id",
       updated: "updated",
       title: "title",
+      subtitle: "subtitle",
       authors: [],
       contributors: [],
+      series: new Series({ name: "series", position: 2 }),
       categories: [
         new Category({
           term: "policy-filtered",
