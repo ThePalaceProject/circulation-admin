@@ -10,8 +10,9 @@
   "license": "Apache-2.0",
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "npm": ">=10.0.0 <11.0.0"
   },
+  "packageManager": "npm@10.8.2",
   "scripts": {
     "prepublish": "npm run prod",
     "lint": "npm run lint:js && sass-lint -c .sass-lint.yml -v -q",
