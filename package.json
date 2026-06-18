@@ -78,7 +78,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.2.6",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.17.19",
+    "@types/node": "^25.9.3",
     "@types/numeral": "^2.0.5",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.14.6",
