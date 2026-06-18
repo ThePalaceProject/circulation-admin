@@ -72,7 +72,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
                 aria-label={`Button to expand or collapse a lane`}
                 content={<PyramidIcon />}
               />
-              {lane.display_name + " (" + lane.count + ")"}
+              {lane.display_name}
             </span>
             {this.renderVisibilityToggle()}
           </div>
