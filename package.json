@@ -116,7 +116,7 @@
     "lint-staged": "^17.0.7",
     "marked": "^18.0.5",
     "mini-css-extract-plugin": "1.6.0",
-    "mocha": "^10.2.0",
+    "mocha": "^11.7.6",
     "msw": "^2.7.3",
     "nightwatch": "^3.14.0",
     "prettier": "2.1.2",
