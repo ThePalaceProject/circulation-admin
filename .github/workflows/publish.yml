@@ -1,6 +1,7 @@
 # This workflow handles both release publishing and next tag publishing from main.
-# When a release is published, it uses the release tag for versioning and publishes
-# to the default npm tag. When code is pushed to main, it uses dunamai to generate
+# When a version tag (v*) is pushed — e.g. by publishing a GitHub release, which
+# creates and pushes the tag — that tag is used for versioning and published to the
+# default npm tag. When code is pushed to main, it uses dunamai to generate
 # a version from git history and publishes to the "next" npm tag.
 # We need to handle both of these cases from a single workflow because we want to
 # use NPM's OIDC Trusted Publisher support for publishing. That feature supports
@@ -16,11 +17,18 @@
 name: Test & Publish
 
 on:
-  release:
-    types: [published]
+  # Release publishing is triggered by the version-tag push, NOT the `release`
+  # event: a `release`-triggered run receives an OIDC token whose `ref` claim is
+  # empty, so sigstore omits SourceRepositoryRef from the provenance certificate
+  # and npm rejects the upload with 422 "Missing SourceRepositoryRef". A tag push
+  # carries refs/tags/<tag> in the OIDC token, so provenance verifies. Publishing a
+  # GitHub release creates and pushes the tag, so the existing release flow still
+  # works — this only changes which event the publish job listens to.
   push:
     branches:
       - main
+    tags:
+      - "v*"
   schedule:
     # Daily at 06:00 UTC — catches commits merged by GITHUB_TOKEN (e.g. Dependabot
     # auto-merge) that did not trigger the push-based next publish.
@@ -40,13 +48,13 @@ jobs:
 
     steps:
 
-    # For push events, we need full git history (fetch-depth: 0) so dunamai can
-    # generate a version from git tags. For release events, we only need the
-    # current commit (fetch-depth: 1) since the version comes from the release tag.
+    # For main pushes / schedule we need full git history (fetch-depth: 0) so dunamai
+    # can generate a version from git tags. For a version-tag push we only need the
+    # current commit (fetch-depth: 1) since the version comes from the tag name.
     - uses: actions/checkout@v7.0.0
       with:
         persist-credentials: false
-        fetch-depth: ${{ github.event_name == 'release' && 1 || 0 }}
+        fetch-depth: ${{ startsWith(github.ref, 'refs/tags/') && 1 || 0 }}
 
     - name: Install Node.js 💻
       uses: actions/setup-node@v6
@@ -71,29 +79,29 @@ jobs:
       # TODO: This can be removed once we upgrade to Node 24 or greater.
       run: npm install -g npm@^11.5.1
 
-    # For release events, version using the release tag and publish to default npm tag.
+    # For a version-tag push, version using the tag name and publish to the default npm tag.
     - name: Version (Release) ✅
-      if: github.event_name == 'release'
-      run: npm version --no-git-tag-version ${{ github.event.release.tag_name }}
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      run: npm version --no-git-tag-version ${{ github.ref_name }}
 
     - name: Publish (Release) 📚
-      if: github.event_name == 'release'
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
       run: npm publish --access public
 
     # For push and scheduled events, version using dunamai and publish to the
     # "next" npm tag. dunamai requires Python.
     - name: Set up Python 🐍
-      if: github.event_name == 'push' || github.event_name == 'schedule'
+      if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'schedule'
       uses: actions/setup-python@v6
       with:
         python-version: "3.10"
 
     - name: Set up Dunamai 🪄
-      if: github.event_name == 'push' || github.event_name == 'schedule'
+      if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'schedule'
       run: pip install -r requirements-ci.txt
 
     - name: Version (Next) ✅
-      if: github.event_name == 'push' || github.event_name == 'schedule'
+      if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'schedule'
       id: version-next
       run: |
         VERSION=$(dunamai from git --style semver)
@@ -114,5 +122,5 @@ jobs:
         fi
 
     - name: Publish (Next) 📚
-      if: github.event_name == 'push' || (github.event_name == 'schedule' && steps.existing-next.outputs.exists == 'false')
+      if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'schedule' && steps.existing-next.outputs.exists == 'false')
       run: npm publish --tag next --access public
