@@ -128,7 +128,7 @@
     "sass-lint": "^1.13.1",
     "sass-loader": "^17.0.0",
     "selenium-standalone": "^10.0.2",
-    "sinon": "7.5.0",
+    "sinon": "22.0.0",
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.6",
     "ts-jest": "^29.2.6",
