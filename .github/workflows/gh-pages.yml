@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Pin npm version 📌
+        run: npm install -g npm@11.17.0
+
       - name: Install 🔧
         run: npm ci
 

@@ -54,6 +54,9 @@ jobs:
         node-version: 20
         registry-url: https://registry.npmjs.org/
 
+    - name: Pin npm version 📌
+      run: npm install -g npm@11.17.0
+
     - name: Install locked dependencies 🔧
       run: npm ci
 
@@ -61,15 +64,6 @@ jobs:
       env:
         TZ: America/New_York
       run: npm test
-
-    - name: Upgrade npm for OIDC support 📦
-      # Upgrade npm to support OIDC trusted publishing. Earlier steps run with the
-      # npm version bundled with current Node version to maintain consistency with
-      # the development environment. Only the Publish step requires the newer version.
-      # See https://docs.npmjs.com/trusted-publishers
-      # > Note: Trusted publishing requires npm CLI version 11.5.1 or later.
-      # TODO: This can be removed once we upgrade to Node 24 or greater.
-      run: npm install -g npm@^11.5.1
 
     # For release events, version using the release tag and publish to default npm tag.
     - name: Version (Release) ✅
