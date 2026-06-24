@@ -511,7 +511,13 @@ export interface LaneData {
   id: string | number;
   display_name: string;
   visible: boolean;
-  count: number;
+  // Deprecated: the backend no longer returns a lane count (lane sizes were
+  // removed). Kept optional for backward compatibility with older servers; the
+  // UI no longer displays it.
+  // TODO: Remove this field and the deprecation note above once the backend
+  // changes in ThePalaceProject/circulation#3424 have been released to
+  // production.
+  count?: number;
   sublanes: LaneData[];
   custom_list_ids: number[];
   inherit_parent_restrictions: boolean;

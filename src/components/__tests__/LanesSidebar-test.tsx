@@ -246,9 +246,7 @@ describe("LanesSidebar", () => {
     let topLane1 = topLevelLanes.at(0).find("div").at(0);
     const topLane2 = topLevelLanes.at(1).find("div").at(0);
     expect(topLane1.text()).to.contain("Top Lane 1");
-    expect(topLane1.text()).to.contain("(5)");
     expect(topLane2.text()).to.contain("Top Lane 2");
-    expect(topLane2.text()).to.contain("(1)");
 
     // both top-level lanes are expanded to start.
     expectExpanded(topLane1);
@@ -257,7 +255,6 @@ describe("LanesSidebar", () => {
     // top lane 1 has one sublane which is collapsed
     let subLane1 = topLane1.find("li > div");
     expect(subLane1.text()).to.contain("Sublane 1");
-    expect(subLane1.text()).to.contain("(3)");
     expect(subLane1.length).to.equal(1);
     const subLane1Expand = expectCollapsed(subLane1);
 
@@ -281,7 +278,6 @@ describe("LanesSidebar", () => {
     const subLane1Collapse = expectExpanded(subLane1);
     subSubLane = subLane1.find("li > div");
     expect(subSubLane.text()).to.contain("SubSublane 1");
-    expect(subSubLane.text()).to.contain("(2)");
     expectCollapsed(subSubLane);
 
     // if we collapse sublane 1, its sublane is hidden again.

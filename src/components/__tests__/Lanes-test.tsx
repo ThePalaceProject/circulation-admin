@@ -408,9 +408,7 @@ describe("Lanes", () => {
     const lane4 = topLevelLanes.at(0);
     const lane1 = topLevelLanes.at(1);
     expect(lane1.text()).to.contain("lane 1");
-    expect(lane1.text()).to.contain("(5)");
     expect(lane4.text()).to.contain("lane 4");
-    expect(lane4.text()).to.contain("(1)");
   });
 
   it("drags a sublane", () => {
