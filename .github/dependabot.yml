@@ -10,6 +10,11 @@ updates:
     versioning-strategy: increase-if-necessary
     cooldown:
       default-days: 4
+    ignore:
+      # We currently support only v3 of Bootstrap. Prevent PRs for v4.0.0 or higher.
+      # See https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/configure-version-updates
+      - dependency-name: "bootstrap"
+        versions: [">= 4.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
