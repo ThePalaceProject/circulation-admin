@@ -79,7 +79,7 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Output
 
-Webpack builds to `dist/circulation-admin.js` (UMD library, global `CirculationAdmin`) and `dist/circulation-admin.css`. Node.js 20+ required.
+Webpack builds to `dist/circulation-admin.js` (UMD library, global `CirculationAdmin`) and `dist/circulation-admin.css`. Node.js 24 required (>=24.0.0 <25.0.0).
 
 ## Code Conventions
 
