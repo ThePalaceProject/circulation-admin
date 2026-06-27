@@ -12,7 +12,7 @@ To see screenshots, read in-depth documentation, and find out more about the pro
 
 This package may be used in a local build of the Palace Project [Circulation Manager](https://github.com/ThePalaceProject/circulation), or it may be run against a remote Circulation Manager.
 
-This project uses Node.js 20. We recommend the latest version of Node.js 20.
+This project uses Node.js 24. We recommend the latest version of Node.js 24.
 
 You have a number of options for installing Node.js. One convenient way on macOS is to use Homebrew and nvm to manage Node.js versions.
 
@@ -28,22 +28,22 @@ Install nvm using Homebrew:
 brew install nvm
 ```
 
-Install and use the latest version of Node.js 18, e.g. 18.14.2 with nvm:
+Install and use the latest version of Node.js 24, e.g. 24.16.0 with nvm:
 
 ```
-nvm install 20.18.3
-nvm use 20.18.3
+nvm install 24.16.0
+nvm use 24.16.0
 ```
 
 Alternatively, you can use `nodenv` on macOS:
 
 ```
 brew install nodenv
-nodenv install 20.18.3
-nodenv global 20.18.3
+nodenv install 24.16.0
+nodenv global 24.16.0
 ```
 
-If you have different projects requiring different Node.js versions, you can use nodenv to set a local version for the project by navigating to the root directory of circulation-admin and executing `nodenv local 18.14.2`.
+If you have different projects requiring different Node.js versions, you can use nodenv to set a local version for the project by navigating to the root directory of circulation-admin and executing `nodenv local 24.16.0`.
 
 You can also use the `n` npm package to manage Node.js versions, or simply install the Node.js binary directly.
 
