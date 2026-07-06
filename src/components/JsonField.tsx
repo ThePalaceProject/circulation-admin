@@ -9,6 +9,7 @@ import {
 import CopyIcon from "./icons/CopyIcon";
 import XCloseIcon from "./icons/XCloseIcon";
 import { SettingData } from "../interfaces";
+import { MONOSPACE_FONT_STACK } from "../fonts";
 
 export interface JsonFieldProps {
   setting: SettingData;
@@ -188,6 +189,11 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
             readOnly={readOnly}
             aria-invalid={jsonError ? true : undefined}
             aria-describedby={describedBy}
+            style={
+              setting.use_monospace_font
+                ? { fontFamily: MONOSPACE_FONT_STACK }
+                : undefined
+            }
           />
           <div className="json-field-actions">
             <span className="json-field-copied-feedback" aria-live="polite">
