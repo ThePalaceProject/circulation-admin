@@ -1,0 +1,24 @@
+# Reference: https://docs.codecov.com/docs/codecovyml-reference
+coverage:
+  status:
+    project:
+      default:
+        threshold: 0.2%
+
+comment:
+  # Only comment when coverage changes
+  require_changes: true
+
+# The `jest` and `mocha` suites are uploaded under separate flags so coverage
+# can be attributed to each. Both run on every push, so carryforward is off.
+flag_management:
+  default_rules: # the rules that will be followed for any flag added, generally
+    carryforward: false
+    statuses: []
+
+ignore:
+  - "src/**/__tests__/**"
+  - "src/testHelper.ts"
+  - "tests/"
+  - "dist/"
+  - "lib/"

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/nycrc",
+  "extension": [".ts", ".tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/**/__tests__/**", "src/testHelper.ts", "**/*.d.ts"],
+  "reporter": ["lcov", "text-summary"],
+  "report-dir": "coverage/mocha"
+}

@@ -13,4 +13,19 @@ module.exports = {
   },
   setupFiles: ["./jest.polyfills.js"],
   setupFilesAfterEnv: ["./tests/jest/jest-setup.ts"],
+  // `src` must stay in `roots` so that `collectCoverageFrom` can discover source
+  // files that no jest test imports — otherwise they are silently omitted from
+  // the report rather than counted as uncovered. `testMatch` (not `--roots`) is
+  // therefore what keeps jest from picking up the legacy mocha tests that live
+  // in `src/**/__tests__/`.
+  roots: ["<rootDir>/src", "<rootDir>/tests/jest"],
+  testMatch: ["<rootDir>/tests/jest/**/*.test.{js,jsx,ts,tsx}"],
+  coverageDirectory: "coverage/jest",
+  coverageReporters: ["lcov", "text-summary"],
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!src/**/__tests__/**",
+    "!src/testHelper.ts",
+    "!src/**/*.d.ts",
+  ],
 };

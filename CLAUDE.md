@@ -20,6 +20,9 @@ npm test                       # Full test suite (mocha legacy + jest)
 npm run test-jest              # Jest tests only
 npm run test-jest-file <path>  # Single jest test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
 npm run test-file-ts <path>    # Single mocha test: npm run test-file-ts src/components/__tests__/MyTest-test.tsx
+npm run coverage               # Both suites with coverage (what CI runs); writes coverage/{mocha,jest}/lcov.info
+npm run coverage-ts            # Mocha suite coverage only (nyc)
+npm run coverage-jest          # Jest suite coverage only
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
@@ -67,6 +70,10 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 1. **Jest** (for all new tests): Tests in `tests/jest/` mirroring `src/` structure. Uses React Testing Library, jest-dom, and MSW for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient.
 
 2. **Mocha** (legacy): Tests in `src/*/__tests__/` directories. Uses Enzyme with React 16 adapter. Do not add new mocha tests.
+
+**Coverage:** Both suites report to Codecov under separate flags (`jest`, `mocha`). Each emits an istanbul `lcov` report — jest natively, mocha via `nyc` (configured in `.nycrc.json`) — so the two agree on which lines are executable and Codecov can merge them into a single union. Do not swap `nyc` for `c8`: c8's V8-based line mapping counts every physical line of a `.ts` file as executable, which reports untested-but-imported modules as 100% covered and corrupts the merge.
+
+Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no jest test imports; `testMatch` (not `--roots`) is what keeps jest from picking up the mocha tests under `src/**/__tests__/`.
 
 ## Code Style
 

@@ -31,4 +31,33 @@ jobs:
       - name: Test 🧪
         env:
           TZ: America/New_York
-        run: npm test
+        run: npm run coverage
+
+      # nyc can fail to write a report while still exiting 0, which would
+      # otherwise show up as a silently empty upload rather than a build failure.
+      - name: Check coverage reports were written 🔍
+        run: |
+          for report in coverage/mocha/lcov.info coverage/jest/lcov.info; do
+            if [ ! -s "$report" ]; then
+              echo "::error::$report is missing or empty"
+              exit 1
+            fi
+          done
+
+      - name: Upload mocha coverage to Codecov 📊
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/mocha/lcov.info
+          flags: mocha
+          name: mocha-node-${{ matrix.node-version }}
+          verbose: true
+
+      - name: Upload jest coverage to Codecov 📊
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/jest/lcov.info
+          flags: jest
+          name: jest-node-${{ matrix.node-version }}
+          verbose: true
