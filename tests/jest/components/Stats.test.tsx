@@ -382,14 +382,10 @@ describe("Dashboard Statistics", () => {
             roles,
             quicksightPagePath: fakeQuickSightHref,
           };
-          const {
-            container,
-            getByRole,
-            queryByRole,
-            queryByText,
-          } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            appConfigSettings,
-          });
+          const { container, getByRole, queryByRole, queryByText } =
+            renderWithProviders(<Stats library={sampleLibraryKey} />, {
+              appConfigSettings,
+            });
 
           // We should always render a Usage reports group when a library is specified.
           getByRole("heading", {

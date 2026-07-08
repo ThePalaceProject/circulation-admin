@@ -304,11 +304,7 @@ describe("InventoryReportRequestModal", () => {
     const NO_EMAIL_CONTEXT_PROVIDER_PROPS = { email: undefined };
 
     it("shows the modal when `show` is true", async () => {
-      const {
-        getAllByRole,
-        queryAllByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getAllByRole, queryAllByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={false}
           onHide={onHide}
@@ -385,19 +381,15 @@ describe("InventoryReportRequestModal", () => {
       let show = true;
       onHide.mockImplementation(() => (show = false));
 
-      const {
-        getAllByRole,
-        getByRole,
-        queryAllByRole,
-        rerender,
-      } = renderWithProviders(
-        <InventoryReportRequestModal
-          show={show}
-          onHide={onHide}
-          library={LIBRARY}
-        />,
-        { queryClient }
-      );
+      const { getAllByRole, getByRole, queryAllByRole, rerender } =
+        renderWithProviders(
+          <InventoryReportRequestModal
+            show={show}
+            onHide={onHide}
+            library={LIBRARY}
+          />,
+          { queryClient }
+        );
       getAllByRole("dialog");
       expect(show).toBe(true);
       expect(onHide).not.toHaveBeenCalled();
@@ -420,10 +412,7 @@ describe("InventoryReportRequestModal", () => {
     });
 
     it("updates confirmation message, if report info request arrives in time", async () => {
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -457,10 +446,7 @@ describe("InventoryReportRequestModal", () => {
         )
       );
 
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -505,10 +491,7 @@ describe("InventoryReportRequestModal", () => {
         )
       );
 
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -538,10 +521,7 @@ describe("InventoryReportRequestModal", () => {
     it("requests report generation, if request confirmed", async () => {
       const user = userEvent.setup();
 
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -574,10 +554,7 @@ describe("InventoryReportRequestModal", () => {
     it("displays success message, when request is successful", async () => {
       const user = userEvent.setup();
 
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -615,10 +592,7 @@ describe("InventoryReportRequestModal", () => {
       );
       const user = userEvent.setup();
 
-      const {
-        getByRole,
-        rerender,
-      } = renderWithProviders(
+      const { getByRole, rerender } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}

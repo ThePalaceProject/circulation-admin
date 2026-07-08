@@ -19,13 +19,9 @@ const customListsData = [
   { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
 ];
 
-const editLane = stub().returns(
-  new Promise<void>((resolve) => resolve())
-);
+const editLane = stub().returns(new Promise<void>((resolve) => resolve()));
 
-const deleteLane = stub().returns(
-  new Promise<void>((resolve) => resolve())
-);
+const deleteLane = stub().returns(new Promise<void>((resolve) => resolve()));
 
 const toggleLaneVisibility = stub();
 

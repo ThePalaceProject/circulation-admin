@@ -612,7 +612,9 @@ describe("PatronBlockingRulesEditor", () => {
   });
 
   it("disables all editing inputs and buttons when disabled prop is true", () => {
-    renderEditor(<PatronBlockingRulesEditor value={existingRules} disabled={true} />);
+    renderEditor(
+      <PatronBlockingRulesEditor value={existingRules} disabled={true} />
+    );
 
     // The Help button stays enabled even in disabled mode (read-only affordance).
     const editingButtons = screen

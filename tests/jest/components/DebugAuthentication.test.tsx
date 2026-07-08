@@ -212,11 +212,7 @@ describe("DebugAuthentication", () => {
       )
     );
 
-    const {
-      getByLabelText,
-      queryByLabelText,
-      rerender,
-    } = renderWithProviders(
+    const { getByLabelText, queryByLabelText, rerender } = renderWithProviders(
       <DebugAuthentication library={LIBRARY} csrfToken="test-csrf-token" />,
       { queryClient }
     );
