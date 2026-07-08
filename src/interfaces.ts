@@ -324,6 +324,7 @@ export interface SettingData {
   paired?: string;
   readOnly?: boolean;
   capitalize?: boolean;
+  use_monospace_font?: boolean;
   skip?: boolean;
   level?: number;
 }

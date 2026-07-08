@@ -5,6 +5,7 @@ import JsonField, { JsonFieldHandle } from "./JsonField";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
 import { SettingData, CustomListsSetting } from "../interfaces";
+import { MONOSPACE_FONT_STACK } from "../fonts";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
@@ -64,12 +65,12 @@ export default class ProtocolFormField extends React.Component<
       setting.type === "select"
         ? this.renderSelectSetting(setting)
         : setting.type === "list" || setting.type === "menu"
-        ? this.renderListSetting(setting)
-        : setting.type === "color-picker"
-        ? this.renderColorPickerSetting(setting)
-        : setting.type === "json"
-        ? this.renderJsonSetting(setting)
-        : this.renderSetting(setting);
+          ? this.renderListSetting(setting)
+          : setting.type === "color-picker"
+            ? this.renderColorPickerSetting(setting)
+            : setting.type === "json"
+              ? this.renderJsonSetting(setting)
+              : this.renderSetting(setting);
     // Special handling for hidden settings.
     return setting.hidden ? this.renderHiddenElement(element) : element;
   }
@@ -149,6 +150,9 @@ export default class ProtocolFormField extends React.Component<
       ref: this.elementRef,
       onChange: this.props.onChange,
       readOnly: this.props.readOnly,
+      ...(setting.use_monospace_font && {
+        style: { fontFamily: MONOSPACE_FONT_STACK },
+      }),
     };
     let props = extraProps[setting.type]
       ? { ...basicProps, ...extraProps[setting.type] }

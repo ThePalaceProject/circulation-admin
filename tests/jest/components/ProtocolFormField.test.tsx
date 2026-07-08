@@ -2,6 +2,7 @@ import * as React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProtocolFormField from "../../../src/components/ProtocolFormField";
+import { MONOSPACE_FONT_STACK } from "../../../src/fonts";
 
 // NB: This file adds / duplicates existing tests from:
 // - `src/components/__tests__/ProtocolFormField-test.tsx`.
@@ -61,6 +62,41 @@ describe("ProtocolFormField — json type", () => {
       ref.current!.clear();
     });
     expect(ta.value).toBe("");
+  });
+});
+
+describe("ProtocolFormField — use_monospace_font", () => {
+  (
+    [
+      { id: "text-input", use_monospace_font: true, hasStyle: true },
+      {
+        id: "textarea",
+        type: "textarea",
+        use_monospace_font: true,
+        hasStyle: true,
+      },
+      { id: "absent", hasStyle: false },
+    ] as {
+      id: string;
+      type?: string;
+      use_monospace_font?: boolean;
+      hasStyle: boolean;
+    }[]
+  ).forEach(({ id, type, use_monospace_font, hasStyle }) => {
+    it(id, () => {
+      render(
+        <ProtocolFormField
+          setting={{ key: "f", label: "My Field", type, use_monospace_font }}
+          disabled={false}
+        />
+      );
+      const el = screen.getByLabelText("My Field");
+      if (hasStyle) {
+        expect(el).toHaveStyle({ fontFamily: MONOSPACE_FONT_STACK });
+      } else {
+        expect(el).not.toHaveStyle({ fontFamily: MONOSPACE_FONT_STACK });
+      }
+    });
   });
 });
 

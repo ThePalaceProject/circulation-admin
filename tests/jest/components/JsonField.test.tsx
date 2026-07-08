@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import JsonField, { JsonFieldHandle } from "../../../src/components/JsonField";
+import { MONOSPACE_FONT_STACK } from "../../../src/fonts";
 
 const setting = {
   key: "my_json",
@@ -469,6 +470,25 @@ describe("JsonField", () => {
 
       fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
       expect(onChange).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("use_monospace_font", () => {
+    (
+      [
+        { id: "set", use_monospace_font: true, hasStyle: true },
+        { id: "absent", hasStyle: false },
+      ] as { id: string; use_monospace_font?: boolean; hasStyle: boolean }[]
+    ).forEach(({ id, use_monospace_font, hasStyle }) => {
+      it(id, () => {
+        render(<JsonField setting={{ ...setting, use_monospace_font }} />);
+        const ta = screen.getByLabelText("JSON Setting");
+        if (hasStyle) {
+          expect(ta).toHaveStyle({ fontFamily: MONOSPACE_FONT_STACK });
+        } else {
+          expect(ta).not.toHaveStyle({ fontFamily: MONOSPACE_FONT_STACK });
+        }
+      });
     });
   });
 
