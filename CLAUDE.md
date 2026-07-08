@@ -16,15 +16,15 @@ npm run dev-server -- --env=backend=https://your-cm-url  # Dev server against re
 npm run prod                   # Production build
 npm run lint                   # Run ESLint (lint:js) + sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
-npm test                       # Full test suite (mocha legacy + jest)
-npm run test-jest              # Jest tests only
-npm run test-jest-file <path>  # Single jest test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
-npm run test-file-ts <path>    # Single mocha test: npm run test-file-ts src/components/__tests__/MyTest-test.tsx
-npm run coverage               # Both suites with coverage (what CI runs); writes coverage/{mocha,jest}/lcov.info
-npm run coverage-ts            # Mocha suite coverage only (nyc)
-npm run coverage-jest          # Jest suite coverage only
+npm test                       # Full test suite (both jest projects)
+npm run test-jest-file <path>  # Single test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
+npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
+
+Run one jest project at a time with `npx jest --selectProjects=unit` (or `=legacy`). Note
+`--selectProjects` is variadic, so put file paths behind `--testPathPattern` rather than
+after it as positional arguments.
 
 The dev server can also read the backend URL from `.env` or `.env.local` with `BACKEND=https://...`.
 
@@ -65,15 +65,17 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-**Two test systems coexist:**
+Everything runs under jest, split into **two jest `projects`** (see `jest.config.js`):
 
-1. **Jest** (for all new tests): Tests in `tests/jest/` mirroring `src/` structure. Uses React Testing Library, jest-dom, and MSW for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient.
+1. **`unit`** (for all new tests): Tests in `tests/jest/` mirroring `src/` structure. Uses React Testing Library, jest-dom, and MSW for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient. Runs on `jest-fixed-jsdom` so MSW can intercept `fetch`.
 
-2. **Mocha** (legacy): Tests in `src/*/__tests__/` directories. Uses Enzyme with React 16 adapter. Do not add new mocha tests.
+2. **`legacy`**: Tests in `src/*/__tests__/` directories, still written with Enzyme, chai, and sinon. Being rewritten as `unit` tests; **do not add new ones**. Runs on `tests/jest/legacyJsdomEnvironment.js` — plain jsdom, because `jest-fixed-jsdom` substitutes undici's `FormData`, which rejects `new FormData(formElement)`. That environment also restores `global.jsdom` and tolerates unhandled promise rejections; both are documented in the file. Delete the project, the environment, and `tests/jest/legacy-setup.ts` along with the last enzyme test — that is what unblocks React 17+, since enzyme has no adapter beyond React 16.
 
-**Coverage:** Both suites report to Codecov under separate flags (`jest`, `mocha`). Each emits an istanbul `lcov` report — jest natively, mocha via `nyc` (configured in `.nycrc.json`) — so the two agree on which lines are executable and Codecov can merge them into a single union. Do not swap `nyc` for `c8`: c8's V8-based line mapping counts every physical line of a `.ts` file as executable, which reports untested-but-imported modules as 100% covered and corrupts the merge.
+Both projects need `testEnvironmentOptions.customExportConditions: [""]`. Without it, jsdom's default `["browser"]` condition resolves **sinon** to its ESM bundle and every suite that imports it fails to parse.
 
-Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no jest test imports; `testMatch` (not `--roots`) is what keeps jest from picking up the mocha tests under `src/**/__tests__/`.
+**Coverage:** Reported to Codecov under the `jest` flag. `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`, not inside `projects` — jest reads it off the global config, and setting it per-project leaves it globally undefined, so every executed file gets instrumented (including `tests/` helpers).
+
+Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports; otherwise they are silently omitted rather than counted as uncovered, and the reported percentage rises while real coverage is unchanged.
 
 ## Code Style
 

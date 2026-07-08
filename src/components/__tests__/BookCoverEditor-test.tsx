@@ -216,9 +216,7 @@ describe("BookCoverEditor", () => {
       fetchBook = stub();
       fetchPreview = stub();
       clearPreview = stub();
-      editCover = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
+      editCover = stub().returns(new Promise<void>((resolve) => resolve()));
       fetchRightsStatuses = stub();
       refreshCatalog = stub();
       wrapper = mount(
@@ -285,25 +283,6 @@ describe("BookCoverEditor", () => {
 
       expect(fetchPreview.callCount).to.equal(2);
       expect(clearPreview.callCount).to.equal(2);
-    });
-
-    it.skip("should fail for now - previews cover when relevant inputs change", () => {
-      expect(fetchPreview.callCount).to.equal(0);
-      expect(clearPreview.callCount).to.equal(1);
-
-      const previewButton = wrapper.find("button").at(1);
-
-      const coverFile = editableInputByName("cover_file");
-      coverFile.setState({ value: "c://file.png" });
-      previewButton.simulate("click");
-
-      expect(fetchPreview.callCount).to.equal(3);
-      expect(fetchPreview.args[2][0]).to.equal(
-        "/admin/book/preview_book_cover"
-      );
-      const formData = fetchPreview.args[0][1];
-      expect(formData.get("cover_url")).to.equal("");
-      expect(formData.get("title_position")).to.equal("center");
     });
 
     it("saves", async () => {

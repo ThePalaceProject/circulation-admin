@@ -9,7 +9,7 @@ import reducer, {
 import ActionCreator from "../../actions";
 
 describe("custom list editor reducer", () => {
-  context("on SET_FEATURE_FLAGS", () => {
+  describe("on SET_FEATURE_FLAGS", () => {
     it("sets isAutoUpdateEnabled to true if the enableAutoList feature flag is true", () => {
       const state = {
         ...initialState,
@@ -61,7 +61,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on UPDATE_FEATURE_FLAG", () => {
+  describe("on UPDATE_FEATURE_FLAG", () => {
     it("sets isAutoUpdateEnabled to true if the flag name is enableAutoList and the value is true", () => {
       const state = {
         ...initialState,
@@ -108,7 +108,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on OPEN_CUSTOM_LIST_EDITOR", () => {
+  describe("on OPEN_CUSTOM_LIST_EDITOR", () => {
     const state = undefined;
 
     const listData = {
@@ -185,7 +185,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context(`on ${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`, () => {
+  describe(`on ${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`, () => {
     const listData = {
       custom_lists: [
         {
@@ -410,7 +410,7 @@ describe("custom list editor reducer", () => {
       expect(nextState.isModified).to.equal(false);
     });
 
-    context("when auto update is enabled", () => {
+    describe("when auto update is enabled", () => {
       it("defaults the autoUpdate property to true for a new list", () => {
         const state = {
           ...initialState,
@@ -456,7 +456,7 @@ describe("custom list editor reducer", () => {
       });
     });
 
-    context("when auto update is disabled", () => {
+    describe("when auto update is disabled", () => {
       it("defaults the autoUpdate property to false for a new list", () => {
         const state = {
           ...initialState,
@@ -500,135 +500,129 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context(
-    `on ${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`,
-    () => {
-      const listDetailsData = {
-        books: [
-          { id: "book1", title: "A Farewell to Arms" },
-          { id: "book2", title: "Little Women" },
-        ],
+  describe(`on ${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`, () => {
+    const listDetailsData = {
+      books: [
+        { id: "book1", title: "A Farewell to Arms" },
+        { id: "book2", title: "Little Women" },
+      ],
+    };
+
+    it("updates the baseline entries with the books in the list details data", () => {
+      const state = {
+        ...initialState,
       };
 
-      it("updates the baseline entries with the books in the list details data", () => {
-        const state = {
-          ...initialState,
-        };
-
-        const nextState = reducer(state, {
-          type: `${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`,
-          data: listDetailsData,
-        });
-
-        expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`,
+        data: listDetailsData,
       });
 
-      it("cleans up local changes, since the server already got them on save", () => {
-        const state = {
-          ...initialState,
-          entries: {
-            ...initialState.entries,
-            // It doesn't really matter what the added/removed books are, in
-            // this case, just that there is something there for the reducer
-            // to clean up.
-            added: {
-              // An already saved added book.
-              book1: { id: "book1", title: "A Farewell to Arms" },
-            },
-            removed: {
-              // An already saved removed book.
-              an_already_removed_book: true as const,
-            },
+      expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
+    });
+
+    it("cleans up local changes, since the server already got them on save", () => {
+      const state = {
+        ...initialState,
+        entries: {
+          ...initialState.entries,
+          // It doesn't really matter what the added/removed books are, in
+          // this case, just that there is something there for the reducer
+          // to clean up.
+          added: {
+            // An already saved added book.
+            book1: { id: "book1", title: "A Farewell to Arms" },
           },
-        };
-
-        const nextState = reducer(state, {
-          type: `${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`,
-          data: listDetailsData,
-        });
-
-        expect(nextState.entries.added).to.deep.equal({});
-        expect(nextState.entries.removed).to.deep.equal({});
-
-        expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
-        expect(nextState.entries.current).to.deep.equal(listDetailsData.books);
-        expect(nextState.entries.currentTotalCount).to.equal(2);
-      });
-    }
-  );
-
-  context(
-    `on ${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`,
-    () => {
-      const listDetailsData = {
-        books: [
-          { id: "book1", title: "A Farewell to Arms" },
-          { id: "book2", title: "Little Women" },
-        ],
+          removed: {
+            // An already saved removed book.
+            an_already_removed_book: true as const,
+          },
+        },
       };
 
-      it("appends the books in the list details data to the baseline entries", () => {
-        const state = {
-          ...initialState,
-          entries: {
-            ...initialState.entries,
-            baseline: [
-              { id: "book91", title: "Huckleberry Finn" },
-              { id: "book90", title: "Wuthering Heights" },
-            ],
-          },
-        };
-
-        const nextState = reducer(state, {
-          type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`,
-          data: listDetailsData,
-        });
-
-        expect(nextState.entries.baseline).to.deep.equal([
-          { id: "book91", title: "Huckleberry Finn" },
-          { id: "book90", title: "Wuthering Heights" },
-          { id: "book1", title: "A Farewell to Arms" },
-          { id: "book2", title: "Little Women" },
-        ]);
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.LOAD}`,
+        data: listDetailsData,
       });
 
-      it("applies the current delta to the new baseline entries", () => {
-        const state = {
-          ...initialState,
-          entries: {
-            ...initialState.entries,
-            baseline: [
-              { id: "book91", title: "Huckleberry Finn" },
-              { id: "book90", title: "Wuthering Heights" },
-            ],
-            baselineTotalCount: 4,
-            added: {
-              book98: { id: "book98", title: "The Bell Jar" },
-            },
-            removed: {
-              book1: true as const,
-              book90: true as const,
-            },
-          },
-        };
+      expect(nextState.entries.added).to.deep.equal({});
+      expect(nextState.entries.removed).to.deep.equal({});
 
-        const nextState = reducer(state, {
-          type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`,
-          data: listDetailsData,
-        });
+      expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
+      expect(nextState.entries.current).to.deep.equal(listDetailsData.books);
+      expect(nextState.entries.currentTotalCount).to.equal(2);
+    });
+  });
 
-        expect(nextState.entries.current).to.deep.equal([
-          { id: "book98", title: "The Bell Jar" },
-          { id: "book91", title: "Huckleberry Finn" },
-          { id: "book2", title: "Little Women" },
-        ]);
+  describe(`on ${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`, () => {
+    const listDetailsData = {
+      books: [
+        { id: "book1", title: "A Farewell to Arms" },
+        { id: "book2", title: "Little Women" },
+      ],
+    };
 
-        expect(nextState.entries.currentTotalCount).to.equal(3); // 4 + 1 - 2
+    it("appends the books in the list details data to the baseline entries", () => {
+      const state = {
+        ...initialState,
+        entries: {
+          ...initialState.entries,
+          baseline: [
+            { id: "book91", title: "Huckleberry Finn" },
+            { id: "book90", title: "Wuthering Heights" },
+          ],
+        },
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`,
+        data: listDetailsData,
       });
-    }
-  );
 
-  context("on UPDATE_CUSTOM_LIST_EDITOR_PROPERTY", () => {
+      expect(nextState.entries.baseline).to.deep.equal([
+        { id: "book91", title: "Huckleberry Finn" },
+        { id: "book90", title: "Wuthering Heights" },
+        { id: "book1", title: "A Farewell to Arms" },
+        { id: "book2", title: "Little Women" },
+      ]);
+    });
+
+    it("applies the current delta to the new baseline entries", () => {
+      const state = {
+        ...initialState,
+        entries: {
+          ...initialState.entries,
+          baseline: [
+            { id: "book91", title: "Huckleberry Finn" },
+            { id: "book90", title: "Wuthering Heights" },
+          ],
+          baselineTotalCount: 4,
+          added: {
+            book98: { id: "book98", title: "The Bell Jar" },
+          },
+          removed: {
+            book1: true as const,
+            book90: true as const,
+          },
+        },
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`,
+        data: listDetailsData,
+      });
+
+      expect(nextState.entries.current).to.deep.equal([
+        { id: "book98", title: "The Bell Jar" },
+        { id: "book91", title: "Huckleberry Finn" },
+        { id: "book2", title: "Little Women" },
+      ]);
+
+      expect(nextState.entries.currentTotalCount).to.equal(3); // 4 + 1 - 2
+    });
+  });
+
+  describe("on UPDATE_CUSTOM_LIST_EDITOR_PROPERTY", () => {
     const state = {
       ...initialState,
     };
@@ -693,7 +687,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on TOGGLE_CUSTOM_LIST_EDITOR_COLLECTION", () => {
+  describe("on TOGGLE_CUSTOM_LIST_EDITOR_COLLECTION", () => {
     it("adds the id to the current collection property if it doesn't exist", () => {
       const state = {
         ...initialState,
@@ -752,7 +746,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM", () => {
+  describe("on UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM", () => {
     const state = {
       ...initialState,
       properties: {
@@ -813,7 +807,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
+  describe("on ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
     const valueQuery = {
       key: "title",
       op: "contains",
@@ -1179,7 +1173,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN", () => {
+  describe("on UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN", () => {
     const include = {
       query: {
         id: "90",
@@ -1301,7 +1295,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
+  describe("on MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
     const state = {
       ...initialState,
       searchParams: {
@@ -1437,7 +1431,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
+  describe("on REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
     it("should remove the specified query", () => {
       const state = {
         ...initialState,
@@ -1616,7 +1610,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
+  describe("on SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
     it("should select the specified query", () => {
       const state = {
         ...initialState,
@@ -1714,7 +1708,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on ADD_CUSTOM_LIST_EDITOR_ENTRY", () => {
+  describe("on ADD_CUSTOM_LIST_EDITOR_ENTRY", () => {
     const searchResultData = {
       books: [
         {
@@ -1856,7 +1850,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on ADD_ALL_CUSTOM_LIST_EDITOR_ENTRIES", () => {
+  describe("on ADD_ALL_CUSTOM_LIST_EDITOR_ENTRIES", () => {
     const searchResultData = {
       books: [
         {
@@ -2010,7 +2004,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on DELETE_CUSTOM_LIST_EDITOR_ENTRY", () => {
+  describe("on DELETE_CUSTOM_LIST_EDITOR_ENTRY", () => {
     it("should add the book to entries removed", () => {
       const state = {
         ...initialState,
@@ -2113,7 +2107,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES", () => {
+  describe("on DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES", () => {
     it("should add all books in baseline entries to entries removed", () => {
       const state = {
         ...initialState,
@@ -2218,7 +2212,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on RESET_CUSTOM_LIST_EDITOR", () => {
+  describe("on RESET_CUSTOM_LIST_EDITOR", () => {
     it("should restore baseline properties", () => {
       const state = {
         ...initialState,
@@ -2347,7 +2341,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on CUSTOM_LIST_SHARE_REQUEST", () => {
+  describe("on CUSTOM_LIST_SHARE_REQUEST", () => {
     it("should set isSharePending to true if the listId in the action is the id in state", () => {
       const state = {
         ...initialState,
@@ -2377,7 +2371,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on CUSTOM_LIST_SHARE_SUCCESS", () => {
+  describe("on CUSTOM_LIST_SHARE_SUCCESS", () => {
     it("should set isSharePending to false if the listId in the action is the id in state", () => {
       const state = {
         ...initialState,
@@ -2432,7 +2426,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on CUSTOM_LIST_SHARE_FAILURE", () => {
+  describe("on CUSTOM_LIST_SHARE_FAILURE", () => {
     it("should set isSharePending to false if the listId in the action is the id in state", () => {
       const state = {
         ...initialState,
@@ -2483,7 +2477,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("getCustomListEditorFormData", () => {
+  describe("getCustomListEditorFormData", () => {
     it("should generate multipart form data from the current properties and entries", () => {
       const state = {
         ...initialState,
@@ -2701,7 +2695,7 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("getCustomListEditorSearchUrl", () => {
+  describe("getCustomListEditorSearchUrl", () => {
     it("should generate a search url from the search params", () => {
       const state = {
         ...initialState,

@@ -39,19 +39,17 @@ describe("TroubleshootingPage", () => {
   });
 
   it("switches tabs", () => {
-    it("switches tabs", () => {
-      expect(wrapper.state()["tab"]).to.equal("diagnostics");
-      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
-        "diagnostics"
-      );
+    expect(wrapper.state()["tab"]).to.equal("diagnostics");
+    expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
+      "diagnostics"
+    );
 
-      wrapper.instance().goToTab("self-tests");
+    wrapper.instance().goToTab("self-tests");
 
-      expect(wrapper.state()["tab"]).to.equal("self-tests");
-      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
-        "self-tests"
-      );
-    });
+    expect(wrapper.state()["tab"]).to.equal("self-tests");
+    expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
+      "self-tests"
+    );
   });
 
   it("sets the document title", () => {

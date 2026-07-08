@@ -11,10 +11,7 @@ import CustomListEditor from "../CustomListEditor";
 import Admin from "../../models/Admin";
 import { LaneData } from "../../interfaces";
 import CustomListsSidebar from "../CustomListsSidebar";
-import {
-  installWriteableLocation,
-  WriteableLocationHandle,
-} from "./withWriteableLocation";
+import * as navigate from "../../utils/navigate";
 
 describe("CustomLists", () => {
   let wrapper;
@@ -172,9 +169,15 @@ describe("CustomLists", () => {
   const librarian = new Admin([{ role: "librarian", library: "library" }]);
 
   describe("on mount", () => {
-    let location: WriteableLocationHandle;
+    const listsUrl = "/admin/web/lists/library";
+    let navigateTo;
+    let currentHref;
+    const lastNavigation = () => navigateTo.args[navigateTo.callCount - 1][0];
 
     beforeEach(() => {
+      navigateTo = stub(navigate, "navigateTo");
+      currentHref = stub(navigate, "currentHref").returns(listsUrl);
+
       fetchCustomLists = stub();
       openCustomListEditor = stub();
       fetchCustomListDetails = stub();
@@ -219,13 +222,11 @@ describe("CustomLists", () => {
         />,
         { context: { admin: libraryManager } }
       );
-
-      // Make window.location.href writable; jsdom doesn't allow changing it but browsers do.
-      location = installWriteableLocation();
     });
 
     afterEach(() => {
-      location.restore();
+      navigateTo.restore();
+      currentHref.restore();
     });
 
     it("fetches libraries and languages", () => {
@@ -254,8 +255,6 @@ describe("CustomLists", () => {
     });
 
     it("navigates to create or edit page on initial load", () => {
-      window.location.href = "/admin/web/lists/library";
-
       wrapper = mount(
         <CustomLists
           csrfToken="token"
@@ -283,7 +282,7 @@ describe("CustomLists", () => {
         { context: { admin: libraryManager } }
       );
       wrapper.setProps({ lists: [] });
-      expect(window.location.href).to.contain("create");
+      expect(lastNavigation()).to.equal(`${listsUrl}/create`);
 
       wrapper = mount(
         <CustomLists
@@ -312,8 +311,7 @@ describe("CustomLists", () => {
         { context: { admin: libraryManager } }
       );
       wrapper.setProps({ lists: listsData });
-      expect(window.location.href).to.contain("edit");
-      expect(window.location.href).to.contain("1");
+      expect(lastNavigation()).to.equal(`${listsUrl}/edit/1`);
 
       // The create page should open if there are no owned lists.
 
@@ -355,7 +353,7 @@ describe("CustomLists", () => {
         { context: { admin: libraryManager } }
       );
       wrapper.setProps({ lists: noOwnedListsData });
-      expect(window.location.href).to.contain("create");
+      expect(lastNavigation()).to.equal(`${listsUrl}/create`);
     });
 
     it("sorts lists", () => {
@@ -566,9 +564,9 @@ describe("CustomLists", () => {
     });
 
     it("fetches lanes to be deleted", async () => {
-      let deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(
-        listsData[1].id
-      );
+      let deletedLanes = await (
+        wrapper.instance() as CustomLists
+      ).getDeletedLanes(listsData[1].id);
       // There are no lanes so fetch them.
       expect(fetchLanes.callCount).to.equal(1);
 

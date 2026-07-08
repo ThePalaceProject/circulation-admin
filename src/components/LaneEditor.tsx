@@ -7,6 +7,7 @@ import LaneCustomListsEditor from "./LaneCustomListsEditor";
 import TrashIcon from "./icons/TrashIcon";
 import VisibleIcon from "./icons/VisibleIcon";
 import HiddenIcon from "./icons/HiddenIcon";
+import { navigateTo } from "../utils/navigate";
 
 export interface LaneEditorProps extends React.Props<LaneEditor> {
   editOrCreate?: string;
@@ -49,9 +50,8 @@ export default class LaneEditor extends React.Component<
     this.changeName = this.changeName.bind(this);
     this.changeCustomLists = this.changeCustomLists.bind(this);
     this.changeFilter = this.changeFilter.bind(this);
-    this.changeInheritParentRestrictions = this.changeInheritParentRestrictions.bind(
-      this
-    );
+    this.changeInheritParentRestrictions =
+      this.changeInheritParentRestrictions.bind(this);
     this.delete = this.delete.bind(this);
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
@@ -322,11 +322,9 @@ export default class LaneEditor extends React.Component<
     this.props.editLane(data).then(() => {
       // If a new lane was created, go to its edit page.
       if (!this.props.lane && this.props.responseBody) {
-        window.location.href =
-          "/admin/web/lanes/" +
-          this.props.library +
-          "/edit/" +
-          this.props.responseBody;
+        navigateTo(
+          `/admin/web/lanes/${this.props.library}/edit/${this.props.responseBody}`
+        );
       }
     });
   }

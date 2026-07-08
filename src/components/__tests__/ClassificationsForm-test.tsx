@@ -110,6 +110,34 @@ describe("ClassificationsForm", () => {
       );
     });
 
+    it("moves focus to the error message so it is announced", () => {
+      jest.useFakeTimers();
+      // `mount` renders detached from the document, so `document.activeElement`
+      // never updates; watch the `focus()` call itself instead.
+      const focus = stub(HTMLElement.prototype, "focus");
+
+      try {
+        const button = wrapper
+          .find("button")
+          .findWhere((button) => button.text() === "Save")
+          .at(0);
+        button.simulate("click");
+        wrapper.update();
+
+        expect(focus.callCount).to.equal(0);
+
+        jest.advanceTimersByTime(500);
+
+        expect(focus.callCount).to.equal(1);
+        expect(focus.thisValues[0]).to.equal(
+          wrapper.find(".alert-danger").at(0).getDOMNode()
+        );
+      } finally {
+        focus.restore();
+        jest.useRealTimers();
+      }
+    });
+
     it("should not allow you to submit if you didn't select an audience", () => {
       const button = wrapper
         .find("button")

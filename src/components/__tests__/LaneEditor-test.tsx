@@ -8,10 +8,7 @@ import LaneEditor from "../LaneEditor";
 import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
-import {
-  installWriteableLocation,
-  WriteableLocationHandle,
-} from "./withWriteableLocation";
+import * as navigate from "../../utils/navigate";
 
 describe("LaneEditor", () => {
   let wrapper;
@@ -19,7 +16,7 @@ describe("LaneEditor", () => {
   let deleteLane;
   let findParentOfLane;
   let toggleLaneVisibility;
-  let location: WriteableLocationHandle;
+  let navigateTo;
 
   const customListsData = [
     { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
@@ -46,15 +43,9 @@ describe("LaneEditor", () => {
   };
 
   beforeEach(() => {
-    editLane = stub().returns(
-      new Promise<void>((resolve) => resolve())
-    );
-    deleteLane = stub().returns(
-      new Promise<void>((resolve) => resolve())
-    );
-    stub().returns(
-      new Promise<void>((resolve) => resolve())
-    );
+    editLane = stub().returns(new Promise<void>((resolve) => resolve()));
+    deleteLane = stub().returns(new Promise<void>((resolve) => resolve()));
+    stub().returns(new Promise<void>((resolve) => resolve()));
     findParentOfLane = stub().returns(laneData);
     toggleLaneVisibility = stub();
     wrapper = shallow(
@@ -69,12 +60,11 @@ describe("LaneEditor", () => {
       />
     );
 
-    // Make window.location.href writable; jsdom doesn't allow changing it but browsers do.
-    location = installWriteableLocation();
+    navigateTo = stub(navigate, "navigateTo");
   });
 
   afterEach(() => {
-    location.restore();
+    navigateTo.restore();
   });
 
   it("shows lane name", () => {
@@ -332,8 +322,6 @@ describe("LaneEditor", () => {
   });
 
   it("navigates to edit page after a new lane is created", async () => {
-    window.location.href = "/admin/web/lanes/library/create";
-
     wrapper = mount(
       <LaneEditor
         library="library"
@@ -363,8 +351,8 @@ describe("LaneEditor", () => {
       return new Promise<void>((resolve) => setTimeout(resolve, 0));
     };
     await pause();
-    expect(window.location.href).to.contain("edit");
-    expect(window.location.href).to.contain("5");
+    expect(navigateTo.callCount).to.equal(1);
+    expect(navigateTo.args[0][0]).to.equal("/admin/web/lanes/library/edit/5");
   });
 
   it("cancels changes", () => {
