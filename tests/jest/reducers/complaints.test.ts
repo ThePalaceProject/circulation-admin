@@ -1,7 +1,5 @@
-import { expect } from "chai";
-
-import complaints from "../complaints";
-import ActionCreator from "../../actions";
+import complaints from "../../../src/reducers/complaints";
+import ActionCreator from "../../../src/actions";
 
 describe("complaints reducer", () => {
   const initState = {
@@ -23,7 +21,7 @@ describe("complaints reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(complaints(undefined, {})).to.deep.equal(initState);
+    expect(complaints(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles COMPLAINTS_REQUEST", () => {
@@ -34,14 +32,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true,
     });
-    expect(complaints(initState, action)).to.deep.equal(newState);
+    expect(complaints(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null,
     });
-    expect(complaints(errorState, action)).to.deep.equal(newState);
+    expect(complaints(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles COMPLAINTS_FAILURE", () => {
@@ -61,7 +59,7 @@ describe("complaints reducer", () => {
       fetchError: "test error",
       isFetching: false,
     });
-    expect(complaints(oldState, action)).to.deep.equal(newState);
+    expect(complaints(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles COMPLAINTS_LOAD", () => {
@@ -81,7 +79,7 @@ describe("complaints reducer", () => {
       data: "test data",
       isFetching: false,
     });
-    expect(complaints(oldState, action)).to.deep.equal(newState);
+    expect(complaints(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles POST_COMPLAINT_REQUEST", () => {
@@ -95,14 +93,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true,
     });
-    expect(complaints(initState, action)).to.deep.equal(newState);
+    expect(complaints(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null,
     });
-    expect(complaints(errorState, action)).to.deep.equal(newState);
+    expect(complaints(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles POST_COMPLAINT_FAILURE", () => {
@@ -122,7 +120,7 @@ describe("complaints reducer", () => {
       postError: "test error",
       isFetching: false,
     });
-    expect(complaints(oldState, action)).to.deep.equal(newState);
+    expect(complaints(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles RESOLVE_COMPLAINTS_REQUEST", () => {
@@ -136,14 +134,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true,
     });
-    expect(complaints(initState, action)).to.deep.equal(newState);
+    expect(complaints(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null,
     });
-    expect(complaints(errorState, action)).to.deep.equal(newState);
+    expect(complaints(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles RESOLVE_COMPLAINTS_FAILURE", () => {
@@ -163,6 +161,6 @@ describe("complaints reducer", () => {
       resolveError: "test error",
       isFetching: false,
     });
-    expect(complaints(oldState, action)).to.deep.equal(newState);
+    expect(complaints(oldState, action)).toStrictEqual(newState);
   });
 });

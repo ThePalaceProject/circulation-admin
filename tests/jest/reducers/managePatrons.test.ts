@@ -1,7 +1,5 @@
-import { expect } from "chai";
-
-import ManagePatrons from "../managePatrons";
-import ActionCreator from "../../actions";
+import ManagePatrons from "../../../src/reducers/managePatrons";
+import ActionCreator from "../../../src/actions";
 
 describe("ManagePatrons reducer", () => {
   const initState = {
@@ -16,7 +14,7 @@ describe("ManagePatrons reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(ManagePatrons(undefined, {})).to.deep.equal(initState);
+    expect(ManagePatrons(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles CLEAR_PATRON_DATA_LOAD", () => {
@@ -67,7 +65,7 @@ describe("ManagePatrons reducer", () => {
       fetchError: null,
     });
 
-    expect(ManagePatrons(oldPatronState, action)).to.deep.equal(newPatronState);
-    expect(ManagePatrons(oldErrorState, action)).to.deep.equal(newErrorState);
+    expect(ManagePatrons(oldPatronState, action)).toStrictEqual(newPatronState);
+    expect(ManagePatrons(oldErrorState, action)).toStrictEqual(newErrorState);
   });
 });

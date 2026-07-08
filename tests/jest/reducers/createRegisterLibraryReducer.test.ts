@@ -1,9 +1,7 @@
-import { expect } from "chai";
-
-import ActionCreator from "../../actions";
+import ActionCreator from "../../../src/actions";
 import createRegisterLibraryReducer, {
   RegisterLibraryState,
-} from "../createRegisterLibraryReducer";
+} from "../../../src/reducers/createRegisterLibraryReducer";
 
 describe("register-library reducer", () => {
   const initState: RegisterLibraryState = {
@@ -19,14 +17,14 @@ describe("register-library reducer", () => {
   const reducer = createRegisterLibraryReducer("TEST_REGISTER");
 
   it("returns initial state for unrecognized action", () => {
-    expect(reducer(undefined, {})).to.deep.equal(initState);
+    expect(reducer(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles register library request", () => {
     const action = { type: `TEST_REGISTER_${ActionCreator.REQUEST}` };
     const newState = Object.assign({}, initState, { isFetching: true });
-    expect(reducer(initState, action)).to.deep.equal(newState);
-    expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
+    expect(reducer(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles register library failure", () => {
@@ -39,7 +37,7 @@ describe("register-library reducer", () => {
       fetchError: "test error",
       isFetching: false,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles register library success", () => {
@@ -48,6 +46,6 @@ describe("register-library reducer", () => {
       isFetching: true,
       fetchError: "test error",
     });
-    expect(reducer(oldState, action)).to.deep.equal(initState);
+    expect(reducer(oldState, action)).toStrictEqual(initState);
   });
 });

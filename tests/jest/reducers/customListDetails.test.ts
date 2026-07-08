@@ -1,7 +1,5 @@
-import { expect } from "chai";
-
-import customListDetails from "../customListDetails";
-import ActionCreator from "../../actions";
+import customListDetails from "../../../src/reducers/customListDetails";
+import ActionCreator from "../../../src/actions";
 
 describe("customListDetails reducer", () => {
   const initState = {
@@ -16,7 +14,7 @@ describe("customListDetails reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(customListDetails(undefined, {})).to.deep.equal(initState);
+    expect(customListDetails(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_REQUEST", () => {
@@ -29,7 +27,7 @@ describe("customListDetails reducer", () => {
     const newState = Object.assign({}, initState, {
       isFetching: true,
     });
-    expect(customListDetails(initState, action)).to.deep.equal(newState);
+    expect(customListDetails(initState, action)).toStrictEqual(newState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_REQUEST", () => {
@@ -53,7 +51,7 @@ describe("customListDetails reducer", () => {
       isLoaded: false,
     });
 
-    expect(customListDetails(oldState, action)).to.deep.equal(newState);
+    expect(customListDetails(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_LOAD", () => {
@@ -117,6 +115,6 @@ describe("customListDetails reducer", () => {
       isLoaded: true,
     });
 
-    expect(customListDetails(oldState, action)).to.deep.equal(newState);
+    expect(customListDetails(oldState, action)).toStrictEqual(newState);
   });
 });
