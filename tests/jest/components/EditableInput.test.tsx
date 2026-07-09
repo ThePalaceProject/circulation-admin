@@ -1,5 +1,6 @@
 import * as React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import EditableInput from "../../../src/components/EditableInput";
 
 describe("EditableInput", () => {
@@ -60,5 +61,79 @@ describe("EditableInput", () => {
     expect(textboxes[3]).toHaveAccessibleDescription(descriptions[1]);
     expect(textboxes[4]).toHaveAccessibleDescription(descriptions[2]);
     expect(textboxes[5]).toHaveAccessibleDescription("");
+  });
+});
+
+// Ported from the legacy enzyme EditableInput-test: value/change handling, the
+// prop-sync in componentWillReceiveProps, and the imperative ref API
+// (getValue/getChecked/setValue/clear) that parents like ProtocolFormField use.
+describe("EditableInput - value, change, and imperative API", () => {
+  it("updates as the user types and reports the value via getValue()", async () => {
+    const onChange = jest.fn();
+    const ref = React.createRef<EditableInput>();
+    render(
+      <EditableInput ref={ref} label="Field" value="" onChange={onChange} />
+    );
+
+    const input = screen.getByRole("textbox", { name: "Field" });
+    await userEvent.type(input, "hello");
+
+    expect(input).toHaveValue("hello");
+    expect(ref.current?.getValue()).toBe("hello");
+    expect(onChange).toHaveBeenCalled();
+  });
+
+  it("toggles a checkbox and reports it via getChecked()", async () => {
+    const ref = React.createRef<EditableInput>();
+    render(
+      <EditableInput ref={ref} type="checkbox" label="Check" checked={false} />
+    );
+
+    const box = screen.getByRole("checkbox", { name: "Check" });
+    await userEvent.click(box);
+
+    expect(box).toBeChecked();
+    expect(ref.current?.getChecked()).toBe(true);
+  });
+
+  it("does not fire onChange when readOnly", async () => {
+    const onChange = jest.fn();
+    render(<EditableInput label="RO" value="x" readOnly onChange={onChange} />);
+
+    await userEvent.type(screen.getByRole("textbox", { name: "RO" }), "y");
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("syncs its value when the value prop changes", () => {
+    const { rerender } = render(<EditableInput label="F" value="a" />);
+    const input = screen.getByRole("textbox", { name: "F" });
+    expect(input).toHaveValue("a");
+
+    rerender(<EditableInput label="F" value="b" />);
+    expect(input).toHaveValue("b");
+  });
+
+  it("syncs its checked state when the checked prop changes", () => {
+    const { rerender } = render(
+      <EditableInput type="checkbox" label="C" checked={false} />
+    );
+    const box = screen.getByRole("checkbox", { name: "C" });
+    expect(box).not.toBeChecked();
+
+    rerender(<EditableInput type="checkbox" label="C" checked={true} />);
+    expect(box).toBeChecked();
+  });
+
+  it("setValue and clear update the value imperatively", () => {
+    const ref = React.createRef<EditableInput>();
+    render(<EditableInput ref={ref} label="F" value="a" />);
+    const input = screen.getByRole("textbox", { name: "F" });
+
+    act(() => ref.current?.setValue("z"));
+    expect(input).toHaveValue("z");
+
+    act(() => ref.current?.clear());
+    expect(input).toHaveValue("");
   });
 });

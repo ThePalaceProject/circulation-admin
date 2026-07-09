@@ -388,3 +388,38 @@ describe("IndividualAdmins - role association disclosure", () => {
     expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
   });
 });
+
+// Ported from the legacy enzyme IndividualAdmins-test: exercises the connected
+// default export so mapStateToProps/mapDispatchToProps are covered. The RBAC
+// gating the legacy test checked via instance().canCreate()/canEdit()/canDelete()
+// is already covered by the disclosure tests above and by
+// tests/jest/businessRules/roleBasedAccess.test.ts.
+import ConnectedIndividualAdmins from "../../../src/components/IndividualAdmins";
+import { renderWithProviders } from "../testUtils/withProviders";
+import { screen } from "@testing-library/react";
+
+describe("IndividualAdmins - connect wiring", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("renders the connected default export, fetching on mount", async () => {
+    jest.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ individualAdmins: [] }), {
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    renderWithProviders(
+      <ConnectedIndividualAdmins
+        csrfToken="token"
+        editOrCreate={undefined}
+        identifier={undefined}
+      />,
+      { appConfigSettings: { roles: [{ role: "system" }] } }
+    );
+
+    // A system admin sees the create link once the mount fetch settles.
+    expect(
+      await screen.findByText("Create new individual admin")
+    ).toBeInTheDocument();
+  });
+});
