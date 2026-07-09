@@ -1,15 +1,10 @@
-import { expect } from "chai";
-import { stub } from "sinon";
-
 import * as React from "react";
-import { mount } from "enzyme";
-
-import { CatalogServices } from "../CatalogServices";
+import { screen, within } from "@testing-library/react";
+import { CatalogServices } from "../../../src/components/CatalogServices";
+import renderWithContext from "../testUtils/renderWithContext";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 describe("CatalogServices", () => {
-  let wrapper;
-  let fetchData;
-  let editItem;
   const data = {
     catalog_services: [
       {
@@ -41,31 +36,27 @@ describe("CatalogServices", () => {
     ],
   };
 
-  beforeEach(() => {
-    fetchData = stub();
-    editItem = stub().returns(
-      new Promise<void>((resolve) => resolve())
-    );
-
-    wrapper = mount(
-      <CatalogServices
-        data={data}
-        fetchData={fetchData}
-        editItem={editItem}
-        csrfToken="token"
-        isFetching={false}
-      />
-    );
-  });
+  const config = { csrfToken: "token", featureFlags: defaultFeatureFlags };
 
   it("shows catalog service list", () => {
-    const catalogService = wrapper.find("li");
-    expect(catalogService.length).to.equal(1);
-    expect(catalogService.at(0).text()).to.contain(
-      "nypl catalog: test protocol label"
+    renderWithContext(
+      <CatalogServices
+        data={data}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      config
     );
-    const editLink = catalogService.at(0).find("a").at(0);
-    expect(editLink.props().href).to.equal(
+
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveTextContent("nypl catalog: test protocol label");
+
+    const editLink = within(items[0]).getByRole("link");
+    expect(editLink).toHaveAttribute(
+      "href",
       "/admin/web/config/catalogServices/edit/2"
     );
   });
