@@ -8,7 +8,15 @@ import globals from "globals";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "lib/", "docs/", "typings/", "node_modules/"],
+    ignores: [
+      "dist/",
+      "lib/",
+      "docs/",
+      "typings/",
+      "node_modules/",
+      "coverage/",
+      ".nyc_output/",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
