@@ -17,7 +17,7 @@ flag_management:
     statuses: []
 
 ignore:
-  # Legacy enzyme tests, still awaiting a rewrite under `tests/`.
+  # Test fixtures that still live beside the code they support.
   - "src/**/__tests__/**"
   - "tests/"
   - "dist/"
