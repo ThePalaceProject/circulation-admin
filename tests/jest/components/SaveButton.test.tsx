@@ -26,19 +26,21 @@ describe("SaveButton", () => {
   });
 
   it("submits when clicked", async () => {
+    const user = userEvent.setup();
     const submit = jest.fn();
     render(<SaveButton disabled={false} submit={submit} />);
 
-    await userEvent.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button"));
 
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
   it("does nothing when disabled", async () => {
+    const user = userEvent.setup();
     const submit = jest.fn();
     render(<SaveButton disabled={true} submit={submit} />);
 
-    await userEvent.click(screen.getByRole("button"));
+    await user.click(screen.getByRole("button"));
 
     expect(submit).not.toHaveBeenCalled();
   });
