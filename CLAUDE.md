@@ -16,15 +16,14 @@ npm run dev-server -- --env=backend=https://your-cm-url  # Dev server against re
 npm run prod                   # Production build
 npm run lint                   # Run ESLint (lint:js) + sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
-npm test                       # Full test suite (both jest projects)
+npm test                       # Full jest suite
 npm run test-jest-file <path>  # Single test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
 npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
+npm run check-coverage         # Fail if any line in coverage-baseline.json is no longer covered
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
-Run one jest project at a time with `npx jest --selectProjects=unit` (or `=legacy`). Note
-`--selectProjects` is variadic, so put file paths behind `--testPathPattern` rather than
-after it as positional arguments.
+Run a single file with `npx jest --testPathPattern='components/MyTest\.test'`.
 
 The dev server can also read the backend URL from `.env` or `.env.local` with `BACKEND=https://...`.
 
@@ -65,15 +64,11 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Everything runs under jest, split into **two jest `projects`** (see `jest.config.js`):
+All tests run under jest (single config, see `jest.config.js`): they live in `tests/jest/` mirroring `src/` structure, and use React Testing Library, jest-dom, and MSW (plus `fetch-mock-jest`) for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient. Runs on `jest-fixed-jsdom` so MSW can intercept `fetch`. (The mocha/enzyme/chai/sinon suites that used to live in `src/**/__tests__/` have all been rewritten as RTL tests; enzyme is gone, which is what will let React move past 16.)
 
-1. **`unit`** (for all new tests): Tests in `tests/jest/` mirroring `src/` structure. Uses React Testing Library, jest-dom, and MSW for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient. Runs on `jest-fixed-jsdom` so MSW can intercept `fetch`.
+`testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving MSW/dependency ESM bundles that ts-jest can't transform.
 
-2. **`legacy`**: Tests in `src/*/__tests__/` directories, still written with Enzyme, chai, and sinon. Being rewritten as `unit` tests; **do not add new ones**. Runs on `tests/jest/legacyJsdomEnvironment.js` — plain jsdom, because `jest-fixed-jsdom` substitutes undici's `FormData`, which rejects `new FormData(formElement)`. That environment also restores `global.jsdom` and tolerates unhandled promise rejections; both are documented in the file. Delete the project, the environment, and `tests/jest/legacy-setup.ts` along with the last enzyme test — that is what unblocks React 17+, since enzyme has no adapter beyond React 16.
-
-Both projects need `testEnvironmentOptions.customExportConditions: [""]`. Without it, jsdom's default `["browser"]` condition resolves **sinon** to its ESM bundle and every suite that imports it fails to parse.
-
-**Coverage:** Reported to Codecov under the `jest` flag. `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`, not inside `projects` — jest reads it off the global config, and setting it per-project leaves it globally undefined, so every executed file gets instrumented (including `tests/` helpers).
+**Coverage:** Reported to Codecov under the `jest` flag. `collectCoverageFrom` must stay at the _top level_ of `jest.config.js` — jest reads it off the global config; setting it under `projects` leaves it globally undefined, so every executed file gets instrumented (including `tests/` helpers).
 
 Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports; otherwise they are silently omitted rather than counted as uncovered, and the reported percentage rises while real coverage is unchanged.
 

@@ -3,7 +3,6 @@ import reducer, {
   getBookData,
   submitBookData,
 } from "../../../src/features/book/bookEditorSlice";
-import { expect } from "chai";
 import * as fetchMock from "fetch-mock-jest";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -57,12 +56,12 @@ describe("Redux bookEditorSlice...", () => {
 
   describe("reducers...", () => {
     it("should return the initial state from undefined, if no action is passed", () => {
-      expect(reducer(undefined, { type: "unknown" })).to.deep.equal(
+      expect(reducer(undefined, { type: "unknown" })).toStrictEqual(
         initialState
       );
     });
     it("should return the initial state from initialState, if no action is passed", () => {
-      expect(reducer(initialState, { type: "unknown" })).to.deep.equal(
+      expect(reducer(initialState, { type: "unknown" })).toStrictEqual(
         initialState
       );
     });
@@ -70,7 +69,7 @@ describe("Redux bookEditorSlice...", () => {
       // This is dispatched by `web-opds`client`, but we need to handle it, too.
       const action = { type: ActionCreator.BOOK_CLEAR };
 
-      expect(reducer(fetchedState, action)).to.deep.equal(initialState);
+      expect(reducer(fetchedState, action)).toStrictEqual(initialState);
     });
 
     it("should handle getBookData.pending", () => {
@@ -81,11 +80,11 @@ describe("Redux bookEditorSlice...", () => {
       const previousState = { ...initialState, url: null, isFetching: false };
       const state = reducer(previousState, action);
 
-      expect(state.url).to.equal("https://example.com/book");
-      expect(state.data).to.be.null;
-      expect(state.isFetching).to.equal(true);
-      expect(state.fetchError).to.be.null;
-      expect(state.editError).to.be.null;
+      expect(state.url).toBe("https://example.com/book");
+      expect(state.data).toBeNull();
+      expect(state.isFetching).toBe(true);
+      expect(state.fetchError).toBeNull();
+      expect(state.editError).toBeNull();
     });
     it("should handle getBookData.fulfilled", () => {
       const action = {
@@ -101,11 +100,11 @@ describe("Redux bookEditorSlice...", () => {
       };
       const state = reducer(previousState, action);
 
-      expect(state.url).to.equal("https://example.com/book");
-      expect(state.data).to.deep.equal(bookData);
-      expect(state.isFetching).to.equal(false);
-      expect(state.fetchError).to.be.null;
-      expect(state.editError).to.be.null;
+      expect(state.url).toBe("https://example.com/book");
+      expect(state.data).toStrictEqual(bookData);
+      expect(state.isFetching).toBe(false);
+      expect(state.fetchError).toBeNull();
+      expect(state.editError).toBeNull();
     });
     it("should handle getBookData.rejected", () => {
       const errorObject = { error: "some error object" };
@@ -122,11 +121,11 @@ describe("Redux bookEditorSlice...", () => {
       };
       const state = reducer(previousState, action);
 
-      expect(state.url).to.equal("https://example.com/book");
-      expect(state.data).to.be.null;
-      expect(state.isFetching).to.equal(false);
-      expect(state.fetchError).to.deep.equal(errorObject);
-      expect(state.editError).to.be.null;
+      expect(state.url).toBe("https://example.com/book");
+      expect(state.data).toBeNull();
+      expect(state.isFetching).toBe(false);
+      expect(state.fetchError).toStrictEqual(errorObject);
+      expect(state.editError).toBeNull();
     });
 
     it("should handle submitBookData.pending", () => {
@@ -134,7 +133,7 @@ describe("Redux bookEditorSlice...", () => {
       const previousState = { ...fetchedState, isFetching: false };
       const state = reducer(previousState, action);
 
-      expect(state).to.deep.equal({ ...fetchedState, isFetching: true });
+      expect(state).toStrictEqual({ ...fetchedState, isFetching: true });
     });
     it("should handle submitBookData.fulfilled", () => {
       const action = {
@@ -144,7 +143,7 @@ describe("Redux bookEditorSlice...", () => {
       const previousState = { ...fetchedState, isFetching: true };
       const state = reducer(previousState, action);
 
-      expect(state).to.deep.equal({
+      expect(state).toStrictEqual({
         ...fetchedState,
         isFetching: false,
         editError: null,
@@ -158,7 +157,7 @@ describe("Redux bookEditorSlice...", () => {
       const previousState = { ...fetchedState, isFetching: true };
       const state = reducer(previousState, action);
 
-      expect(state).to.deep.equal({
+      expect(state).toStrictEqual({
         ...fetchedState,
         isFetching: false,
         editError: "some value",
@@ -200,22 +199,22 @@ describe("Redux bookEditorSlice...", () => {
         const dispatchCalls = dispatch.mock.calls;
 
         const payload = result.payload as BookData;
-        expect(payload.id).to.equal(
+        expect(payload.id).toBe(
           "urn:uuid:1cca9468-c447-4303-bc5a-c57470b85cb1"
         );
-        expect(payload.title).to.equal(
+        expect(payload.title).toBe(
           "Tea-Cup Reading and Fortune-Telling by Tea Leaves"
         );
 
-        expect(dispatchCalls.length).to.equal(2);
-        expect(dispatchCalls[0][0].type).to.equal(getBookData.pending.type);
-        expect(dispatchCalls[0][0].payload).to.equal(undefined);
-        expect(dispatchCalls[0][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls.length).toBe(2);
+        expect(dispatchCalls[0][0].type).toBe(getBookData.pending.type);
+        expect(dispatchCalls[0][0].payload).toBe(undefined);
+        expect(dispatchCalls[0][0].meta.arg).toStrictEqual({
           url: goodBookUrl,
         });
-        expect(dispatchCalls[1][0].type).to.equal(getBookData.fulfilled.type);
-        expect(dispatchCalls[1][0].payload).to.deep.equal(payload);
-        expect(dispatchCalls[1][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls[1][0].type).toBe(getBookData.fulfilled.type);
+        expect(dispatchCalls[1][0].payload).toStrictEqual(payload);
+        expect(dispatchCalls[1][0].meta.arg).toStrictEqual({
           url: goodBookUrl,
         });
       });
@@ -226,18 +225,18 @@ describe("Redux bookEditorSlice...", () => {
         const dispatchCalls = dispatch.mock.calls;
 
         const payload = result.payload as RequestError;
-        expect(payload.response).to.equal(FETCH_OPDS_PARSE_ERROR_MESSAGE);
-        expect(payload.url).to.equal(brokenBookUrl);
+        expect(payload.response).toBe(FETCH_OPDS_PARSE_ERROR_MESSAGE);
+        expect(payload.url).toBe(brokenBookUrl);
 
-        expect(dispatchCalls.length).to.equal(2);
-        expect(dispatchCalls[0][0].type).to.equal(getBookData.pending.type);
-        expect(dispatchCalls[0][0].payload).to.equal(undefined);
-        expect(dispatchCalls[0][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls.length).toBe(2);
+        expect(dispatchCalls[0][0].type).toBe(getBookData.pending.type);
+        expect(dispatchCalls[0][0].payload).toBe(undefined);
+        expect(dispatchCalls[0][0].meta.arg).toStrictEqual({
           url: brokenBookUrl,
         });
-        expect(dispatchCalls[1][0].type).to.equal(getBookData.rejected.type);
-        expect(dispatchCalls[1][0].payload).to.deep.equal(payload);
-        expect(dispatchCalls[1][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls[1][0].type).toBe(getBookData.rejected.type);
+        expect(dispatchCalls[1][0].payload).toStrictEqual(payload);
+        expect(dispatchCalls[1][0].meta.arg).toStrictEqual({
           url: brokenBookUrl,
         });
       });
@@ -249,20 +248,20 @@ describe("Redux bookEditorSlice...", () => {
 
         const payload = result.payload as RequestError;
 
-        expect(result.type).to.equal(getBookData.rejected.type);
-        expect(result.meta.arg).to.deep.equal({ url: errorBookUrl });
-        expect(payload.response).to.equal("Internal server error");
-        expect(payload.url).to.equal(errorBookUrl);
+        expect(result.type).toBe(getBookData.rejected.type);
+        expect(result.meta.arg).toStrictEqual({ url: errorBookUrl });
+        expect(payload.response).toBe("Internal server error");
+        expect(payload.url).toBe(errorBookUrl);
 
-        expect(dispatchCalls.length).to.equal(2);
-        expect(dispatchCalls[0][0].type).to.equal(getBookData.pending.type);
-        expect(dispatchCalls[0][0].payload).to.equal(undefined);
-        expect(dispatchCalls[0][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls.length).toBe(2);
+        expect(dispatchCalls[0][0].type).toBe(getBookData.pending.type);
+        expect(dispatchCalls[0][0].payload).toBe(undefined);
+        expect(dispatchCalls[0][0].meta.arg).toStrictEqual({
           url: errorBookUrl,
         });
-        expect(dispatchCalls[1][0].type).to.equal(getBookData.rejected.type);
-        expect(dispatchCalls[1][0].payload).to.deep.equal(payload);
-        expect(dispatchCalls[1][0].meta.arg).to.deep.equal({
+        expect(dispatchCalls[1][0].type).toBe(getBookData.rejected.type);
+        expect(dispatchCalls[1][0].payload).toStrictEqual(payload);
+        expect(dispatchCalls[1][0].meta.arg).toStrictEqual({
           url: errorBookUrl,
         });
       });
@@ -327,27 +326,23 @@ describe("Redux bookEditorSlice...", () => {
         const dispatchCalls = dispatch.mock.calls;
         const fetchCalls = fetchMock.calls();
 
-        expect(fetchCalls.length).to.equal(1);
-        expect(fetchCalls[0].identifier).to.equal("valid-csrf-token-post");
-        expect(
-          (fetchCalls[0][1].headers as Headers).get(csrfTokenHeader)
-        ).to.equal(validCsrfToken);
+        expect(fetchCalls.length).toBe(1);
+        expect(fetchCalls[0].identifier).toBe("valid-csrf-token-post");
+        expect((fetchCalls[0][1].headers as Headers).get(csrfTokenHeader)).toBe(
+          validCsrfToken
+        );
 
-        expect(fetchCalls[0][0]).to.equal(editBookUrl);
-        expect(fetchCalls[0][1].method).to.equal("POST");
-        expect(fetchCalls[0][1].body).to.equal(formData);
+        expect(fetchCalls[0][0]).toBe(editBookUrl);
+        expect(fetchCalls[0][1].method).toBe("POST");
+        expect(fetchCalls[0][1].body).toBe(formData);
 
-        expect(dispatchCalls.length).to.equal(3);
-        expect(dispatchCalls[0][0].type).to.equal(submitBookData.pending.type);
-        expect(dispatchCalls[0][0].payload).to.equal(undefined);
+        expect(dispatchCalls.length).toBe(3);
+        expect(dispatchCalls[0][0].type).toBe(submitBookData.pending.type);
+        expect(dispatchCalls[0][0].payload).toBe(undefined);
         // On a successful update, the second dispatch is to re-fetch the updated book data.
         // The third dispatch is for the fulfilled action.
-        expect(dispatchCalls[2][0].type).to.equal(
-          submitBookData.fulfilled.type
-        );
-        expect(dispatchCalls[2][0].payload.body.toString()).to.equal(
-          "Success!"
-        );
+        expect(dispatchCalls[2][0].type).toBe(submitBookData.fulfilled.type);
+        expect(dispatchCalls[2][0].payload.body.toString()).toBe("Success!");
       });
       it("should fail, if the user is unauthorized", async () => {
         const csrfToken = "invalid-token";
@@ -365,24 +360,24 @@ describe("Redux bookEditorSlice...", () => {
         const dispatchCalls = dispatch.mock.calls;
         const fetchCalls = fetchMock.calls();
 
-        expect(fetchCalls.length).to.equal(1);
-        expect(fetchCalls[0].identifier).to.equal("invalid-csrf-token-post");
+        expect(fetchCalls.length).toBe(1);
+        expect(fetchCalls[0].identifier).toBe("invalid-csrf-token-post");
         expect(
           (fetchCalls[0][1].headers as Headers).get(csrfTokenHeader)
-        ).not.to.equal(validCsrfToken);
+        ).not.toBe(validCsrfToken);
 
-        expect(fetchCalls[0][0]).to.equal(editBookUrl);
-        expect(fetchCalls[0][1].method).to.equal("POST");
-        expect(fetchCalls[0][1].body).to.equal(formData);
+        expect(fetchCalls[0][0]).toBe(editBookUrl);
+        expect(fetchCalls[0][1].method).toBe("POST");
+        expect(fetchCalls[0][1].body).toBe(formData);
 
-        expect(dispatchCalls.length).to.equal(2);
-        expect(dispatchCalls[0][0].type).to.equal(submitBookData.pending.type);
-        expect(dispatchCalls[0][0].payload).to.equal(undefined);
+        expect(dispatchCalls.length).toBe(2);
+        expect(dispatchCalls[0][0].type).toBe(submitBookData.pending.type);
+        expect(dispatchCalls[0][0].payload).toBe(undefined);
         // There is no re-fetch on a failed request, ...
         // ...so the second dispatch is for the rejected action.
-        expect(dispatchCalls[1][0].type).to.equal(submitBookData.rejected.type);
-        expect(dispatchCalls[1][0].payload.status).to.equal(400);
-        expect(dispatchCalls[1][0].payload.response).to.equal(
+        expect(dispatchCalls[1][0].type).toBe(submitBookData.rejected.type);
+        expect(dispatchCalls[1][0].payload.status).toBe(400);
+        expect(dispatchCalls[1][0].payload.response).toBe(
           "There was an error saving your changes."
         );
       });
