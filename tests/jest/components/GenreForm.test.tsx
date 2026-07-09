@@ -129,6 +129,7 @@ describe("GenreForm", () => {
     });
 
     it("adds genre", async () => {
+      const user = userEvent.setup();
       const { container, addGenre } = renderForm();
 
       const scienceFiction = genreOptionEls(container).find(
@@ -141,7 +142,7 @@ describe("GenreForm", () => {
       ).find((option) => option.value === "Space Opera");
       fireEvent.click(spaceOpera);
 
-      await userEvent.click(screen.getByRole("button", { name: "Add" }));
+      await user.click(screen.getByRole("button", { name: "Add" }));
 
       // The subgenre takes precedence over the top-level genre.
       expect(addGenre).toHaveBeenCalledTimes(1);

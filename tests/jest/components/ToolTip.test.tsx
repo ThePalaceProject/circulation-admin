@@ -26,19 +26,21 @@ describe("ToolTip", () => {
   });
 
   it("shows the tooltip on mouseEnter", async () => {
+    const user = userEvent.setup();
     const { container } = renderToolTip();
-    await userEvent.hover(screen.getByRole("tooltip"));
+    await user.hover(screen.getByRole("tooltip"));
     expect(container.querySelector(".tool-tip")).not.toHaveClass("hide");
   });
 
   it("hides the tooltip on mouseLeave", async () => {
+    const user = userEvent.setup();
     const { container } = renderToolTip();
     const toolTipContainer = screen.getByRole("tooltip");
 
-    await userEvent.hover(toolTipContainer);
+    await user.hover(toolTipContainer);
     expect(container.querySelector(".tool-tip")).not.toHaveClass("hide");
 
-    await userEvent.unhover(toolTipContainer);
+    await user.unhover(toolTipContainer);
     expect(container.querySelector(".tool-tip")).toHaveClass("hide");
   });
 });

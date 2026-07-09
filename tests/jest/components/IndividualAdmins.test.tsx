@@ -8,12 +8,6 @@ import {
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
-// NB: This adds tests to the already existing tests in:
-// - `src/components/__tests__/IndividualAdmins-test.tsx`.
-//
-// Those tests should eventually be migrated here and
-// adapted to the Jest/React Testing Library paradigm.
-
 describe("IndividualAdmins - role association disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
 

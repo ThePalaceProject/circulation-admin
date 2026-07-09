@@ -17,7 +17,8 @@ const getCounter = () => screen.getByText(/Current length:/);
 
 // Mirrors the legacy `fillOutForm`: enter valid content and a start/finish date.
 const fillOutForm = async (container: HTMLElement) => {
-  await userEvent.type(getTextarea(), CONTENT);
+  const user = userEvent.setup();
+  await user.type(getTextarea(), CONTENT);
   const [start, finish] = getDateInputs(container);
   // Date inputs are read via a ref, so `fireEvent.change` (set value + dispatch)
   // is the reliable equivalent of the legacy `getDOMNode().value = ...`.
@@ -85,10 +86,11 @@ describe("AnnouncementForm", () => {
   });
 
   it("adds a new announcement", async () => {
+    const user = userEvent.setup();
     const { container } = render(<AnnouncementForm add={add} />);
     await fillOutForm(container);
 
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
+    await user.click(screen.getByRole("button", { name: "Add" }));
 
     expect(add).toHaveBeenCalledTimes(1);
     expect(add.mock.calls[0][0].content).toBe(CONTENT);
@@ -97,6 +99,7 @@ describe("AnnouncementForm", () => {
   });
 
   it("cancels adding a new announcement", async () => {
+    const user = userEvent.setup();
     const { container } = render(<AnnouncementForm add={add} />);
     const [start0, finish0] = getDateInputs(container);
     const defaultStart = start0.value;
@@ -105,7 +108,7 @@ describe("AnnouncementForm", () => {
     await fillOutForm(container);
     expect(getTextarea()).toHaveValue(CONTENT);
 
-    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
 
     // Cancelling a brand-new announcement adds nothing and restores the
     // empty content field and the default dates.
@@ -118,6 +121,7 @@ describe("AnnouncementForm", () => {
   });
 
   it("edits an existing announcement", async () => {
+    const user = userEvent.setup();
     const { container, rerender } = render(<AnnouncementForm add={add} />);
     const [start0, finish0] = getDateInputs(container);
     const defaultStart = start0.value;
@@ -143,7 +147,7 @@ describe("AnnouncementForm", () => {
     fireEvent.change(getTextarea(), {
       target: { value: "Here is an edited version of the content" },
     });
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
+    await user.click(screen.getByRole("button", { name: "Add" }));
 
     expect(add).toHaveBeenCalledTimes(1);
     expect(add.mock.calls[0][0].content).toBe(
@@ -158,6 +162,7 @@ describe("AnnouncementForm", () => {
   });
 
   it("cancels editing an existing announcement", async () => {
+    const user = userEvent.setup();
     const { container, rerender } = render(<AnnouncementForm add={add} />);
     const [start0, finish0] = getDateInputs(container);
     const defaultStart = start0.value;
@@ -182,7 +187,7 @@ describe("AnnouncementForm", () => {
     });
     // Cancelling while editing re-submits the (edited) announcement rather than
     // discarding it — unlike cancelling a brand-new one.
-    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
 
     expect(add).toHaveBeenCalledTimes(1);
     expect(add.mock.calls[0][0].content).toBe(

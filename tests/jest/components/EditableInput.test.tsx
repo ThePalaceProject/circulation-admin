@@ -69,6 +69,7 @@ describe("EditableInput", () => {
 // (getValue/getChecked/setValue/clear) that parents like ProtocolFormField use.
 describe("EditableInput - value, change, and imperative API", () => {
   it("updates as the user types and reports the value via getValue()", async () => {
+    const user = userEvent.setup();
     const onChange = jest.fn();
     const ref = React.createRef<EditableInput>();
     render(
@@ -76,7 +77,7 @@ describe("EditableInput - value, change, and imperative API", () => {
     );
 
     const input = screen.getByRole("textbox", { name: "Field" });
-    await userEvent.type(input, "hello");
+    await user.type(input, "hello");
 
     expect(input).toHaveValue("hello");
     expect(ref.current?.getValue()).toBe("hello");
@@ -84,23 +85,25 @@ describe("EditableInput - value, change, and imperative API", () => {
   });
 
   it("toggles a checkbox and reports it via getChecked()", async () => {
+    const user = userEvent.setup();
     const ref = React.createRef<EditableInput>();
     render(
       <EditableInput ref={ref} type="checkbox" label="Check" checked={false} />
     );
 
     const box = screen.getByRole("checkbox", { name: "Check" });
-    await userEvent.click(box);
+    await user.click(box);
 
     expect(box).toBeChecked();
     expect(ref.current?.getChecked()).toBe(true);
   });
 
   it("does not fire onChange when readOnly", async () => {
+    const user = userEvent.setup();
     const onChange = jest.fn();
     render(<EditableInput label="RO" value="x" readOnly onChange={onChange} />);
 
-    await userEvent.type(screen.getByRole("textbox", { name: "RO" }), "y");
+    await user.type(screen.getByRole("textbox", { name: "RO" }), "y");
 
     expect(onChange).not.toHaveBeenCalled();
   });

@@ -41,6 +41,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("switches to edit mode", async () => {
+    const user = userEvent.setup();
     render(
       <TextWithEditMode
         text="test"
@@ -50,7 +51,7 @@ describe("TextWithEditMode", () => {
     );
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
 
-    await userEvent.click(
+    await user.click(
       screen.getByRole("button", { name: /Edit editable thing/ })
     );
 
@@ -64,6 +65,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("switches out of edit mode", async () => {
+    const user = userEvent.setup();
     const onUpdate = jest.fn();
     render(
       <TextWithEditMode
@@ -74,8 +76,8 @@ describe("TextWithEditMode", () => {
     );
     // Type the new value into the field; the component reads the real input
     // value back through its ref on save (no prototype stubbing).
-    await userEvent.type(screen.getByRole("textbox"), "new value");
-    await userEvent.click(
+    await user.type(screen.getByRole("textbox"), "new value");
+    await user.click(
       screen.getByRole("button", { name: /Save editable thing/ })
     );
 
@@ -90,6 +92,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("gets text via the ref API", async () => {
+    const user = userEvent.setup();
     // In display mode, getText() returns the current text.
     const displayRef = React.createRef<TextWithEditMode>();
     const { unmount } = render(
@@ -112,7 +115,7 @@ describe("TextWithEditMode", () => {
         ref={editRef}
       />
     );
-    await userEvent.type(screen.getByRole("textbox"), "new value");
+    await user.type(screen.getByRole("textbox"), "new value");
     let value = "";
     act(() => {
       value = editRef.current!.getText();
@@ -122,6 +125,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("resets via the ref API", async () => {
+    const user = userEvent.setup();
     const onUpdate = jest.fn();
 
     // With no text prop, reset() returns to a blank edit mode.
@@ -134,8 +138,8 @@ describe("TextWithEditMode", () => {
         ref={blankRef}
       />
     );
-    await userEvent.type(screen.getByRole("textbox"), "new value");
-    await userEvent.click(
+    await user.type(screen.getByRole("textbox"), "new value");
+    await user.click(
       screen.getByRole("button", { name: /Save editable thing/ })
     );
     expect(screen.getByText("new value")).toBeInTheDocument();
@@ -161,13 +165,13 @@ describe("TextWithEditMode", () => {
         ref={textRef}
       />
     );
-    await userEvent.click(
+    await user.click(
       screen.getByRole("button", { name: /Edit editable thing/ })
     );
     const input = screen.getByRole("textbox");
-    await userEvent.clear(input);
-    await userEvent.type(input, "new value");
-    await userEvent.click(
+    await user.clear(input);
+    await user.type(input, "new value");
+    await user.click(
       screen.getByRole("button", { name: /Save editable thing/ })
     );
     expect(screen.queryByText("test")).not.toBeInTheDocument();
@@ -184,6 +188,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("optionally disables the save button if the text is blank", async () => {
+    const user = userEvent.setup();
     render(
       <TextWithEditMode
         placeholder="editable thing"
@@ -196,17 +201,18 @@ describe("TextWithEditMode", () => {
     });
     expect(saveButton).toBeDisabled();
 
-    await userEvent.type(screen.getByRole("textbox"), "test");
+    await user.type(screen.getByRole("textbox"), "test");
     expect(saveButton).toBeEnabled();
   });
 
   it("updates the displayed value as the user types", async () => {
+    const user = userEvent.setup();
     render(
       <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
     const input = screen.getByRole("textbox");
     expect(input).toHaveValue("");
-    await userEvent.type(input, "test");
+    await user.type(input, "test");
     expect(input).toHaveValue("test");
   });
 });

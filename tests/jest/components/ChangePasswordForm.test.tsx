@@ -1,4 +1,5 @@
 import * as React from "react";
+import { installFormDataShim } from "../testUtils/formDataShim";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -6,43 +7,10 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import ConnectedChangePasswordForm, {
   ChangePasswordForm,
 } from "../../../src/components/ChangePasswordForm";
-
-// The unit jsdom environment installs undici's `FormData`, which throws on
-// `new FormData(formElement)`. The reusable-components `Form` builds FormData
-// that way on submit, so provide a minimal shim that reads a form element's
-// named controls. Restored after this suite.
-class FormDataShim {
-  private entries: Array<[string, string]> = [];
-  constructor(form?: HTMLFormElement) {
-    if (form) {
-      form
-        .querySelectorAll<HTMLInputElement>("input, select, textarea")
-        .forEach((el) => {
-          if (el.name) this.entries.push([el.name, el.value]);
-        });
-    }
-  }
-  get(key: string) {
-    const found = this.entries.find(([k]) => k === key);
-    return found ? found[1] : null;
-  }
-  append(key: string, value: string) {
-    this.entries.push([key, value]);
-  }
-  set(key: string, value: string) {
-    this.entries = this.entries.filter(([k]) => k !== key);
-    this.entries.push([key, value]);
-  }
-}
-
-let originalFormData: typeof FormData;
-beforeAll(() => {
-  originalFormData = window.FormData;
-  (window as any).FormData = FormDataShim;
-});
-afterAll(() => {
-  (window as any).FormData = originalFormData;
-});
+// The reusable-components `Form` builds `new FormData(formElement)` on
+// submit, which the unit jsdom env's undici FormData rejects; install the
+// shared shim that reads the form's successful controls.
+installFormDataShim();
 afterEach(() => {
   jest.restoreAllMocks();
 });

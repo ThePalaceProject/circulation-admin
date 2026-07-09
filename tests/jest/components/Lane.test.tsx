@@ -14,7 +14,7 @@ import Lane from "../../../src/components/Lane";
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   Link: (props) => (
-    <div data-testid="Link" data-to={props.to}>
+    <div data-testid="Link" data-to={props.to} className={props.className}>
       {props.children}
     </div>
   ),
@@ -37,7 +37,7 @@ function createLaneData(displayName: string, isAutomated: boolean): LaneData {
 }
 
 describe("Lane", () => {
-  it("renders an edit link on a custom lane", () => {
+  it("renders an edit link to the lane's edit page", () => {
     const laneData = createLaneData("Custom Lane", false);
 
     render(
@@ -53,19 +53,24 @@ describe("Lane", () => {
 
     const editLink = screen.getAllByTestId("Link")[0];
 
-    expect(editLink).toHaveAttribute("data-to", expect.stringMatching(/edit/i));
     expect(editLink).toHaveTextContent(/edit/i);
+    // The full destination — a regression that dropped the lane id or used the
+    // wrong library segment would still contain "edit".
+    expect(editLink).toHaveAttribute(
+      "data-to",
+      "/admin/web/lanes/test_library/edit/1"
+    );
   });
 
-  it("renders an edit link on an automated lane", async () => {
-    const laneData = createLaneData("Automated Lane", true);
+  it("disables the edit link when lane order has changed", () => {
+    const laneData = createLaneData("Custom Lane", false);
 
     render(
       <Lane
         lane={laneData}
         active={false}
         library="test_library"
-        orderChanged={false}
+        orderChanged={true}
         renderLanes={renderLanes}
         toggleLaneVisibility={toggleLaneVisibility}
       />
@@ -73,8 +78,10 @@ describe("Lane", () => {
 
     const editLink = screen.getAllByTestId("Link")[0];
 
-    expect(editLink).toHaveAttribute("data-to", expect.stringMatching(/edit/i));
+    // With pending order changes the link has no destination and is disabled.
     expect(editLink).toHaveTextContent(/edit/i);
+    expect(editLink).not.toHaveAttribute("data-to");
+    expect(editLink).toHaveClass("disabled");
   });
 });
 
@@ -109,13 +116,14 @@ describe("Lane - visibility toggle and expansion", () => {
   };
 
   it("hides a visible lane when the hide button is clicked", async () => {
+    const user = userEvent.setup();
     const { container, toggle } = renderLane();
     const hideButton = container.querySelector(
       "button.hide-lane"
     ) as HTMLButtonElement;
     expect(hideButton).toBeInTheDocument();
 
-    await userEvent.click(hideButton);
+    await user.click(hideButton);
 
     expect(toggle).toHaveBeenCalledWith(
       expect.objectContaining({ id: 1 }),
@@ -124,13 +132,14 @@ describe("Lane - visibility toggle and expansion", () => {
   });
 
   it("shows a hidden lane when the show button is clicked", async () => {
+    const user = userEvent.setup();
     const { container, toggle } = renderLane({ lane: makeLane(false) });
     const showButton = container.querySelector(
       "button.show-lane"
     ) as HTMLButtonElement;
     expect(showButton).toBeInTheDocument();
 
-    await userEvent.click(showButton);
+    await user.click(showButton);
 
     expect(toggle).toHaveBeenCalledWith(
       expect.objectContaining({ id: 1 }),
@@ -169,11 +178,12 @@ describe("Lane - visibility toggle and expansion", () => {
   });
 
   it("hides the create and edit links when collapsed", async () => {
+    const user = userEvent.setup();
     renderLane();
     // A top-level lane starts expanded, so both links show.
     expect(screen.getAllByTestId("Link").length).toBeGreaterThanOrEqual(2);
 
-    await userEvent.click(
+    await user.click(
       screen.getByRole("button", { name: /expand or collapse/i })
     );
     expect(screen.queryAllByTestId("Link")).toHaveLength(0);

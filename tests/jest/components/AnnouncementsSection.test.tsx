@@ -77,23 +77,25 @@ describe("AnnouncementsSection", () => {
   });
 
   it("adds an announcement", async () => {
+    const user = userEvent.setup();
     const { container } = renderSection();
     expect(announcementEls(container)).toHaveLength(2);
 
     // The only textbox on the page is the form's content field.
-    await userEvent.type(screen.getByRole("textbox"), "Third Announcement");
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
+    await user.type(screen.getByRole("textbox"), "Third Announcement");
+    await user.click(screen.getByRole("button", { name: "Add" }));
 
     expect(announcementEls(container)).toHaveLength(3);
     expect(screen.getByText("Third Announcement")).toBeInTheDocument();
   });
 
   it("edits an announcement", async () => {
+    const user = userEvent.setup();
     const { container } = renderSection();
     expect(announcementEls(container)).toHaveLength(2);
 
     // Each announcement has its own Edit button; edit the first one.
-    await userEvent.click(screen.getAllByRole("button", { name: "Edit" })[0]);
+    await user.click(screen.getAllByRole("button", { name: "Edit" })[0]);
 
     // The edited announcement leaves the list and is loaded into the form.
     const items = announcementEls(container);
@@ -105,11 +107,12 @@ describe("AnnouncementsSection", () => {
   });
 
   it("deletes an announcement", async () => {
+    const user = userEvent.setup();
     jest.spyOn(window, "confirm").mockReturnValue(true);
     const { container } = renderSection();
     expect(announcementEls(container)).toHaveLength(2);
 
-    await userEvent.click(screen.getAllByRole("button", { name: "Delete" })[0]);
+    await user.click(screen.getAllByRole("button", { name: "Delete" })[0]);
 
     const items = announcementEls(container);
     expect(items).toHaveLength(1);
@@ -119,12 +122,13 @@ describe("AnnouncementsSection", () => {
   });
 
   it("removes any temporary IDs before submitting the list of announcements", async () => {
+    const user = userEvent.setup();
     const ref = React.createRef<AnnouncementsSection>();
     renderSection(ref);
 
     // Add a third announcement through the form; it is assigned a temporary id.
-    await userEvent.type(screen.getByRole("textbox"), "Third Announcement");
-    await userEvent.click(screen.getByRole("button", { name: "Add" }));
+    await user.type(screen.getByRole("textbox"), "Third Announcement");
+    await user.click(screen.getByRole("button", { name: "Add" }));
 
     // `getValue` is the imperative API the parent form calls on submit: it keeps
     // the permanent ids and strips the temporary one.

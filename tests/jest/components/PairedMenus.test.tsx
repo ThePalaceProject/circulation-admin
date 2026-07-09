@@ -143,11 +143,12 @@ describe("PairedMenus", () => {
   });
 
   it("updates the InputList when an item is removed", async () => {
+    const user = userEvent.setup();
     const { container } = renderPairedMenus();
     expect(listItemValues(container)).toEqual(["A", "B", "C"]);
 
     // Remove the first list item ("A").
-    await userEvent.click(screen.getAllByRole("button", { name: /Delete/ })[0]);
+    await user.click(screen.getAllByRole("button", { name: /Delete/ })[0]);
 
     await waitFor(() =>
       expect(
@@ -160,6 +161,7 @@ describe("PairedMenus", () => {
   });
 
   it("recalculates the dropdown options based on the InputList values", async () => {
+    const user = userEvent.setup();
     const { container } = renderPairedMenus();
     expect(
       within(dropdown(container))
@@ -169,7 +171,7 @@ describe("PairedMenus", () => {
 
     // Removing "A" leaves the InputList holding [b, c], so the dropdown may only
     // offer B and C.
-    await userEvent.click(screen.getAllByRole("button", { name: /Delete/ })[0]);
+    await user.click(screen.getAllByRole("button", { name: /Delete/ })[0]);
 
     await waitFor(() =>
       expect(
@@ -181,22 +183,24 @@ describe("PairedMenus", () => {
   });
 
   it("updates the dropdown selection", async () => {
+    const user = userEvent.setup();
     const { container } = renderPairedMenus();
     const select = dropdown(container);
     expect(select).toHaveValue("b");
 
-    await userEvent.selectOptions(select, "c");
+    await user.selectOptions(select, "c");
     expect(select).toHaveValue("c");
   });
 
   it("displays a message when the dropdown has no available values", async () => {
+    const user = userEvent.setup();
     const { container } = renderPairedMenus();
 
     // Remove every item from the InputList.
     for (let remaining = 3; remaining > 0; remaining--) {
       const removeButtons = screen.getAllByRole("button", { name: /Delete/ });
       expect(removeButtons).toHaveLength(remaining);
-      await userEvent.click(removeButtons[0]);
+      await user.click(removeButtons[0]);
       await waitFor(() =>
         expect(
           screen.queryAllByRole("button", { name: /Delete/ })
