@@ -1,12 +1,10 @@
-import { expect } from "chai";
-
 import reducer, {
   getCustomListEditorFormData,
   getCustomListEditorSearchUrl,
   initialState,
-} from "../customListEditor";
+} from "../../../src/reducers/customListEditor";
 
-import ActionCreator from "../../actions";
+import ActionCreator from "../../../src/actions";
 
 describe("custom list editor reducer", () => {
   describe("on SET_FEATURE_FLAGS", () => {
@@ -24,7 +22,7 @@ describe("custom list editor reducer", () => {
         },
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+      expect(nextState.isAutoUpdateEnabled).toBe(true);
     });
 
     it("sets isAutoUpdateEnabled to false if the enableAutoList feature flag is false", () => {
@@ -41,7 +39,7 @@ describe("custom list editor reducer", () => {
         },
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(false);
+      expect(nextState.isAutoUpdateEnabled).toBe(false);
     });
 
     it("keeps isAutoUpdateEnabled at the current value if the enableAutoList feature flag is not present", () => {
@@ -57,7 +55,7 @@ describe("custom list editor reducer", () => {
         },
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+      expect(nextState.isAutoUpdateEnabled).toBe(true);
     });
   });
 
@@ -74,7 +72,7 @@ describe("custom list editor reducer", () => {
         value: true,
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+      expect(nextState.isAutoUpdateEnabled).toBe(true);
     });
 
     it("sets isAutoUpdateEnabled to false if the flag name is enableAutoList and the value is false", () => {
@@ -89,7 +87,7 @@ describe("custom list editor reducer", () => {
         value: false,
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(false);
+      expect(nextState.isAutoUpdateEnabled).toBe(false);
     });
 
     it("keeps isAutoUpdateEnabled at the current value if the flag name is not enableAutoList", () => {
@@ -104,7 +102,7 @@ describe("custom list editor reducer", () => {
         value: false,
       });
 
-      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+      expect(nextState.isAutoUpdateEnabled).toBe(true);
     });
   });
 
@@ -147,19 +145,19 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.id).to.equal(17);
-      expect(nextState.entries.baselineTotalCount).to.equal(150);
-      expect(nextState.properties.current).to.deep.equal(
+      expect(nextState.id).toBe(17);
+      expect(nextState.entries.baselineTotalCount).toBe(150);
+      expect(nextState.properties.current).toStrictEqual(
         nextState.properties.baseline
       );
 
-      expect(nextState.properties.baseline).to.deep.equal({
+      expect(nextState.properties.baseline).toStrictEqual({
         name: "Baker & Taylor Axis360 Test",
         collections: [16],
         autoUpdate: false,
       });
 
-      expect(nextState.error).to.equal(null);
+      expect(nextState.error).toBe(null);
     });
 
     it("sets an error message when no list with the id in the action exists in the data", () => {
@@ -169,8 +167,8 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.id).to.equal(999);
-      expect(nextState.error).to.equal("Custom list not found for ID: 999");
+      expect(nextState.id).toBe(999);
+      expect(nextState.error).toBe("Custom list not found for ID: 999");
     });
 
     it("sets the id to null when the id in the action is null", () => {
@@ -180,8 +178,8 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.id).to.equal(null);
-      expect(nextState.error).to.equal(null);
+      expect(nextState.id).toBe(null);
+      expect(nextState.error).toBe(null);
     });
   });
 
@@ -249,21 +247,21 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.id).to.equal(18);
-      expect(nextState.isOwner).to.equal(true);
-      expect(nextState.isShared).to.equal(false);
-      expect(nextState.entries.baselineTotalCount).to.equal(13337);
-      expect(nextState.properties.current).to.deep.equal(
+      expect(nextState.id).toBe(18);
+      expect(nextState.isOwner).toBe(true);
+      expect(nextState.isShared).toBe(false);
+      expect(nextState.entries.baselineTotalCount).toBe(13337);
+      expect(nextState.properties.current).toStrictEqual(
         nextState.properties.baseline
       );
 
-      expect(nextState.properties.baseline).to.deep.equal({
+      expect(nextState.properties.baseline).toStrictEqual({
         name: "New BiblioBoard",
         collections: [14],
         autoUpdate: false,
       });
 
-      expect(nextState.error).to.equal(null);
+      expect(nextState.error).toBe(null);
     });
 
     it("sets isLoaded to true when a list with the current id exists in the data", () => {
@@ -277,7 +275,7 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.isLoaded).to.equal(true);
+      expect(nextState.isLoaded).toBe(true);
     });
 
     it("sets an error message when no list with the current id exists in the data", () => {
@@ -291,7 +289,7 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.error).to.equal("Custom list not found for ID: 999");
+      expect(nextState.error).toBe("Custom list not found for ID: 999");
     });
 
     it("updates the advanced search builders when there is a saved search query", () => {
@@ -307,7 +305,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "1",
         and: [
           {
@@ -344,7 +342,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.exclude.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "8",
         or: [
           {
@@ -374,8 +372,8 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.searchParams.current.entryPoint).to.equal("Audio");
-      expect(nextState.searchParams.current.sort).to.equal("title");
+      expect(nextState.searchParams.current.entryPoint).toBe("Audio");
+      expect(nextState.searchParams.current.sort).toBe("title");
     });
 
     it("ignores the action if its isAfterShare property is true", () => {
@@ -390,7 +388,7 @@ describe("custom list editor reducer", () => {
         isAfterShare: true,
       });
 
-      expect(nextState).to.equal(state);
+      expect(nextState).toBe(state);
     });
 
     it("sets isSearchModified and isModified to false", () => {
@@ -406,8 +404,8 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.isSearchModified).to.equal(false);
-      expect(nextState.isModified).to.equal(false);
+      expect(nextState.isSearchModified).toBe(false);
+      expect(nextState.isModified).toBe(false);
     });
 
     describe("when auto update is enabled", () => {
@@ -422,7 +420,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(true);
+        expect(nextState.properties.current.autoUpdate).toBe(true);
       });
 
       it("sets the autoUpdate property to true if the auto_update setting in the data is true", () => {
@@ -437,7 +435,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(true);
+        expect(nextState.properties.current.autoUpdate).toBe(true);
       });
 
       it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
@@ -452,7 +450,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(false);
+        expect(nextState.properties.current.autoUpdate).toBe(false);
       });
     });
 
@@ -467,7 +465,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(false);
+        expect(nextState.properties.current.autoUpdate).toBe(false);
       });
 
       it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
@@ -481,7 +479,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(false);
+        expect(nextState.properties.current.autoUpdate).toBe(false);
       });
 
       it("sets the autoUpdate property to false even if the list data has auto_update set to true", () => {
@@ -495,7 +493,7 @@ describe("custom list editor reducer", () => {
           data: listData,
         });
 
-        expect(nextState.properties.current.autoUpdate).to.equal(false);
+        expect(nextState.properties.current.autoUpdate).toBe(false);
       });
     });
   });
@@ -518,7 +516,7 @@ describe("custom list editor reducer", () => {
         data: listDetailsData,
       });
 
-      expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
+      expect(nextState.entries.baseline).toStrictEqual(listDetailsData.books);
     });
 
     it("cleans up local changes, since the server already got them on save", () => {
@@ -545,12 +543,12 @@ describe("custom list editor reducer", () => {
         data: listDetailsData,
       });
 
-      expect(nextState.entries.added).to.deep.equal({});
-      expect(nextState.entries.removed).to.deep.equal({});
+      expect(nextState.entries.added).toStrictEqual({});
+      expect(nextState.entries.removed).toStrictEqual({});
 
-      expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
-      expect(nextState.entries.current).to.deep.equal(listDetailsData.books);
-      expect(nextState.entries.currentTotalCount).to.equal(2);
+      expect(nextState.entries.baseline).toStrictEqual(listDetailsData.books);
+      expect(nextState.entries.current).toStrictEqual(listDetailsData.books);
+      expect(nextState.entries.currentTotalCount).toBe(2);
     });
   });
 
@@ -579,7 +577,7 @@ describe("custom list editor reducer", () => {
         data: listDetailsData,
       });
 
-      expect(nextState.entries.baseline).to.deep.equal([
+      expect(nextState.entries.baseline).toStrictEqual([
         { id: "book91", title: "Huckleberry Finn" },
         { id: "book90", title: "Wuthering Heights" },
         { id: "book1", title: "A Farewell to Arms" },
@@ -612,13 +610,13 @@ describe("custom list editor reducer", () => {
         data: listDetailsData,
       });
 
-      expect(nextState.entries.current).to.deep.equal([
+      expect(nextState.entries.current).toStrictEqual([
         { id: "book98", title: "The Bell Jar" },
         { id: "book91", title: "Huckleberry Finn" },
         { id: "book2", title: "Little Women" },
       ]);
 
-      expect(nextState.entries.currentTotalCount).to.equal(3); // 4 + 1 - 2
+      expect(nextState.entries.currentTotalCount).toBe(3); // 4 + 1 - 2
     });
   });
 
@@ -634,7 +632,7 @@ describe("custom list editor reducer", () => {
         value: "Awesome List",
       });
 
-      expect(nextState.properties.current.name).to.equal("Awesome List");
+      expect(nextState.properties.current.name).toBe("Awesome List");
     });
 
     it("updates isValid and isModified", () => {
@@ -646,8 +644,8 @@ describe("custom list editor reducer", () => {
         value: "Awesome List",
       });
 
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(false);
 
       nextState = reducer(nextState, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
@@ -655,8 +653,8 @@ describe("custom list editor reducer", () => {
         value: [12],
       });
 
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(true);
 
       nextState = reducer(nextState, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
@@ -664,8 +662,8 @@ describe("custom list editor reducer", () => {
         value: "",
       });
 
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(false);
 
       nextState = reducer(nextState, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
@@ -673,8 +671,8 @@ describe("custom list editor reducer", () => {
         value: [],
       });
 
-      expect(nextState.isModified).to.equal(false);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isModified).toBe(false);
+      expect(nextState.isValid).toBe(false);
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
@@ -682,8 +680,8 @@ describe("custom list editor reducer", () => {
         value: true,
       });
 
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(false);
     });
   });
 
@@ -698,7 +696,7 @@ describe("custom list editor reducer", () => {
         id: 13,
       });
 
-      expect(nextState.properties.current.collections).to.deep.equal([13]);
+      expect(nextState.properties.current.collections).toStrictEqual([13]);
     });
 
     it("removes the id from the current collection property if it exists", () => {
@@ -718,7 +716,7 @@ describe("custom list editor reducer", () => {
         id: 11,
       });
 
-      expect(nextState.properties.current.collections).to.deep.equal([10, 12]);
+      expect(nextState.properties.current.collections).toStrictEqual([10, 12]);
     });
 
     it("updates isValid and isModified", () => {
@@ -741,8 +739,8 @@ describe("custom list editor reducer", () => {
         id: 11,
       });
 
-      expect(nextState.isValid).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).toBe(true);
+      expect(nextState.isModified).toBe(true);
     });
   });
 
@@ -767,7 +765,7 @@ describe("custom list editor reducer", () => {
         value: "Book",
       });
 
-      expect(nextState.searchParams.current.entryPoint).to.equal("Book");
+      expect(nextState.searchParams.current.entryPoint).toBe("Book");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -775,7 +773,7 @@ describe("custom list editor reducer", () => {
         value: "foo bar",
       });
 
-      expect(nextState.searchParams.current.terms).to.equal("foo bar");
+      expect(nextState.searchParams.current.terms).toBe("foo bar");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -783,7 +781,7 @@ describe("custom list editor reducer", () => {
         value: "title",
       });
 
-      expect(nextState.searchParams.current.sort).to.equal("title");
+      expect(nextState.searchParams.current.sort).toBe("title");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -791,7 +789,7 @@ describe("custom list editor reducer", () => {
         value: "eng",
       });
 
-      expect(nextState.searchParams.current.language).to.equal("eng");
+      expect(nextState.searchParams.current.language).toBe("eng");
     });
 
     it("updates isValid, isModified, and isSearchModified", () => {
@@ -801,9 +799,9 @@ describe("custom list editor reducer", () => {
         value: "Book",
       });
 
-      expect(nextState.isSearchModified).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isSearchModified).toBe(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(false);
     });
   });
 
@@ -862,7 +860,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         and: [
           {
@@ -884,7 +882,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("90");
+      ).toBe("90");
     });
 
     it("should add the query as the root query and select it, if there is no existing root query", () => {
@@ -900,14 +898,14 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "34",
         ...valueQuery,
       });
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("34");
+      ).toBe("34");
     });
 
     it("should add the query to the root query, if there is no selected query", () => {
@@ -950,7 +948,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         and: [
           {
@@ -972,7 +970,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal(null);
+      ).toBe(null);
     });
 
     it("should create a boolean AND query if a new query is added to a non-boolean root query in the include builder", () => {
@@ -1006,7 +1004,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "91",
         and: [
           {
@@ -1023,7 +1021,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("91");
+      ).toBe("91");
     });
 
     it("should create a boolean OR query if a new query is added to a non-boolean root query in the exclude builder", () => {
@@ -1057,7 +1055,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.exclude.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "91",
         or: [
           {
@@ -1074,7 +1072,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.exclude.selectedQueryId
-      ).to.equal("91");
+      ).toBe("91");
     });
 
     it("should create a boolean query that is the opposite of the parent if a new query is added to a non-boolean query", () => {
@@ -1118,7 +1116,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         and: [
           {
@@ -1145,7 +1143,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("92");
+      ).toBe("92");
     });
 
     it("updates isValid, isModified, and isSearchModified", () => {
@@ -1167,9 +1165,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.isSearchModified).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(true);
+      expect(nextState.isSearchModified).toBe(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(true);
     });
   });
 
@@ -1230,7 +1228,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         or: [
           {
@@ -1255,7 +1253,7 @@ describe("custom list editor reducer", () => {
         bool: "or",
       });
 
-      expect(nextState).to.deep.equal(state);
+      expect(nextState).toStrictEqual(state);
     });
 
     it("should do nothing if the id does not refer any query", () => {
@@ -1266,7 +1264,7 @@ describe("custom list editor reducer", () => {
         bool: "or",
       });
 
-      expect(nextState).to.deep.equal(state);
+      expect(nextState).toStrictEqual(state);
     });
 
     it("updates isValid, isModified, and isSearchModified", () => {
@@ -1289,9 +1287,9 @@ describe("custom list editor reducer", () => {
         bool: "or",
       });
 
-      expect(nextState.isSearchModified).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(true);
+      expect(nextState.isSearchModified).toBe(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(true);
     });
   });
 
@@ -1363,7 +1361,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         and: [
           {
@@ -1425,9 +1423,9 @@ describe("custom list editor reducer", () => {
         targetId: "95",
       });
 
-      expect(nextState.isSearchModified).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(true);
+      expect(nextState.isSearchModified).toBe(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(true);
     });
   });
 
@@ -1478,7 +1476,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "90",
         and: [
           {
@@ -1496,7 +1494,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("90");
+      ).toBe("90");
     });
 
     it("should remove the parent boolean, if there is only one remaining child after the specified query is removed", () => {
@@ -1540,7 +1538,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "91",
         key: "title",
         value: "foo",
@@ -1548,7 +1546,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal(undefined);
+      ).toBe(undefined);
     });
 
     it("updates isValid, isModified, and isSearchModified", () => {
@@ -1604,9 +1602,9 @@ describe("custom list editor reducer", () => {
         id: "92",
       });
 
-      expect(nextState.isSearchModified).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
-      expect(nextState.isValid).to.equal(false);
+      expect(nextState.isSearchModified).toBe(true);
+      expect(nextState.isModified).toBe(true);
+      expect(nextState.isValid).toBe(false);
     });
   });
 
@@ -1652,7 +1650,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("91");
+      ).toBe("91");
     });
 
     it("should remove the parent boolean, if there is only one remaining child after the specified query is removed", () => {
@@ -1696,7 +1694,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.query
-      ).to.deep.equal({
+      ).toStrictEqual({
         id: "91",
         key: "title",
         value: "foo",
@@ -1704,7 +1702,7 @@ describe("custom list editor reducer", () => {
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal(undefined);
+      ).toBe(undefined);
     });
   });
 
@@ -1739,16 +1737,14 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.added)
-        .to.have.property("book2")
-        .that.deep.equals({
-          id: "book2",
-          title: "Little Women",
-          authors: ["Louisa May Alcott"],
-          url: "http://some/url",
-          language: "english",
-          medium: "",
-        });
+      expect(nextState.entries.added).toHaveProperty("book2", {
+        id: "book2",
+        title: "Little Women",
+        authors: ["Louisa May Alcott"],
+        url: "http://some/url",
+        language: "english",
+        medium: "",
+      });
     });
 
     it("should not add the book to entries added if it already exists in entries baseline", () => {
@@ -1766,7 +1762,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.added).not.to.have.property("book2");
+      expect(nextState.entries.added).not.toHaveProperty("book2");
     });
 
     it("should remove the book from entries removed, if it is present", () => {
@@ -1786,7 +1782,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.removed).not.to.have.property("book2");
+      expect(nextState.entries.removed).not.toHaveProperty("book2");
     });
 
     it("should apply the new delta to the baseline and update entries current", () => {
@@ -1808,7 +1804,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.current).to.deep.equal([
+      expect(nextState.entries.current).toStrictEqual([
         {
           id: "book2",
           title: "Little Women",
@@ -1821,7 +1817,7 @@ describe("custom list editor reducer", () => {
         { id: "book90", title: "Wuthering Heights" },
       ]);
 
-      expect(nextState.entries.currentTotalCount).to.equal(13); // 12 + 1
+      expect(nextState.entries.currentTotalCount).toBe(13); // 12 + 1
     });
 
     it("should update isValid and isModified", () => {
@@ -1845,8 +1841,8 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.isValid).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).toBe(true);
+      expect(nextState.isModified).toBe(true);
     });
   });
 
@@ -1880,7 +1876,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.added).to.deep.equal({
+      expect(nextState.entries.added).toStrictEqual({
         book1: {
           id: "book1",
           title: "A Farewell to Arms",
@@ -1914,8 +1910,8 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.added).to.have.property("book1");
-      expect(nextState.entries.added).not.to.have.property("book2");
+      expect(nextState.entries.added).toHaveProperty("book1");
+      expect(nextState.entries.added).not.toHaveProperty("book2");
     });
 
     it("should remove a book from entries removed, if it is present", () => {
@@ -1934,7 +1930,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.removed).not.to.have.property("book2");
+      expect(nextState.entries.removed).not.toHaveProperty("book2");
     });
 
     it("should apply the new delta to the baseline and update entries current", () => {
@@ -1955,7 +1951,7 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.entries.current).to.deep.equal([
+      expect(nextState.entries.current).toStrictEqual([
         {
           id: "book2",
           title: "Little Women",
@@ -1976,7 +1972,7 @@ describe("custom list editor reducer", () => {
         { id: "book90", title: "Wuthering Heights" },
       ]);
 
-      expect(nextState.entries.currentTotalCount).to.equal(14); // 12 + 2
+      expect(nextState.entries.currentTotalCount).toBe(14); // 12 + 2
     });
 
     it("should update isValid and isModified", () => {
@@ -1999,8 +1995,8 @@ describe("custom list editor reducer", () => {
         data: searchResultData,
       });
 
-      expect(nextState.isValid).to.equal(true);
-      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).toBe(true);
+      expect(nextState.isModified).toBe(true);
     });
   });
 
@@ -2015,9 +2011,7 @@ describe("custom list editor reducer", () => {
         id: "book1",
       });
 
-      expect(nextState.entries.removed)
-        .to.have.property("book1")
-        .that.equals(true);
+      expect(nextState.entries.removed).toHaveProperty("book1", true);
     });
 
     it("should delete the book from entries added, if it is present", () => {
@@ -2043,8 +2037,8 @@ describe("custom list editor reducer", () => {
         id: "book1",
       });
 
-      expect(nextState.entries.added).not.to.have.property("book1");
-      expect(nextState.entries.removed).not.to.have.property("book1");
+      expect(nextState.entries.added).not.toHaveProperty("book1");
+      expect(nextState.entries.removed).not.toHaveProperty("book1");
     });
 
     it("should apply the new delta to the baseline and update entries current", () => {
@@ -2065,11 +2059,11 @@ describe("custom list editor reducer", () => {
         id: "book91",
       });
 
-      expect(nextState.entries.current).to.deep.equal([
+      expect(nextState.entries.current).toStrictEqual([
         { id: "book90", title: "Wuthering Heights" },
       ]);
 
-      expect(nextState.entries.currentTotalCount).to.equal(11); // 12 - 1
+      expect(nextState.entries.currentTotalCount).toBe(11); // 12 - 1
     });
 
     it("should update isValid and isModified", () => {
@@ -2102,8 +2096,8 @@ describe("custom list editor reducer", () => {
         id: "book91",
       });
 
-      expect(nextState.isValid).to.equal(false);
-      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).toBe(false);
+      expect(nextState.isModified).toBe(true);
     });
   });
 
@@ -2124,12 +2118,8 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES,
       });
 
-      expect(nextState.entries.removed)
-        .to.have.property("book91")
-        .that.equals(true);
-      expect(nextState.entries.removed)
-        .to.have.property("book90")
-        .that.equals(true);
+      expect(nextState.entries.removed).toHaveProperty("book91", true);
+      expect(nextState.entries.removed).toHaveProperty("book90", true);
     });
 
     it("should empty entries added", () => {
@@ -2154,7 +2144,7 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES,
       });
 
-      expect(nextState.entries.added).to.deep.equal({});
+      expect(nextState.entries.added).toStrictEqual({});
     });
 
     it("should apply the new delta to the baseline and update entries current", () => {
@@ -2174,8 +2164,8 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES,
       });
 
-      expect(nextState.entries.current).to.have.length(0);
-      expect(nextState.entries.currentTotalCount).to.equal(10); // 12 - 2
+      expect(nextState.entries.current).toHaveLength(0);
+      expect(nextState.entries.currentTotalCount).toBe(10); // 12 - 2
     });
 
     it("should update isValid and isModified", () => {
@@ -2207,8 +2197,8 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.DELETE_ALL_CUSTOM_LIST_EDITOR_ENTRIES,
       });
 
-      expect(nextState.isValid).to.equal(false);
-      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).toBe(false);
+      expect(nextState.isModified).toBe(true);
     });
   });
 
@@ -2235,13 +2225,15 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.RESET_CUSTOM_LIST_EDITOR,
       });
 
-      expect(nextState.properties.current)
-        .to.have.property("name")
-        .that.equals("Original Title");
+      expect(nextState.properties.current).toHaveProperty(
+        "name",
+        "Original Title"
+      );
 
-      expect(nextState.properties.current)
-        .to.have.property("collections")
-        .that.deep.equals([1, 2]);
+      expect(nextState.properties.current).toHaveProperty(
+        "collections",
+        [1, 2]
+      );
     });
 
     it("should clear entries added and removed", () => {
@@ -2263,8 +2255,8 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.RESET_CUSTOM_LIST_EDITOR,
       });
 
-      expect(nextState.entries.added).to.deep.equal({});
-      expect(nextState.entries.removed).to.deep.equal({});
+      expect(nextState.entries.added).toStrictEqual({});
+      expect(nextState.entries.removed).toStrictEqual({});
     });
 
     it("should apply the new delta to the baseline and update entries current", () => {
@@ -2304,12 +2296,12 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.RESET_CUSTOM_LIST_EDITOR,
       });
 
-      expect(nextState.entries.current).to.deep.equal([
+      expect(nextState.entries.current).toStrictEqual([
         { id: "book91", title: "Huckleberry Finn" },
         { id: "book90", title: "Wuthering Heights" },
       ]);
 
-      expect(nextState.entries.currentTotalCount).to.equal(12);
+      expect(nextState.entries.currentTotalCount).toBe(12);
     });
 
     it("should update isValid and isModified", () => {
@@ -2336,8 +2328,8 @@ describe("custom list editor reducer", () => {
         type: ActionCreator.RESET_CUSTOM_LIST_EDITOR,
       });
 
-      expect(nextState.isValid).to.equal(true);
-      expect(nextState.isModified).to.equal(false);
+      expect(nextState.isValid).toBe(true);
+      expect(nextState.isModified).toBe(false);
     });
   });
 
@@ -2353,7 +2345,7 @@ describe("custom list editor reducer", () => {
         listId: 24,
       });
 
-      expect(nextState.isSharePending).to.equal(true);
+      expect(nextState.isSharePending).toBe(true);
     });
 
     it("should do nothing if the listId in the action is not the id in state", () => {
@@ -2367,7 +2359,7 @@ describe("custom list editor reducer", () => {
         listId: 77,
       });
 
-      expect(nextState).to.equal(state);
+      expect(nextState).toBe(state);
     });
   });
 
@@ -2384,7 +2376,7 @@ describe("custom list editor reducer", () => {
         listId: 24,
       });
 
-      expect(nextState.isSharePending).to.equal(false);
+      expect(nextState.isSharePending).toBe(false);
     });
 
     it("should set isShared to the value in the list data if the listId in the action is the id in state", () => {
@@ -2407,7 +2399,7 @@ describe("custom list editor reducer", () => {
         },
       });
 
-      expect(nextState.isShared).to.equal(true);
+      expect(nextState.isShared).toBe(true);
     });
 
     it("should do nothing if the listId in the action is not the id in state", () => {
@@ -2422,7 +2414,7 @@ describe("custom list editor reducer", () => {
         listId: 77,
       });
 
-      expect(nextState).to.equal(state);
+      expect(nextState).toBe(state);
     });
   });
 
@@ -2440,7 +2432,7 @@ describe("custom list editor reducer", () => {
         error: {},
       });
 
-      expect(nextState.isSharePending).to.equal(false);
+      expect(nextState.isSharePending).toBe(false);
     });
 
     it("should set error to the action's error message if listId in the action is the id in state", () => {
@@ -2458,7 +2450,7 @@ describe("custom list editor reducer", () => {
         },
       });
 
-      expect(nextState.error).to.equal("Something is very wrong");
+      expect(nextState.error).toBe("Something is very wrong");
     });
 
     it("should do nothing if the listId in the action is not the id in state", () => {
@@ -2473,7 +2465,7 @@ describe("custom list editor reducer", () => {
         listId: 77,
       });
 
-      expect(nextState).to.equal(state);
+      expect(nextState).toBe(state);
     });
   });
 
@@ -2509,12 +2501,12 @@ describe("custom list editor reducer", () => {
 
       const formData = getCustomListEditorFormData(state);
 
-      expect(formData.get("id")).to.equal("123");
-      expect(formData.get("name")).to.equal("My New List");
-      expect(formData.get("collections")).to.equal("[1,2]");
+      expect(formData.get("id")).toBe("123");
+      expect(formData.get("name")).toBe("My New List");
+      expect(formData.get("collections")).toBe("[1,2]");
       // The form data entries should have only the ids of the appropriate entries.
-      expect(formData.get("entries")).to.equal('[{"id":"book2"}]');
-      expect(formData.get("deletedEntries")).to.equal('[{"id":"book90"}]');
+      expect(formData.get("entries")).toBe('[{"id":"book2"}]');
+      expect(formData.get("deletedEntries")).toBe('[{"id":"book90"}]');
     });
 
     it("should include an auto update query if the list is auto updating", () => {
@@ -2566,11 +2558,11 @@ describe("custom list editor reducer", () => {
 
       const formData = getCustomListEditorFormData(state);
 
-      expect(formData.get("id")).to.equal("123");
-      expect(formData.get("name")).to.equal("My New List");
-      expect(formData.get("collections")).to.equal("[1,2]");
-      expect(formData.get("auto_update")).to.equal("true");
-      expect(formData.get("auto_update_query")).to.equal(
+      expect(formData.get("id")).toBe("123");
+      expect(formData.get("name")).toBe("My New List");
+      expect(formData.get("collections")).toBe("[1,2]");
+      expect(formData.get("auto_update")).toBe("true");
+      expect(formData.get("auto_update_query")).toBe(
         '{"query":{"key":"title","value":"Little Women"}}'
       );
     });
@@ -2611,7 +2603,7 @@ describe("custom list editor reducer", () => {
 
       const formData = getCustomListEditorFormData(state);
 
-      expect(formData.get("auto_update_facets")).to.equal(
+      expect(formData.get("auto_update_facets")).toBe(
         '{"media":"Audio","order":"title"}'
       );
     });
@@ -2652,7 +2644,7 @@ describe("custom list editor reducer", () => {
 
       const formData = getCustomListEditorFormData(state);
 
-      expect(formData.get("auto_update_facets")).to.equal('{"order":"title"}');
+      expect(formData.get("auto_update_facets")).toBe('{"order":"title"}');
     });
 
     it("should not include order in auto update facets if sort is null", () => {
@@ -2691,7 +2683,7 @@ describe("custom list editor reducer", () => {
 
       const formData = getCustomListEditorFormData(state);
 
-      expect(formData.get("auto_update_facets")).to.equal('{"media":"Book"}');
+      expect(formData.get("auto_update_facets")).toBe('{"media":"Book"}');
     });
   });
 
@@ -2725,7 +2717,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal(
+      expect(url).toBe(
         "/lib/search?language=all&media=Book&order=title&q=foo%20bar%20baz"
       );
     });
@@ -2759,7 +2751,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal(
+      expect(url).toBe(
         "/lib/search?language=all&order=title&q=foo%20bar%20baz"
       );
     });
@@ -2793,7 +2785,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal("/lib/search?language=all&q=foo%20bar%20baz");
+      expect(url).toBe("/lib/search?language=all&q=foo%20bar%20baz");
     });
 
     it("should omit the language param if language is null", () => {
@@ -2825,7 +2817,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal("/lib/search?q=foo%20bar%20baz");
+      expect(url).toBe("/lib/search?q=foo%20bar%20baz");
     });
   });
 });

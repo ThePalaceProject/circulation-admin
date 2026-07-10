@@ -1,7 +1,7 @@
-import { expect } from "chai";
-
-import reducer, { ClassificationsState } from "../classifications";
-import ActionCreator from "../../actions";
+import reducer, {
+  ClassificationsState,
+} from "../../../src/reducers/classifications";
+import ActionCreator from "../../../src/actions";
 
 describe("classifications reducer", () => {
   const genreData = {
@@ -37,7 +37,7 @@ describe("classifications reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(reducer(undefined, {})).to.deep.equal(initState);
+    expect(reducer(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles GENRE_TREE_REQUEST", () => {
@@ -47,14 +47,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isFetchingGenreTree: true,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingGenreTree: true,
       fetchError: null,
     });
-    expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles GENRE_TREE_FAILURE", () => {
@@ -67,7 +67,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingGenreTree: false,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles GENRE_TREE_LOAD", () => {
@@ -76,7 +76,7 @@ describe("classifications reducer", () => {
       genreTree: genreData,
       isFetchingGenreTree: false,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_REQUEST", () => {
@@ -89,14 +89,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isEditingClassifications: true,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isEditingClassifications: true,
       fetchError: null,
     });
-    expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_FAILURE", () => {
@@ -111,7 +111,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isEditingClassifications: false,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles CLASSIFICATIONS_REQUEST", () => {
@@ -124,14 +124,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isFetchingClassifications: true,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingClassifications: true,
       fetchError: null,
     });
-    expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(errorState, action)).toStrictEqual(newState);
   });
 
   it("handles CLASSIFICATIONS_FAILURE", () => {
@@ -144,7 +144,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingClassifications: false,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toStrictEqual(newState);
   });
 
   it("handles CLASSIFICATIONS_LOAD", () => {
@@ -156,6 +156,6 @@ describe("classifications reducer", () => {
       classifications: classificationsData,
       isFetchingClassifications: false,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toStrictEqual(newState);
   });
 });

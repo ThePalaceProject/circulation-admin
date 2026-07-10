@@ -1,7 +1,5 @@
-import { expect } from "chai";
-
-import collections from "../collections";
-import ActionCreator from "../../actions";
+import collections from "../../../src/reducers/collections";
+import ActionCreator from "../../../src/actions";
 
 describe("collections reducer", () => {
   const initState = {
@@ -16,7 +14,7 @@ describe("collections reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(collections(undefined, {})).to.deep.equal(initState);
+    expect(collections(undefined, {})).toStrictEqual(initState);
   });
 
   it("handles COLLECTIONS_REQUEST", () => {
@@ -29,7 +27,7 @@ describe("collections reducer", () => {
     const newState = Object.assign({}, initState, {
       isFetching: true,
     });
-    expect(collections(initState, action)).to.deep.equal(newState);
+    expect(collections(initState, action)).toStrictEqual(newState);
   });
 
   it("handles EDIT_COLLECTION_REQUEST", () => {
@@ -39,7 +37,7 @@ describe("collections reducer", () => {
       isFetching: false,
       isEditing: true,
     });
-    expect(collections(initState, action)).to.deep.equal(newState);
+    expect(collections(initState, action)).toStrictEqual(newState);
   });
 
   it("handles GET_SELF_TESTS_LOAD", () => {
@@ -93,6 +91,6 @@ describe("collections reducer", () => {
       isLoaded: true,
     });
 
-    expect(collections(oldState, action)).to.deep.equal(newState);
+    expect(collections(oldState, action)).toStrictEqual(newState);
   });
 });

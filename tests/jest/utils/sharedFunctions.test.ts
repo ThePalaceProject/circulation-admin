@@ -1,5 +1,8 @@
-import { expect } from "chai";
-import { findDefault, formatString, isEqual } from "../utils/sharedFunctions";
+import {
+  findDefault,
+  formatString,
+  isEqual,
+} from "../../../src/utils/sharedFunctions";
 
 describe("findDefault", () => {
   const settingWithoutDefaults = {
@@ -32,23 +35,23 @@ describe("findDefault", () => {
 
   it("doesn't return anything if the setting has no default value", () => {
     const result = findDefault(settingWithoutDefaults);
-    expect(result).to.be.undefined;
+    expect(result).toBeUndefined();
   });
 
   it("identifies the default setting from a list of options", () => {
     const result = findDefault(settingWithOneDefault);
-    expect(result.length).to.equal(1);
-    expect(result[0].key).to.equal("true");
-    expect(result[0].label).to.equal("Yes");
+    expect(result.length).toBe(1);
+    expect(result[0].key).toBe("true");
+    expect(result[0].label).toBe("Yes");
   });
 
   it("identifies multiple default settings from a list of options", () => {
     const result = findDefault(settingWithMultipleDefaults);
-    expect(result.length).to.equal(2);
-    expect(result[0].key).to.equal("first default");
-    expect(result[0].label).to.equal("Yes");
-    expect(result[1].key).to.equal("second default");
-    expect(result[1].label).to.equal("This one too");
+    expect(result.length).toBe(2);
+    expect(result[0].key).toBe("first default");
+    expect(result[0].label).toBe("Yes");
+    expect(result[1].key).toBe("second default");
+    expect(result[1].label).toBe("This one too");
   });
 });
 
@@ -56,22 +59,22 @@ describe("formatString", () => {
   const stringToFormat = "this-is-a-sentence.";
   it("capitalizes the first letter of a string by default", () => {
     const result = formatString(stringToFormat);
-    expect(result).to.equal("This-is-a-sentence.");
+    expect(result).toBe("This-is-a-sentence.");
   });
 
   it("can be prevented from capitalizing", () => {
     const result = formatString(stringToFormat, null, false);
-    expect(result).to.equal("this-is-a-sentence.");
+    expect(result).toBe("this-is-a-sentence.");
   });
 
   it("replaces characters", () => {
     const result = formatString(stringToFormat, ["-", " "], false);
-    expect(result).to.equal("this is a sentence.");
+    expect(result).toBe("this is a sentence.");
   });
 
   it("replaces characters and capitalizes", () => {
     const result = formatString(stringToFormat, ["-", "!"]);
-    expect(result).to.equal("This!is!a!sentence.");
+    expect(result).toBe("This!is!a!sentence.");
   });
 
   it("replaces multiple characters", () => {
@@ -80,12 +83,12 @@ describe("formatString", () => {
       "!",
       " ",
     ]);
-    expect(result).to.equal("Need to replace multiple characters");
+    expect(result).toBe("Need to replace multiple characters");
   });
 
   it("defaults to replacing characters with a space", () => {
     const result = formatString(stringToFormat, ["-"]);
-    expect(result).to.equal("This is a sentence.");
+    expect(result).toBe("This is a sentence.");
   });
 });
 
@@ -94,25 +97,25 @@ describe("isEqual", () => {
 
   it("returns false if the arrays are not the same length", () => {
     const arr2 = ["a", "b", "c", "d"];
-    expect(isEqual(arr1, arr2)).to.be.false;
+    expect(isEqual(arr1, arr2)).toBe(false);
   });
   it("returns false if the lengths are the same but not all of the elements match", () => {
     const arr2 = ["a", "b", "d"];
-    expect(isEqual(arr1, arr2)).to.be.false;
+    expect(isEqual(arr1, arr2)).toBe(false);
   });
   it("returns false if there are duplicates", () => {
     const arr2 = ["a", "a", "b"];
-    expect(isEqual(arr1, arr2)).to.be.false;
+    expect(isEqual(arr1, arr2)).toBe(false);
   });
   it("returns true if the arrays are the same", () => {
     const arr2 = ["a", "b", "c"];
-    expect(isEqual(arr1, arr2)).to.be.true;
+    expect(isEqual(arr1, arr2)).toBe(true);
   });
   it("returns true even if the arrays do not list the elements in the same order", () => {
     const arr2 = ["b", "c", "a"];
-    expect(isEqual(arr1, arr2)).to.be.true;
+    expect(isEqual(arr1, arr2)).toBe(true);
   });
   it("returns true if the arrays have the same duplicates", () => {
-    expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).to.be.true;
+    expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).toBe(true);
   });
 });
