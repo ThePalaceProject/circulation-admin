@@ -31,6 +31,7 @@ import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
+import { currentHref, navigateTo } from "../utils/navigate";
 
 export interface CustomListsStateProps {
   customListEditorAutoUpdateStatus?: string;
@@ -118,7 +119,8 @@ export interface CustomListsOwnProps {
 }
 
 export interface CustomListsProps
-  extends React.Props<CustomListsProps>,
+  extends
+    React.Props<CustomListsProps>,
     CustomListsStateProps,
     CustomListsDispatchProps,
     CustomListsOwnProps {}
@@ -205,8 +207,8 @@ export class CustomLists extends React.Component<
       save: this.saveCustomListEditor,
       reset: this.props.resetCustomListEditor,
       entryPoints: this.getEnabledEntryPoints(this.props.libraries),
-      isFetchingMoreCustomListEntries: this.props
-        .isFetchingMoreCustomListEntries,
+      isFetchingMoreCustomListEntries:
+        this.props.isFetchingMoreCustomListEntries,
       isFetchingSearchResults: this.props.isFetchingSearchResults,
       isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
       languages: this.props.languages,
@@ -225,8 +227,8 @@ export class CustomLists extends React.Component<
       updateSearchParam: this.props.updateCustomListEditorSearchParam,
       addAdvSearchQuery: this.props.addCustomListEditorAdvSearchQuery,
       updateClearFiltersFlag: this.props.updateClearFiltersFlag,
-      updateAdvSearchQueryBoolean: this.props
-        .updateCustomListEditorAdvSearchQueryBoolean,
+      updateAdvSearchQueryBoolean:
+        this.props.updateCustomListEditorAdvSearchQueryBoolean,
       moveAdvSearchQuery: this.props.moveCustomListEditorAdvSearchQuery,
       removeAdvSearchQuery: this.props.removeCustomListEditorAdvSearchQuery,
       selectAdvSearchQuery: this.props.selectCustomListEditorAdvSearchQuery,
@@ -279,18 +281,15 @@ export class CustomLists extends React.Component<
       const filteredSortedLists = this.filteredSortedLists(lists);
 
       if (filteredSortedLists.length === 0) {
-        window.location.href += "/create";
+        navigateTo(`${currentHref()}/create`);
       } else {
         const firstList = filteredSortedLists[0];
-        window.location.href += "/edit/" + firstList.id;
+        navigateTo(`${currentHref()}/edit/${firstList.id}`);
       }
     }
 
-    const {
-      identifier,
-      fetchCustomListDetails,
-      openCustomListEditor,
-    } = nextProps;
+    const { identifier, fetchCustomListDetails, openCustomListEditor } =
+      nextProps;
 
     // If we switched lists, fetch the details for the new list.
     if (identifier !== this.props.identifier) {

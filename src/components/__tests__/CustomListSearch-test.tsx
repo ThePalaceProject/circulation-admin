@@ -246,7 +246,7 @@ describe("CustomListSearch", () => {
     expect(search.callCount).to.equal(1);
   });
 
-  context("when showAutoUpdate is false", () => {
+  describe("when showAutoUpdate is false", () => {
     it("does not render radio buttons for auto update on and off", () => {
       const autoUpdateOptions = wrapper
         .find(".auto-update")
@@ -256,7 +256,7 @@ describe("CustomListSearch", () => {
     });
   });
 
-  context("when showAutoUpdate is true", () => {
+  describe("when showAutoUpdate is true", () => {
     it("renders radio buttons for auto update on and off", () => {
       wrapper = mount(
         <CustomListSearch

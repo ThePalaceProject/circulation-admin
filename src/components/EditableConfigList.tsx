@@ -13,6 +13,7 @@ import VisibleIcon from "./icons/VisibleIcon";
 import DisclosureIcon from "./icons/DisclosureIcon";
 import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
+import { navigateTo } from "../utils/navigate";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -38,7 +39,8 @@ export interface EditableConfigListOwnProps {
 }
 
 export interface EditableConfigListProps<T>
-  extends EditableConfigListStateProps<T>,
+  extends
+    EditableConfigListStateProps<T>,
     EditableConfigListDispatchProps<T>,
     EditableConfigListOwnProps {}
 
@@ -92,16 +94,15 @@ interface EditableConfigListState {
 export abstract class GenericEditableConfigList<
   T,
   U,
-  V extends EditableConfigListProps<T>
+  V extends EditableConfigListProps<T>,
 > extends React.Component<V, EditableConfigListState> {
   context: { admin: Admin };
   static contextTypes = {
     admin: PropTypes.object.isRequired,
   };
-  abstract EditForm: new (props: EditFormProps<T, U>) => React.Component<
-    EditFormProps<T, U>,
-    any
-  >;
+  abstract EditForm: new (
+    props: EditFormProps<T, U>
+  ) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
@@ -155,10 +156,8 @@ export abstract class GenericEditableConfigList<
     const ExtraFormSection = this.ExtraFormSection;
     const itemToEdit = this.itemToEdit();
     const canEditItem = itemToEdit && this.canEdit(itemToEdit);
-    const itemsWithEntries: Array<[
-      U,
-      AssociatedEntry[] | undefined
-    ]> = this.getItems().map((item) => [item, this.getAssociatedEntries(item)]);
+    const itemsWithEntries: Array<[U, AssociatedEntry[] | undefined]> =
+      this.getItems().map((item) => [item, this.getAssociatedEntries(item)]);
     const expandable: U[] = itemsWithEntries
       .filter((pair): pair is [U, AssociatedEntry[]] => {
         const [, e] = pair;
@@ -289,8 +288,8 @@ export abstract class GenericEditableConfigList<
     return count === 0
       ? "no libraries"
       : count === 1
-      ? "1 library"
-      : `${count} libraries`;
+        ? "1 library"
+        : `${count} libraries`;
   }
 
   /**
@@ -632,7 +631,7 @@ export abstract class GenericEditableConfigList<
           // Wait for two seconds so that the user can see the success message,
           // then go to the edit page
           setTimeout(() => {
-            window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
+            navigateTo(`${this.urlBase}edit/${this.props.responseBody}`);
           }, 2000);
         }
       })
@@ -674,7 +673,7 @@ export abstract class GenericEditableConfigList<
 
 export abstract class EditableConfigList<
   T,
-  U
+  U,
 > extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}
 
 export default EditableConfigList;

@@ -35,6 +35,7 @@ import {
   getCustomListEditorFormData,
   getCustomListEditorSearchUrl,
 } from "./reducers/customListEditor";
+import { navigateTo } from "./utils/navigate";
 
 /** Create redux actions to be dispatched by connected components, mostly
     to make requests to the server. */
@@ -626,10 +627,8 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchMoreCustomListEntries() {
     return (dispatch, getState) => {
-      const {
-        data,
-        isFetchingMoreEntries,
-      } = getState().editor.customListDetails;
+      const { data, isFetchingMoreEntries } =
+        getState().editor.customListDetails;
 
       if (!isFetchingMoreEntries) {
         return dispatch(
@@ -860,7 +859,7 @@ export default class ActionCreator extends BaseActionCreator {
         const { successMessage: savedListId } = getState().editor.customLists;
 
         if (id === null && savedListId) {
-          window.location.href = `/admin/web/lists/${library}/edit/${savedListId}`;
+          navigateTo(`/admin/web/lists/${library}/edit/${savedListId}`);
         }
       });
     };

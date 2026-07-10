@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import { beforeEach } from "mocha";
 import * as React from "react";
 import SingleStatListItem, {
   SingleStatListItemProps,
