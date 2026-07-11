@@ -383,7 +383,11 @@ describe("EditableConfigList - library association disclosure", () => {
     it("falls back to short_name when allLibraries is absent from the data", () => {
       const { container } = renderWithContext(
         <TestServiceList
-          data={{ services: [{ id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] }] }}
+          data={{
+            services: [
+              { id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] },
+            ],
+          }}
           fetchData={jest.fn()}
           editItem={jest.fn().mockResolvedValue(undefined)}
           deleteItem={jest.fn().mockResolvedValue(undefined)}
@@ -393,7 +397,9 @@ describe("EditableConfigList - library association disclosure", () => {
         config
       );
       fireEvent.click(container.querySelector(".association-toggle"));
-      expect(container.querySelector(".associated-items li").textContent).toBe("nypl");
+      expect(container.querySelector(".associated-items li").textContent).toBe(
+        "nypl"
+      );
     });
   });
 });

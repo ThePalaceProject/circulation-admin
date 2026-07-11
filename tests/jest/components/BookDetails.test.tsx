@@ -1,10 +1,7 @@
-import { expect } from "chai";
-import { stub } from "sinon";
-
 import * as React from "react";
-import { shallow } from "enzyme";
+import { render } from "@testing-library/react";
 
-import BookDetails from "../BookDetails";
+import BookDetails from "../../../src/components/BookDetails";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 const book: BookData = {
@@ -85,41 +82,52 @@ const book: BookData = {
 };
 
 describe("BookDetails", () => {
-  let wrapper;
-  const noop = stub().returns(
-    new Promise<void>((resolve, _reject) => resolve())
-  );
-
-  beforeEach(() => {
-    wrapper = shallow(<BookDetails book={book} updateBook={noop} />);
-  });
+  const updateBook = jest.fn();
 
   it("shows audience and target age", () => {
-    const audience = wrapper.find(".audience");
-    expect(audience.text()).to.equal("Audience: Children (age 10-12)");
+    const { container } = render(
+      <BookDetails book={book} updateBook={updateBook} />
+    );
+    const audience = container.querySelector(".audience");
+    expect(audience).toBeInTheDocument();
+    expect(audience).toHaveTextContent("Audience: Children (age 10-12)");
   });
 
   it("shows categories", () => {
-    const categories = wrapper.find(".categories");
-    expect(categories.text()).to.equal("Categories: Adventure, Fantasy");
+    const { container } = render(
+      <BookDetails book={book} updateBook={updateBook} />
+    );
+    const categories = container.querySelector(".categories");
+    expect(categories).toBeInTheDocument();
+    expect(categories).toHaveTextContent("Categories: Adventure, Fantasy");
   });
 
   it("doesn't show categories when there aren't any", () => {
-    const bookCopy = Object.assign({}, book, {
+    const bookCopy: BookData = {
+      ...book,
       raw: { category: [], link: [] },
-    });
-    wrapper.setProps({ book: bookCopy });
-    const categories = wrapper.find(".categories");
-    expect(categories.length).to.equal(0);
+    };
+    const { container } = render(
+      <BookDetails book={bookCopy} updateBook={updateBook} />
+    );
+    expect(container.querySelector(".categories")).not.toBeInTheDocument();
   });
 
   it("shows distributor", () => {
-    const distributor = wrapper.find(".distributed-by");
-    expect(distributor.text()).to.equal("Distributed By: Overdrive");
+    const { container } = render(
+      <BookDetails book={book} updateBook={updateBook} />
+    );
+    const distributor = container.querySelector(".distributed-by");
+    expect(distributor).toBeInTheDocument();
+    expect(distributor).toHaveTextContent("Distributed By: Overdrive");
   });
 
   it("doesn't render any circulation link content", () => {
-    const circulationLinks = wrapper.find(".circulation-links");
-    expect(circulationLinks.text()).to.equal("");
+    const { container } = render(
+      <BookDetails book={book} updateBook={updateBook} />
+    );
+    const circulationLinks = container.querySelector(".circulation-links");
+    expect(circulationLinks).toBeInTheDocument();
+    expect(circulationLinks).toBeEmptyDOMElement();
   });
 });
