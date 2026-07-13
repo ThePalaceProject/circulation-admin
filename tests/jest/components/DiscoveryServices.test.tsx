@@ -1,18 +1,17 @@
 import * as React from "react";
-import { fireEvent } from "@testing-library/react";
+import { installFormDataShim } from "../testUtils/formDataShim";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { DiscoveryServices } from "../../../src/components/DiscoveryServices";
+import DiscoveryServicesConnected from "../../../src/components/DiscoveryServices";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
 import {
   ConfigurationSettings,
   DiscoveryServicesData,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
-
-// NB: This adds tests to the already existing tests in:
-// - `src/components/__tests__/DiscoveryServices-test.tsx`.
-//
-// Those tests should eventually be migrated here and
-// adapted to the Jest/React Testing Library paradigm.
 
 describe("DiscoveryServices - registered library disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -541,5 +540,153 @@ describe("DiscoveryServices - registered library disclosure", () => {
     // Alt+click again should collapse all.
     fireEvent.click(toggles[0], { altKey: true });
     expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
+  });
+});
+
+// These exercise behavior the disclosure tests above do not: the connect()
+// wiring (mapStateToProps / mapDispatchToProps, which only run when the CONNECTED
+// default export mounts) and the getChildContext().registerLibrary closure
+// (which only runs when a library is registered from the edit form).
+
+describe("DiscoveryServices - connected wiring and registration", () => {
+  const allLibraries = [
+    { short_name: "nypl", name: "NYPL", uuid: "uuid-nypl" },
+  ];
+
+  const sysAdminConfig: Partial<ConfigurationSettings> = {
+    csrfToken: "",
+    featureFlags: defaultFeatureFlags,
+    roles: [{ role: "system" }],
+  };
+
+  // A loaded `libraries` slice persists through the on-mount discovery fetches
+  // (the libraries reducer ignores those actions), so mapStateToProps takes its
+  // `data.allLibraries` branch on every render.
+  const loadedLibrariesState = {
+    data: { libraries: allLibraries },
+    isFetching: false,
+    isEditing: false,
+    fetchError: null,
+    formError: null,
+    isLoaded: true,
+    responseBody: null,
+    successMessage: null,
+  };
+
+  /**
+   * Stub `fetch` so the panel's on-mount fetches resolve with `body`. A fresh
+   * Response per call avoids "body already used" when several fetches run.
+   */
+  const stubFetch = (body: unknown) =>
+    jest.spyOn(globalThis, "fetch").mockImplementation(
+      async () =>
+        new Response(JSON.stringify(body), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+    );
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe("connected default export", () => {
+    it("wires mapStateToProps/mapDispatchToProps: fetches on mount and renders the list", async () => {
+      const listData = {
+        discovery_services: [
+          { id: 2, protocol: "test protocol", name: "Test Discovery" },
+        ],
+        protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+      };
+      stubFetch(listData);
+      // A fresh store, preloaded with a loaded libraries slice, isolates this
+      // test and exercises mapStateToProps' allLibraries branch.
+      const store = buildStore({
+        editor: { libraries: loadedLibrariesState },
+      } as any);
+
+      const { container } = renderWithProviders(
+        <DiscoveryServicesConnected csrfToken="token" />,
+        { reduxProviderProps: { store } }
+      );
+
+      // The list appears once the connected component's on-mount fetch resolves
+      // and mapStateToProps feeds the fetched data back in as props.
+      expect(
+        await screen.findByRole("heading", { level: 3, name: "Test Discovery" })
+      ).toBeInTheDocument();
+
+      const editLink = container.querySelector("a.edit-item");
+      expect(editLink).not.toBeNull();
+      expect(editLink.getAttribute("href")).toBe(
+        "/admin/web/config/discovery/edit/2"
+      );
+    });
+  });
+
+  describe("registerLibrary child context (edit mode)", () => {
+    // The reusable-components `Form` builds `new FormData(formElement)` on
+    // submit, which the unit jsdom env's undici FormData rejects; install the
+    // shared shim that reads the form's successful controls.
+    installFormDataShim();
+    const renderEditMode = (
+      registerLibrary: jest.Mock,
+      fetchLibraryRegistrations: jest.Mock
+    ) =>
+      renderWithContext(
+        <DiscoveryServices
+          data={
+            {
+              discovery_services: [
+                { id: "2", protocol: "test protocol", name: "Test Discovery" },
+              ],
+              protocols: [
+                {
+                  name: "test protocol",
+                  supports_registration: true,
+                  settings: [],
+                  library_settings: [],
+                },
+              ],
+              allLibraries,
+            } as any
+          }
+          editOrCreate="edit"
+          identifier="2"
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          registerLibrary={registerLibrary}
+          fetchLibraryRegistrations={fetchLibraryRegistrations}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        sysAdminConfig
+      );
+
+    it("fetches library registrations on mount, and registers a library (building the right FormData) and refetches on click", async () => {
+      const user = userEvent.setup();
+      const registerLibrary = jest.fn().mockResolvedValue(undefined);
+      const fetchLibraryRegistrations = jest.fn().mockResolvedValue(undefined);
+      renderEditMode(registerLibrary, fetchLibraryRegistrations);
+
+      // getChildContext supplies registerLibrary to the edit form; the edit form
+      // surfaces a "Register" button for each library.
+      expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(1);
+      expect(registerLibrary).not.toHaveBeenCalled();
+
+      await user.click(screen.getByRole("button", { name: "Register" }));
+
+      expect(registerLibrary).toHaveBeenCalledTimes(1);
+      const formData = registerLibrary.mock.calls[0][0];
+      expect(formData.get("library_short_name")).toBe("nypl");
+      expect(formData.get("integration_id")).toBe("2");
+      expect(formData.get("registration_stage")).toBe("testing");
+
+      // After a successful registration, the child context refetches.
+      await waitFor(() =>
+        expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(2)
+      );
+    });
   });
 });

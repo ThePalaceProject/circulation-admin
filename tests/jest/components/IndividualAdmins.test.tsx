@@ -1,18 +1,15 @@
 import * as React from "react";
-import { fireEvent } from "@testing-library/react";
-import { IndividualAdmins } from "../../../src/components/IndividualAdmins";
+import { fireEvent, screen } from "@testing-library/react";
+import ConnectedIndividualAdmins, {
+  IndividualAdmins,
+} from "../../../src/components/IndividualAdmins";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
 import {
   ConfigurationSettings,
   IndividualAdminsData,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
-
-// NB: This adds tests to the already existing tests in:
-// - `src/components/__tests__/IndividualAdmins-test.tsx`.
-//
-// Those tests should eventually be migrated here and
-// adapted to the Jest/React Testing Library paradigm.
 
 describe("IndividualAdmins - role association disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -386,5 +383,34 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     fireEvent.click(toggles[0], { altKey: true });
     expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
+  });
+});
+
+// Exercises the connected default export so mapStateToProps/mapDispatchToProps
+// are covered. The RBAC gating is already covered by the disclosure tests above
+// and by tests/jest/businessRules/roleBasedAccess.test.ts.
+describe("IndividualAdmins - connect wiring", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("renders the connected default export, fetching on mount", async () => {
+    jest.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ individualAdmins: [] }), {
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    renderWithProviders(
+      <ConnectedIndividualAdmins
+        csrfToken="token"
+        editOrCreate={undefined}
+        identifier={undefined}
+      />,
+      { appConfigSettings: { roles: [{ role: "system" }] } }
+    );
+
+    // A system admin sees the create link once the mount fetch settles.
+    expect(
+      await screen.findByText("Create new individual admin")
+    ).toBeInTheDocument();
   });
 });
