@@ -62,13 +62,11 @@ describe("AdvancedSearchBooleanFilter", () => {
     expect(options[0]).toHaveTextContent(
       "All of these filters must be matched:"
     );
-    expect((options[0] as HTMLOptionElement).selected).toBe(true);
 
     expect(options[1]).toHaveValue("or");
     expect(options[1]).toHaveTextContent(
       "Any of these filters may be matched:"
     );
-    expect((options[1] as HTMLOptionElement).selected).toBe(false);
 
     expect(select).toHaveValue("and");
   });

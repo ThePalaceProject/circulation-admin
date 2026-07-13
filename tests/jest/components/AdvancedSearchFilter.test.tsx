@@ -98,7 +98,7 @@ describe("AdvancedSearchFilter", () => {
       value: "foo",
     };
 
-    const { container } = renderFilter({
+    renderFilter({
       query,
       readOnly: true,
       selectedQueryId: "90",
@@ -108,8 +108,19 @@ describe("AdvancedSearchFilter", () => {
     expect(screen.getByText("Title foo")).toBeInTheDocument();
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
 
-    // selectedQueryId ("90") does not match the query id ("91"), so it is not selected.
+  it("should not select the AdvancedSearchValueFilter when selectedQueryId does not match the query id", () => {
+    const query = {
+      id: "91",
+      key: "title",
+      value: "foo",
+    };
+
+    // Not readOnly, so selection is driven purely by the id comparison:
+    // selectedQueryId ("90") does not match the query id ("91").
+    const { container } = renderFilter({ query, selectedQueryId: "90" });
+
     expect(
       container.querySelector(".advanced-search-value-filter")
     ).not.toHaveClass("selected");

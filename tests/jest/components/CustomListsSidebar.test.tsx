@@ -8,9 +8,14 @@ import CustomListsSidebar from "../../../src/components/CustomListsSidebar";
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   Link: (props) => (
-    <div data-testid="Link" data-to={props.to} className={props.className}>
+    <a
+      data-testid="Link"
+      data-to={props.to}
+      href={props.to}
+      className={props.className}
+    >
       {props.children}
-    </div>
+    </a>
   ),
 }));
 

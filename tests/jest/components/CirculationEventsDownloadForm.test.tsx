@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import CirculationEventsDownloadForm from "../../../src/components/CirculationEventsDownloadForm";
@@ -23,19 +23,18 @@ describe("CirculationEventsDownloadForm", () => {
 
   it("renders download and close buttons", async () => {
     const user = userEvent.setup();
-    // The modal's header renders its own "×" close button (class "close"); the
-    // form's Download button and the footer's Close button are the reusable
-    // `Button`s (class "btn"), matching the two the legacy test counted.
-    const buttons = document.querySelectorAll<HTMLButtonElement>("button.btn");
-    expect(buttons).toHaveLength(2);
-    expect(buttons[0]).toHaveTextContent("Download");
-    expect(buttons[1]).toHaveTextContent("Close");
 
     expect(
       screen.getByRole("button", { name: "Download" })
     ).toBeInTheDocument();
 
-    await user.click(buttons[1]);
+    // The modal header's dismiss control is also labeled "Close" (its visible
+    // "×" is aria-hidden), so scope to the footer for the reusable Close button.
+    const footer = document.querySelector<HTMLElement>(".modal-footer");
+    const closeButton = within(footer).getByRole("button", { name: "Close" });
+    expect(closeButton).toBeInTheDocument();
+
+    await user.click(closeButton);
 
     expect(hide).toHaveBeenCalledTimes(1);
   });
