@@ -457,6 +457,100 @@ describe("ProtocolFormField — setting types", () => {
     );
   });
 
+  it("adopts a color-picker value that arrives after mount", () => {
+    const ref = React.createRef<ProtocolFormField>();
+    const setting = {
+      ...baseSetting,
+      hidden: true,
+      type: "color-picker",
+      default: "#aaaaaa",
+    };
+    const { rerender } = render(
+      <ProtocolFormField setting={setting as any} disabled={false} ref={ref} />
+    );
+    // The form mounts before its setting data has loaded, so the picker starts
+    // from the setting's default.
+    expect(ref.current!.getValue()).toBe("#aaaaaa");
+
+    // Once the parent supplies the saved value, that is what must be submitted —
+    // not the stale default.
+    rerender(
+      <ProtocolFormField
+        setting={setting as any}
+        disabled={false}
+        value="#123456"
+        ref={ref}
+      />
+    );
+    expect(ref.current!.getValue()).toBe("#123456");
+  });
+
+  it("adopts a new color-picker value even after the admin has picked one", async () => {
+    const ref = React.createRef<ProtocolFormField>();
+    const setting = {
+      ...baseSetting,
+      type: "color-picker",
+      default: "#aaaaaa",
+    };
+    const { container, rerender } = render(
+      <ProtocolFormField
+        setting={setting as any}
+        disabled={false}
+        value="#111111"
+        ref={ref}
+      />
+    );
+
+    // The admin picks a color while editing one item...
+    fireEvent.click(container.querySelector('[title="#FE9200"]'));
+    await waitFor(() =>
+      expect(ref.current!.getValue().toLowerCase()).toBe("#fe9200")
+    );
+
+    // ...then the parent switches to a different item. The new item's saved color
+    // must win: the picker is uncontrolled, so a pick that survived here would be
+    // submitted against the wrong item. The parent is authoritative whenever it
+    // supplies a different value (the same contract EditableInput follows).
+    rerender(
+      <ProtocolFormField
+        setting={setting as any}
+        disabled={false}
+        value="#222222"
+        ref={ref}
+      />
+    );
+    expect(ref.current!.getValue()).toBe("#222222");
+  });
+
+  it("keeps a color the admin picked when the parent re-renders", async () => {
+    const ref = React.createRef<ProtocolFormField>();
+    const setting = {
+      ...baseSetting,
+      type: "color-picker",
+      default: "#aaaaaa",
+    };
+    const props = {
+      setting: setting as any,
+      disabled: false,
+      value: "#123456",
+    };
+    const { container, rerender } = render(
+      <ProtocolFormField {...props} ref={ref} />
+    );
+
+    // Pick a swatch from the palette. react-color debounces onChangeComplete, so
+    // the pick lands asynchronously.
+    fireEvent.click(container.querySelector('[title="#FE9200"]'));
+    await waitFor(() =>
+      expect(ref.current!.getValue().toLowerCase()).toBe("#fe9200")
+    );
+    const picked = ref.current!.getValue();
+
+    // A re-render that does not change the value prop must not discard the pick.
+    rerender(<ProtocolFormField {...props} ref={ref} />);
+    expect(ref.current!.getValue()).toBe(picked);
+  });
+
   it("forwards onChange to the underlying EditableInput", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();

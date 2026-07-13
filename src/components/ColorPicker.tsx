@@ -21,6 +21,17 @@ export default class ColorPicker extends React.Component<
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // The form can mount before its setting data has loaded, in which case this
+  // picker initializes from the setting's default. Adopt the real value when the
+  // parent supplies it, or the field would keep submitting that stale default.
+  // Only adopt it when the incoming value actually changes, so that an unrelated
+  // re-render does not discard a color the admin has just picked.
+  componentDidUpdate(prevProps: ColorPickerProps) {
+    if (prevProps.value !== this.props.value) {
+      this.setState({ value: this.props.value });
+    }
+  }
+
   render(): JSX.Element {
     return (
       <div className="color-picker">
