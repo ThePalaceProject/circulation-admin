@@ -337,16 +337,18 @@ describe("LaneCustomListsEditor", () => {
 // The drag handlers (onDragStart/onDragEnd), exercised by calling the captured
 // react-beautiful-dnd callbacks directly.
 describe("LaneCustomListsEditor - drag handlers", () => {
-  const props = {
+  // Factory rather than a shared const: the component's add()/remove() mutate
+  // customListIds in place, so each test needs its own fresh array.
+  const makeProps = () => ({
     allCustomLists: allCustomListsData,
     filteredCustomLists: allCustomListsData,
     customListIds: [2],
     onUpdate: undefined as any,
-  };
+  });
 
   it("adds a list when dragged from available to current", () => {
     const onUpdate = jest.fn();
-    render(<LaneCustomListsEditor {...props} onUpdate={onUpdate} />);
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
       dndCallbacks.onDragStart({ source: { droppableId: "available-lists" } });
@@ -364,15 +366,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
 
   it("removes a list when dragged from current to available", () => {
     const onUpdate = jest.fn();
-    // Fresh customListIds: the component's add() pushes onto the array in place,
-    // so the shared `props.customListIds` can be mutated by the test above.
-    render(
-      <LaneCustomListsEditor
-        {...props}
-        customListIds={[2]}
-        onUpdate={onUpdate}
-      />
-    );
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
       dndCallbacks.onDragEnd({
@@ -388,7 +382,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
 
   it("does nothing when dropped outside a list (no destination)", () => {
     const onUpdate = jest.fn();
-    render(<LaneCustomListsEditor {...props} onUpdate={onUpdate} />);
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
       dndCallbacks.onDragEnd({
@@ -402,13 +396,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("disables dropping within the available lists while dragging from available", () => {
-    render(
-      <LaneCustomListsEditor
-        {...props}
-        customListIds={[2]}
-        onUpdate={jest.fn()}
-      />
-    );
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
 
     act(() => {
       dndCallbacks.onDragStart({ source: { droppableId: "available-lists" } });
@@ -421,13 +409,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("disables dropping within the current lists while dragging from current", () => {
-    render(
-      <LaneCustomListsEditor
-        {...props}
-        customListIds={[2]}
-        onUpdate={jest.fn()}
-      />
-    );
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
 
     act(() => {
       dndCallbacks.onDragStart({ source: { droppableId: "current-lists" } });
@@ -440,13 +422,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("shows a removal message over the available lists while dragging from current, and clears it on drop", () => {
-    render(
-      <LaneCustomListsEditor
-        {...props}
-        customListIds={[2]}
-        onUpdate={jest.fn()}
-      />
-    );
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
     const available = () => screen.getByTestId("droppable-available-lists");
     const removalMessage = () =>
       screen.queryByText("Drag lists here to remove them from the lane.");
