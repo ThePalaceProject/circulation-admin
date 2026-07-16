@@ -48,12 +48,36 @@ describe("AnnouncementForm", () => {
     // Two date fields, each with its label and description.
     const dates = getDateInputs(container);
     expect(dates).toHaveLength(2);
+    // EditableInput prepends "(Optional) " to each description, so match the
+    // full sentence as a substring rather than the whole text content.
     expect(screen.getByText("Start Date")).toBeInTheDocument();
-    expect(screen.getByText(/If no start date is chosen/)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /If no start date is chosen, the default start date is today's date\./
+      )
+    ).toBeInTheDocument();
     expect(screen.getByText("End Date")).toBeInTheDocument();
     expect(
-      screen.getByText(/If no expiration date is chosen/)
+      screen.getByText(
+        /If no expiration date is chosen, the default expiration date is 2 months from the start date\./
+      )
     ).toBeInTheDocument();
+  });
+
+  // The other tests only compare the date fields against whatever they rendered
+  // with, so they would all still pass if the defaults came out blank. Pin the
+  // clock and assert the actual values.
+  it("prefills the date fields with today and two months from today", () => {
+    jest.useFakeTimers().setSystemTime(new Date(2026, 2, 15));
+    try {
+      const { container } = render(<AnnouncementForm add={add} />);
+
+      const [start, finish] = getDateInputs(container);
+      expect(start.value).toBe("2026-03-15");
+      expect(finish.value).toBe("2026-05-15");
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it("renders the buttons", () => {

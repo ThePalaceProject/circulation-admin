@@ -236,10 +236,7 @@ describe("LibraryRegistration", () => {
     });
 
     it("should render a form", () => {
-      // The status of each library determines its button text. (The
-      // `checked`/`library` props of each form are only DOM-observable through
-      // the button text and status here, since there is no terms-of-service
-      // checkbox in this data.)
+      // The status of each library determines its button text.
       const { container } = renderReg({ item: serviceData });
       const libs = libraries(container);
 
@@ -253,6 +250,42 @@ describe("LibraryRegistration", () => {
       );
       expect(libs[2]).toHaveTextContent("Queens Public Library");
       expect(libs[2].querySelector("button")).toHaveTextContent("Register");
+    });
+
+    // Each form's `checked` prop is derived from the library's status. It only
+    // reaches the DOM when the registration carries terms of service, since
+    // that is what makes LibraryRegistrationForm render the checkbox at all.
+    //
+    // Each case renders a single library, because libraryRegistrationItem
+    // resolves the registration data as `libraryRegistrations[idx]` — indexing
+    // the per-service array by the library's position — so only a library at
+    // index 0 finds the terms.
+    const renderWithTerms = (library, status: string) =>
+      renderReg({
+        item: serviceData,
+        data: makeData({
+          allLibraries: [library],
+          libraryRegistrations: [
+            {
+              id: 1,
+              terms_of_service_html: "<p>Terms</p>",
+              libraries: [{ short_name: library.short_name, status }],
+            },
+          ],
+        }),
+      });
+
+    const termsCheckbox = (container: HTMLElement) =>
+      container.querySelector<HTMLInputElement>('input[type="checkbox"]');
+
+    it("pre-checks the terms-of-service box for an already-registered library", () => {
+      const { container } = renderWithTerms(allLibraries[0], "success");
+      expect(termsCheckbox(container)).toBeChecked();
+    });
+
+    it("leaves the terms-of-service box unchecked when registration failed", () => {
+      const { container } = renderWithTerms(allLibraries[1], "failure");
+      expect(termsCheckbox(container)).not.toBeChecked();
     });
   });
 

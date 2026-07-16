@@ -281,6 +281,31 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
     // Target manages a single library → editable by a manager of that library.
     expect(passwordShownFor(nyplManager, nyplManager)).toBe(true);
     expect(passwordShownFor(nyplManager, bplManager)).toBe(false);
+    // Target is a sitewide librarian → its role carries no library, so the
+    // per-role check falls to isLibraryManager(undefined): only a sitewide
+    // manager qualifies, never a manager of one particular library.
+    expect(passwordShownFor(librarianAll, systemAdmin)).toBe(true);
+    expect(passwordShownFor(librarianAll, managerAll)).toBe(true);
+    expect(passwordShownFor(librarianAll, librarianAll)).toBe(false);
+    expect(passwordShownFor(librarianAll, nyplManager)).toBe(false);
+    expect(passwordShownFor(librarianAll, nyplLibrarian)).toBe(false);
+    expect(passwordShownFor(librarianAll, nyplManagerLibrarianAll)).toBe(false);
+    // Target holds roles at two libraries → a manager of either one qualifies.
+    expect(
+      passwordShownFor([...nyplManager, ...bplLibrarian], bplManager)
+    ).toBe(true);
+  });
+
+  it("never pre-fills the existing password", () => {
+    const { container } = renderForm({
+      item: { ...adminData, roles: nyplManager },
+    });
+
+    const password = container.querySelector<HTMLInputElement>(
+      'input[name="password"]'
+    );
+    expect(password).not.toBeNull();
+    expect(password.value).toBe("");
   });
 
   it("has a save button only when a save function is supplied", () => {

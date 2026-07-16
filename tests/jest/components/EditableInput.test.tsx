@@ -143,4 +143,171 @@ describe("EditableInput - value, change, and imperative API", () => {
     act(() => ref.current?.clear());
     expect(input).toHaveValue("");
   });
+
+  it("clear also resets a checked box", () => {
+    const ref = React.createRef<EditableInput>();
+    render(
+      <EditableInput ref={ref} type="checkbox" label="C" checked={true} />
+    );
+    const box = screen.getByRole("checkbox", { name: "C" });
+    expect(box).toBeChecked();
+
+    act(() => ref.current?.clear());
+    expect(box).not.toBeChecked();
+  });
+
+  // A falsy-but-valid value must survive: this is what defaultValueIfMissing
+  // guards, and what a naive `props.value || ""` would silently break.
+  it("keeps a zero value rather than falling back to the empty default", () => {
+    const { rerender } = render(<EditableInput label="F" value={0} />);
+    const input = screen.getByRole("textbox", { name: "F" });
+    expect(input).toHaveValue("0");
+
+    rerender(<EditableInput label="F" value="a" />);
+    expect(input).toHaveValue("a");
+
+    rerender(<EditableInput label="F" value={0} />);
+    expect(input).toHaveValue("0");
+  });
+});
+
+describe("EditableInput - labels, children, and pass-through props", () => {
+  it("labels a radio input and toggles it", async () => {
+    const user = userEvent.setup();
+    const ref = React.createRef<EditableInput>();
+    render(
+      <EditableInput
+        ref={ref}
+        type="radio"
+        label="Radio label"
+        name="r"
+        checked={false}
+      />
+    );
+
+    const radio = screen.getByRole("radio", { name: "Radio label" });
+    expect(radio).not.toBeChecked();
+
+    await user.click(radio);
+
+    expect(radio).toBeChecked();
+    expect(ref.current?.getChecked()).toBe(true);
+  });
+
+  it("renders children into the element", () => {
+    render(
+      <EditableInput elementType="select" label="S" name="s" value="b">
+        <option value="a">option a</option>
+        <option value="b">option b</option>
+      </EditableInput>
+    );
+
+    const select = screen.getByRole("combobox", { name: "S" });
+    expect(select).toHaveValue("b");
+    expect(
+      Array.from(select.querySelectorAll("option")).map((o) => o.textContent)
+    ).toEqual(["option a", "option b"]);
+  });
+
+  it("forwards the disabled prop to the element", () => {
+    render(<EditableInput label="F" name="name" disabled={true} value="v" />);
+    expect(screen.getByRole("textbox", { name: "F" })).toBeDisabled();
+  });
+
+  // renderDescription uses dangerouslySetInnerHTML, and callers pass markup.
+  it("renders the description as HTML", () => {
+    const { container } = render(
+      <EditableInput
+        label="F"
+        optionalText={false}
+        description="<p>description</p>"
+      />
+    );
+
+    const description = container.querySelector(".description");
+    expect(description.innerHTML).toContain("<p>description</p>");
+  });
+
+  it("shows extra content in an add-on wrapper only when supplied", () => {
+    const { container, rerender } = render(
+      <EditableInput label="F" name="name" value="v" />
+    );
+    expect(container.querySelector(".with-add-on")).toBeNull();
+
+    rerender(
+      <EditableInput
+        label="F"
+        name="name"
+        value="v"
+        extraContent={<span>Extra content!</span>}
+      />
+    );
+
+    const extra = container.querySelector(".with-add-on");
+    expect(extra).not.toBeNull();
+    expect(extra).toHaveTextContent("Extra content!");
+  });
+});
+
+// The error styling is a compound predicate:
+//   clientError || (error && error.status >= 400 && !value && required)
+describe("EditableInput - error styling", () => {
+  const formGroup = (container: HTMLElement) =>
+    container.querySelector(".form-group");
+
+  it("applies no error class by default", () => {
+    const { container } = render(
+      <EditableInput label="F" name="name" value="initial value" />
+    );
+    expect(formGroup(container)).not.toHaveClass("field-error");
+  });
+
+  it("applies the error class on a client error", () => {
+    const { container } = render(
+      <EditableInput
+        label="F"
+        name="name"
+        value="initial value"
+        clientError={true}
+      />
+    );
+    expect(formGroup(container)).toHaveClass("field-error");
+  });
+
+  it("applies the error class for a blank required field after a server error", () => {
+    const { container } = render(
+      <EditableInput
+        label="F"
+        name="name"
+        error={{ status: 400, response: "", url: "" }}
+        required={true}
+      />
+    );
+    expect(formGroup(container)).toHaveClass("field-error");
+  });
+
+  it("does not apply the error class when the required field has a value", () => {
+    const { container } = render(
+      <EditableInput
+        label="F"
+        name="name"
+        value="a value"
+        error={{ status: 400, response: "", url: "" }}
+        required={true}
+      />
+    );
+    expect(formGroup(container)).not.toHaveClass("field-error");
+  });
+
+  it("does not apply the error class for a server error on an optional field", () => {
+    const { container } = render(
+      <EditableInput
+        label="F"
+        name="name"
+        error={{ status: 400, response: "", url: "" }}
+        required={false}
+      />
+    );
+    expect(formGroup(container)).not.toHaveClass("field-error");
+  });
 });
