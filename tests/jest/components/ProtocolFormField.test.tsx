@@ -340,8 +340,8 @@ describe("ProtocolFormField — setting types", () => {
       />
     );
     // The hidden element is wrapped in a visually-hidden div.
-    const wrapper = container.querySelector('div[style*="hidden"]');
-    expect(wrapper).not.toBeNull();
+    const wrapper = screen.getByLabelText("label").closest("div[style]");
+    expect(wrapper).toHaveStyle({ visibility: "hidden" });
     expect(ref.current!.getValue()).toBe("test");
   });
 

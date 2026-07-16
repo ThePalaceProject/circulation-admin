@@ -954,7 +954,7 @@ describe("EditableConfigList - base class via test subclasses", () => {
     );
     // No self-tests configured → neither the info alert nor the footer link.
     expect(container.querySelector(".alert-info")).toBeNull();
-    expect(container.querySelector("p")).toBeNull();
+    expect(screen.queryByText(/visit the troubleshooting page/)).toBeNull();
     unmount();
 
     const withSelfTests = renderWithContext(
