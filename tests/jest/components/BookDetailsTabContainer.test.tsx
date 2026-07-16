@@ -9,8 +9,8 @@ import { getBookData } from "../../../src/features/book/bookEditorSlice";
 
 // Each tab panel is a connected component that fetches over the network on mount.
 // This container's behavior is the tab SET, tab SWITCHING, and clearing book data,
-// not the panels' internals, so mock each panel to a marker that echoes the props
-// the legacy test asserted.
+// not the panels' internals, so mock each panel to a marker echoing the props the
+// container is responsible for threading into it.
 jest.mock("../../../src/components/BookDetailsEditor", () => ({
   __esModule: true,
   default: (props: any) => (

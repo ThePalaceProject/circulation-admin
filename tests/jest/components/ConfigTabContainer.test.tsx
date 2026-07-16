@@ -8,8 +8,8 @@ import Admin from "../../../src/models/Admin";
 
 // Every configuration tab panel is a connected component that fetches on mount.
 // This container's behavior is the tab SET and tab SWITCHING, not the panels'
-// internals, so mock each panel to a marker that echoes the props the legacy
-// test asserted (csrfToken / editOrCreate / identifier).
+// internals, so mock each panel to a marker echoing the props the container is
+// responsible for threading into it (csrfToken / editOrCreate / identifier).
 const panelMock = (testId: string) => ({
   __esModule: true,
   default: (props: any) => (

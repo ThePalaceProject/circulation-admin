@@ -187,10 +187,9 @@ describe("SelfTestsTabContainer", () => {
   });
 
   it("derives the store key, type, and link name for each category", () => {
-    // Populate all three store keys with distinctly named items so every category
-    // renders its marker. This replaces the legacy getNames() instance-method
-    // assertions: the store key each category is looked up under, its type, and
-    // its link name are all observable in the props the category receives.
+    // A category only renders once its store key holds items, so populate all
+    // three with distinctly named items: the key each category is looked up
+    // under is then observable in the items its marker receives.
     renderContainer({
       items: {
         collections: [{ id: 1, name: "a collection" }],

@@ -58,8 +58,6 @@ describe("MetadataServices", () => {
   });
 });
 
-// Ported from the ConfigTabContainer full-mount coverage: the connected default
-// export exercises MetadataServices' mapStateToProps/mapDispatchToProps.
 import MetadataServicesConnected from "../../../src/components/MetadataServices";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";

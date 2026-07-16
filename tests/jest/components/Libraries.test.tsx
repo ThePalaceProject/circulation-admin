@@ -5,10 +5,9 @@ import Libraries from "../../../src/components/Libraries";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 
-// Libraries has no other test; the connected default export is what the app
-// mounts, and its mapStateToProps/mapDispatchToProps were previously covered only
-// by the ConfigTabContainer full-mount (now migrated to mock its panels). This
-// renders the connected export so that wiring stays covered.
+// The connected default export is what the app mounts, so render that rather
+// than the bare component: it is the only thing that exercises Libraries'
+// mapStateToProps/mapDispatchToProps.
 describe("Libraries - connected wiring", () => {
   afterEach(() => jest.restoreAllMocks());
 

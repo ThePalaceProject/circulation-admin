@@ -62,10 +62,6 @@ describe("CatalogServices", () => {
   });
 });
 
-// Ported from the ConfigTabContainer full-mount coverage: rendering the connected
-// default export exercises CatalogServices' mapStateToProps/mapDispatchToProps,
-// which the unconnected tests above (and nothing else, once ConfigTabContainer is
-// migrated) do not cover.
 import CatalogServicesConnected from "../../../src/components/CatalogServices";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
