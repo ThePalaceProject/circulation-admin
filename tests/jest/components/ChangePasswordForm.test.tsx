@@ -79,20 +79,29 @@ describe("ChangePasswordForm", () => {
     expect(labels[1]).toHaveTextContent("Confirm New Password");
   });
 
-  it("does not submit a blank or partially blank form", async () => {
+  it("does not submit a blank form", async () => {
+    const user = userEvent.setup();
+    const changePassword = jest.fn().mockResolvedValue(undefined);
+    renderUnconnected({ changePassword });
+
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(changePassword).not.toHaveBeenCalled();
+    expect(screen.getByText("Fields cannot be blank.")).toBeInTheDocument();
+  });
+
+  // Rendered fresh, so the error message asserted below can only have come from
+  // this partial submit rather than lingering from an earlier blank one.
+  it("does not submit a partially blank form", async () => {
     const user = userEvent.setup();
     const changePassword = jest.fn().mockResolvedValue(undefined);
     const { container } = renderUnconnected({ changePassword });
-    const submit = screen.getByRole("button", { name: "Submit" });
-
-    // Both fields blank.
-    await user.click(submit);
-    expect(changePassword).not.toHaveBeenCalled();
-    expect(screen.getByText("Fields cannot be blank.")).toBeInTheDocument();
+    expect(screen.queryByText("Fields cannot be blank.")).toBeNull();
 
     // Only the first field filled.
     await user.type(passwordInput(container), "newPassword");
-    await user.click(submit);
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+
     expect(changePassword).not.toHaveBeenCalled();
     expect(screen.getByText("Fields cannot be blank.")).toBeInTheDocument();
   });

@@ -104,6 +104,12 @@ describe("AnnouncementsSection", () => {
       within(items[0]).getByText("Second Announcement")
     ).toBeInTheDocument();
     expect(screen.getByRole("textbox")).toHaveValue("First Announcement");
+
+    // Its dates are loaded too, which is what lets it be re-saved unchanged.
+    const dates =
+      container.querySelectorAll<HTMLInputElement>('input[type="date"]');
+    expect(dates[0]).toHaveValue("2020-05-12");
+    expect(dates[1]).toHaveValue("2020-06-12");
   });
 
   it("deletes an announcement", async () => {
