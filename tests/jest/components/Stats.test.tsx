@@ -28,13 +28,6 @@ const normalizedData = normalizeStatistics(statisticsApiResponseData);
 global.ResizeObserver = require("resize-observer-polyfill");
 
 describe("Dashboard Statistics", () => {
-  // NB: This adds test to the already existing tests in:
-  // - `src/components/__tests__/LibraryStats-test.tsx`.
-  // - `src/components/__tests__/SingleStatListItem-test.tsx`.
-  //
-  // Those tests should eventually be migrated here and
-  // adapted to the Jest/React Testing Library paradigm.
-
   // Configure standard constructors so that RTK Query works in tests with FetchMockJest
   Object.assign(fetchMock.config, {
     fetch,

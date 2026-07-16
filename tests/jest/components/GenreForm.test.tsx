@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import GenreForm from "../../../src/components/GenreForm";
-import genreData from "../../../src/components/__tests__/genreData";
+import genreData from "../fixtures/genreData";
 
 const genreOptions = Object.keys(genreData["Fiction"]).map(
   (name) => genreData["Fiction"][name]

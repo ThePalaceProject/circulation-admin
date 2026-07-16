@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
-import genreData from "../../../src/components/__tests__/genreData";
-import classificationsData from "../../../src/components/__tests__/classificationsData";
+import genreData from "../fixtures/genreData";
+import classificationsData from "../fixtures/classificationsData";
 // Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
 // are exercised. The genre tree and classifications are fetched on mount and fed
 // back in through the Redux store; `book` and `refreshCatalog` are own props.

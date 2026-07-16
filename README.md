@@ -126,7 +126,7 @@ In order to run the app with `react-axe`, run `npm run dev-test-axe`. This will 
 
 ### Unit Tests
 
-Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions. Older tests are run using mocha and these tests can be found in the `__tests__` folders littered throughout the `src` tree. All new tests should be written using jest and placed in the `tests/jest` directory. The directory structure in `tests/jest` should mirror the structure in `src`.
+Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions. They run using jest and live in the `tests/jest` directory, whose structure mirrors that of `src`. Shared fixture data lives in `tests/jest/fixtures`.
 
 To run the tests, perform `npm test`.
 

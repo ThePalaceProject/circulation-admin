@@ -26,9 +26,5 @@ module.exports = {
   testMatch: ["<rootDir>/tests/jest/**/*.test.{js,jsx,ts,tsx}"],
   coverageDirectory: "coverage/jest",
   coverageReporters: ["lcov", "text-summary"],
-  collectCoverageFrom: [
-    "src/**/*.{ts,tsx}",
-    "!src/**/__tests__/**",
-    "!src/**/*.d.ts",
-  ],
+  collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts"],
 };

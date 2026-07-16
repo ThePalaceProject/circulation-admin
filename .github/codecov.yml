@@ -17,8 +17,6 @@ flag_management:
     statuses: []
 
 ignore:
-  # Test fixtures that still live beside the code they support.
-  - "src/**/__tests__/**"
   - "tests/"
   - "dist/"
   - "lib/"

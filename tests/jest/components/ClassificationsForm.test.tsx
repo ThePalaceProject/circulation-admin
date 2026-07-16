@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 import ClassificationsForm from "../../../src/components/ClassificationsForm";
 import { BookData } from "../../../src/interfaces";
-import genreData from "../../../src/components/__tests__/genreData";
+import genreData from "../fixtures/genreData";
 
 // ClassificationsForm is a plain (unconnected) class component, so a bare
 // `render` is enough — no store/context/router needed.

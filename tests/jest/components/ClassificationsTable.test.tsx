@@ -2,7 +2,7 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 
 import ClassificationsTable from "../../../src/components/ClassificationsTable";
-import classificationsData from "../../../src/components/__tests__/classificationsData";
+import classificationsData from "../fixtures/classificationsData";
 
 // Mirrors ClassificationsTable's own `readableType`: it strips the genres URL
 // prefix so the displayed type is human-readable.
