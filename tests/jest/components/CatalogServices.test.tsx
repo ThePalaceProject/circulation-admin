@@ -61,3 +61,44 @@ describe("CatalogServices", () => {
     );
   });
 });
+
+// Ported from the ConfigTabContainer full-mount coverage: rendering the connected
+// default export exercises CatalogServices' mapStateToProps/mapDispatchToProps,
+// which the unconnected tests above (and nothing else, once ConfigTabContainer is
+// migrated) do not cover.
+import CatalogServicesConnected from "../../../src/components/CatalogServices";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
+
+describe("CatalogServices - connected wiring", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(
+      async () =>
+        new Response(
+          JSON.stringify({
+            catalog_services: [
+              { id: 2, protocol: "test protocol", name: "Test Catalog" },
+            ],
+            protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+    );
+    const store = buildStore();
+
+    renderWithProviders(<CatalogServicesConnected csrfToken="token" />, {
+      reduxProviderProps: { store },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
+
+    // The edit link only appears once the on-mount fetch resolves and
+    // mapStateToProps feeds the fetched service back in as props.
+    const editLink = await screen.findByRole("link", { name: /edit/i });
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/catalogServices/edit/2"
+    );
+  });
+});

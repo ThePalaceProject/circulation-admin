@@ -312,4 +312,37 @@ describe("CustomListsForBook", () => {
     expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
   });
+
+  it("resyncs its lists when the book url changes", () => {
+    const commonProps = {
+      csrfToken: "token",
+      library: "library",
+      refreshCatalog: jest.fn().mockResolvedValue(undefined),
+      allCustomLists: allCustomLists as any,
+      fetchAllCustomLists: jest.fn(),
+      fetchCustomListsForBook: jest.fn(),
+      editCustomListsForBook: jest.fn().mockResolvedValue(undefined),
+    };
+    const { rerender } = render(
+      <UnconnectedCustomListsForBook
+        {...commonProps}
+        book={{ id: "a", title: "Book A" } as any}
+        bookUrl="works/book-a"
+        customListsForBook={listsForBook as any}
+      />
+    );
+    // list 2 (the book's only list) is in the current column.
+    expect(screen.getByText("list 2")).toBeInTheDocument();
+
+    // A new book url re-syncs the current lists from the new customListsForBook.
+    rerender(
+      <UnconnectedCustomListsForBook
+        {...commonProps}
+        book={{ id: "b", title: "Book B" } as any}
+        bookUrl="works/book-b"
+        customListsForBook={[allCustomLists[0]] as any}
+      />
+    );
+    expect(screen.getByText("list 1")).toBeInTheDocument();
+  });
 });
