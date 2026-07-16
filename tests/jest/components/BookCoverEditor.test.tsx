@@ -82,7 +82,6 @@ describe("BookCoverEditor", () => {
     const refreshCatalog = jest.fn().mockResolvedValue(undefined);
     const utils = renderWithProviders(
       <BookCoverEditor
-        store={store}
         csrfToken="token"
         bookUrl="/book"
         book={bookData}
