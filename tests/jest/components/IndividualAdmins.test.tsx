@@ -1,18 +1,16 @@
 import * as React from "react";
-import { fireEvent } from "@testing-library/react";
-import { IndividualAdmins } from "../../../src/components/IndividualAdmins";
+import { fireEvent, screen } from "@testing-library/react";
+import ConnectedIndividualAdmins, {
+  IndividualAdmins,
+} from "../../../src/components/IndividualAdmins";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
 import {
+  AdminRoleData,
   ConfigurationSettings,
   IndividualAdminsData,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
-
-// NB: This adds tests to the already existing tests in:
-// - `src/components/__tests__/IndividualAdmins-test.tsx`.
-//
-// Those tests should eventually be migrated here and
-// adapted to the Jest/React Testing Library paradigm.
 
 describe("IndividualAdmins - role association disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -386,5 +384,123 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     fireEvent.click(toggles[0], { altKey: true });
     expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
+  });
+});
+
+// The settingUp headers ("Welcome!" / "Set up your system admin account") are
+// covered by SetupPage.test.tsx, which exercises the real prop wiring. Only the
+// non-setup branch needs covering here.
+describe("IndividualAdmins - headers", () => {
+  it("shows the configuration messages when not setting up", () => {
+    renderWithContext(
+      <IndividualAdmins
+        settingUp={false}
+        editOrCreate="create"
+        csrfToken="token"
+        data={{ individualAdmins: [] }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        isFetching={false}
+      />,
+      { csrfToken: "", featureFlags: defaultFeatureFlags, roles: [] }
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Individual admin configuration",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 3,
+        name: "Create a new individual admin",
+      })
+    ).toBeInTheDocument();
+  });
+});
+
+describe("IndividualAdmins - access control", () => {
+  const renderAs = (roles: AdminRoleData[]) =>
+    renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [{ email: "someone@example.com", roles: [] }],
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      { csrfToken: "", featureFlags: defaultFeatureFlags, roles }
+    );
+
+  const createLink = () => screen.queryByText("Create new individual admin");
+  const deleteButton = () => screen.queryByRole("button", { name: /Delete/ });
+
+  it("lets library managers create, edit and view, but not delete", () => {
+    renderAs([{ role: "manager", library: "alpha" }]);
+    expect(createLink()).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+    expect(deleteButton()).toBeNull();
+  });
+
+  it("lets sitewide library managers create and edit", () => {
+    renderAs([{ role: "manager-all" }]);
+    expect(createLink()).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+  });
+
+  it("lets system admins create, edit and delete", () => {
+    renderAs([{ role: "system" }]);
+    expect(createLink()).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+    expect(deleteButton()).toBeInTheDocument();
+  });
+
+  it("does not let librarians create, edit or delete", () => {
+    renderAs([{ role: "librarian", library: "alpha" }]);
+    expect(createLink()).toBeNull();
+    expect(screen.queryByText("Edit")).toBeNull();
+    // Non-editors get a read-only View link in place of Edit.
+    expect(screen.getByText("View")).toBeInTheDocument();
+    expect(deleteButton()).toBeNull();
+  });
+
+  it("does not let sitewide librarians create, edit or delete", () => {
+    renderAs([{ role: "librarian-all" }]);
+    expect(createLink()).toBeNull();
+    expect(screen.getByText("View")).toBeInTheDocument();
+    expect(deleteButton()).toBeNull();
+  });
+});
+
+// Exercises the connected default export so mapStateToProps/mapDispatchToProps
+// are covered.
+describe("IndividualAdmins - connect wiring", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("renders the connected default export, fetching on mount", async () => {
+    jest.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ individualAdmins: [] }), {
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    renderWithProviders(
+      <ConnectedIndividualAdmins
+        csrfToken="token"
+        editOrCreate={undefined}
+        identifier={undefined}
+      />,
+      { appConfigSettings: { roles: [{ role: "system" }] } }
+    );
+
+    // A system admin sees the create link once the mount fetch settles.
+    expect(
+      await screen.findByText("Create new individual admin")
+    ).toBeInTheDocument();
   });
 });
