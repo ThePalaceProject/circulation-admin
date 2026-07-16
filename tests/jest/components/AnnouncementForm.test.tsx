@@ -16,8 +16,10 @@ const getDateInputs = (container: HTMLElement) =>
 const getCounter = () => screen.getByText(/Current length:/);
 
 // Enter valid content and a start/finish date.
-const fillOutForm = async (container: HTMLElement) => {
-  const user = userEvent.setup();
+const fillOutForm = async (
+  user: ReturnType<typeof userEvent.setup>,
+  container: HTMLElement
+) => {
   await user.type(getTextarea(), CONTENT);
   const [start, finish] = getDateInputs(container);
   // Date inputs are read via a ref, so `fireEvent.change` (set value + dispatch)
@@ -88,6 +90,7 @@ describe("AnnouncementForm", () => {
   });
 
   it("keeps track of whether the content is too short or too long", async () => {
+    const user = userEvent.setup();
     const { container } = render(<AnnouncementForm add={add} />);
 
     // Empty content: 0/350, flagged as the wrong length, Add disabled.
@@ -96,7 +99,7 @@ describe("AnnouncementForm", () => {
     expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
 
     // Valid content: length flag cleared and Add enabled.
-    await fillOutForm(container);
+    await fillOutForm(user, container);
     expect(getCounter()).toHaveTextContent("(Current length: 66/350)");
     expect(getCounter().parentElement).not.toHaveClass("wrong-length");
     expect(screen.getByRole("button", { name: "Add" })).not.toBeDisabled();
@@ -112,7 +115,7 @@ describe("AnnouncementForm", () => {
   it("adds a new announcement", async () => {
     const user = userEvent.setup();
     const { container } = render(<AnnouncementForm add={add} />);
-    await fillOutForm(container);
+    await fillOutForm(user, container);
 
     await user.click(screen.getByRole("button", { name: "Add" }));
 
@@ -129,7 +132,7 @@ describe("AnnouncementForm", () => {
     const defaultStart = start0.value;
     const defaultFinish = finish0.value;
 
-    await fillOutForm(container);
+    await fillOutForm(user, container);
     expect(getTextarea()).toHaveValue(CONTENT);
 
     await user.click(screen.getByRole("button", { name: "Cancel" }));
