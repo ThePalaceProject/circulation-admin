@@ -63,13 +63,31 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-All tests run under jest (single config, see `jest.config.js`): they live in `tests/jest/` mirroring `src/` structure, and use React Testing Library, jest-dom, and MSW (plus `fetch-mock-jest`) for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient. Runs on `jest-fixed-jsdom` so MSW can intercept `fetch`. (The mocha/enzyme/chai/sinon suites that used to live in `src/**/__tests__/` have all been rewritten as RTL tests; enzyme is gone, which is what will let React move past 16.)
+Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`.
 
-`testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving MSW/dependency ESM bundles that ts-jest can't transform.
+Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. For API mocking the tree uses both MSW and `fetch-mock-jest` — `fetch-mock-jest` is the more common choice, MSW mainly where a request handler is clearer. Follow whichever the neighboring tests use.
 
-**Coverage:** Reported to Codecov under the `jest` flag. `collectCoverageFrom` must stay at the _top level_ of `jest.config.js` — jest reads it off the global config; setting it under `projects` leaves it globally undefined, so every executed file gets instrumented (including `tests/` helpers).
+Helpers in `tests/jest/testUtils/`:
 
-Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports; otherwise they are silently omitted rather than counted as uncovered, and the reported percentage rises while real coverage is unchanged.
+- `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store.
+- `renderWithContext.tsx` — lighter: app Context only.
+- `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements.
+
+**Writing tests — the traps that actually bite:**
+
+- Render the **connected default export**, not the unconnected named export, or `mapStateToProps`/`mapDispatchToProps` never run and their coverage is lost. Mocking a connected child in a parent's test drops that child's wiring the same way — cover the child in its own test.
+- Unhandled rejections fail the run: stub `fetch` and `await` a `findBy*` so on-mount fetches settle before the test ends.
+- `EditableInput` renders label and input as siblings with no `htmlFor`, so reach for `getByText`, not `getByLabelText`.
+- Mock react-router's `Link` as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
+
+**Environment:** `jest-fixed-jsdom` restores Node's `fetch`/`Response` globals so MSW can intercept them; `jest.polyfills.js` runs first via `setupFiles`. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
+
+**Coverage:** `npm run coverage` writes `coverage/jest/lcov.info`, uploaded to Codecov under the `jest` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. Two config constraints, both of which silently inflate the number if broken:
+
+- `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`; jest reads it off the global config, so nesting it leaves it globally undefined and every executed file gets instrumented, `tests/` helpers included.
+- `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports. Otherwise they are omitted from the report rather than counted as uncovered.
+
+**End-to-end:** Nightwatch/selenium tests live in `tests/browser/` (config: `nightwatch.json`, run via `npm run test-browser`). They need credentials and a selenium install, are not part of `npm test`, and do not run in CI; see `tests/browser/README.md`.
 
 ## Code Style
 
