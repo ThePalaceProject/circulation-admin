@@ -1,5 +1,5 @@
 import * as React from "react";
-import { screen, waitFor } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 import Libraries from "../../../src/components/Libraries";
 import { renderWithProviders } from "../testUtils/withProviders";
@@ -29,7 +29,7 @@ describe("Libraries - connected wiring", () => {
         )
     );
 
-    const { container } = renderWithProviders(<Libraries csrfToken="token" />, {
+    renderWithProviders(<Libraries csrfToken="token" />, {
       reduxProviderProps: { store: buildStore() },
       appConfigSettings: { roles: [{ role: "system" }] },
     });
@@ -39,8 +39,10 @@ describe("Libraries - connected wiring", () => {
     expect(
       await screen.findByText("New York Public Library")
     ).toBeInTheDocument();
-    await waitFor(() =>
-      expect(container.querySelector(".edit-item")).toBeInTheDocument()
+    const editLink = await screen.findByRole("link", { name: /edit/i });
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/libraries/edit/uuid-nypl"
     );
   });
 });

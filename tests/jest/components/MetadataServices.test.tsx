@@ -1,5 +1,5 @@
 import * as React from "react";
-import { screen, within, waitFor } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { MetadataServices } from "../../../src/components/MetadataServices";
 import renderWithContext from "../testUtils/renderWithContext";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
@@ -79,18 +79,17 @@ describe("MetadataServices - connected wiring", () => {
         )
     );
 
-    const { container } = renderWithProviders(
-      <MetadataServicesConnected csrfToken="token" />,
-      {
-        reduxProviderProps: { store: buildStore() },
-        appConfigSettings: { roles: [{ role: "system" }] },
-      }
-    );
+    renderWithProviders(<MetadataServicesConnected csrfToken="token" />, {
+      reduxProviderProps: { store: buildStore() },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
 
-    // The edit control only appears once the on-mount fetch resolves and
+    // The edit link only appears once the on-mount fetch resolves and
     // mapStateToProps feeds the fetched service back in as props.
-    await waitFor(() =>
-      expect(container.querySelector(".edit-item")).toBeInTheDocument()
+    const editLink = await screen.findByRole("link", { name: /edit/i });
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/metadata/edit/2"
     );
   });
 });
