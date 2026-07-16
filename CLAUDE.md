@@ -19,7 +19,6 @@ npm run lint:js                # Run ESLint over the whole tree (eslint . --max-
 npm test                       # Full jest suite
 npm run test-jest-file <path>  # Single test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
 npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
-npm run check-coverage         # Fail if any line in coverage-baseline.json is no longer covered
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
