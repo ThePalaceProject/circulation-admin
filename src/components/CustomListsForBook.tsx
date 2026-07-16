@@ -33,27 +33,18 @@ export interface CustomListsForBookOwnProps {
 }
 
 export interface CustomListsForBookProps
-  extends CustomListsForBookStateProps,
+  extends
+    CustomListsForBookStateProps,
     CustomListsForBookDispatchProps,
     CustomListsForBookOwnProps {}
 
-export interface CustomListsForBookState {
-  customLists?: CustomListData[];
-}
-
 /** Tab on the book details page that shows custom lists a book is on and lets
     an admin add the book to lists or remove the book from lists. */
-export class CustomListsForBook extends React.Component<
-  CustomListsForBookProps,
-  CustomListsForBookState
-> {
+export class CustomListsForBook extends React.Component<CustomListsForBookProps> {
   private addListRef = React.createRef<ProtocolFormField>();
 
   constructor(props: CustomListsForBookProps) {
     super(props);
-    this.state = {
-      customLists: this.props.customListsForBook,
-    };
     this.refresh = this.refresh.bind(this);
     this.save = this.save.bind(this);
     this.makeURL = this.makeURL.bind(this);
@@ -118,7 +109,6 @@ export class CustomListsForBook extends React.Component<
             format: "narrow",
             key: "lists-input",
             label: null,
-            custom_lists: this.state.customLists,
             required: false,
             menuOptions: allLists
               .filter((l) => l.name)
@@ -158,12 +148,6 @@ export class CustomListsForBook extends React.Component<
       if (!this.props.allCustomLists) {
         this.props.fetchAllCustomLists();
       }
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.bookUrl !== nextProps.bookUrl) {
-      this.setState({ customLists: nextProps.customListsForBook });
     }
   }
 

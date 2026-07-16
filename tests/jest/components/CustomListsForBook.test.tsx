@@ -313,7 +313,7 @@ describe("CustomListsForBook", () => {
     expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
   });
 
-  it("resyncs its lists when the book url changes", () => {
+  it("shows the new book's lists when it is rerendered for another book", () => {
     const commonProps = {
       csrfToken: "token",
       library: "library",
@@ -331,10 +331,12 @@ describe("CustomListsForBook", () => {
         customListsForBook={listsForBook as any}
       />
     );
-    // list 2 (the book's only list) is in the current column.
-    expect(screen.getByText("list 2")).toBeInTheDocument();
+    // list 2 (the book's only list) is in the current column, which renders
+    // each list as a link; the add-menu renders options instead.
+    expect(screen.getByRole("link", { name: "list 2" })).toBeInTheDocument();
 
-    // A new book url re-syncs the current lists from the new customListsForBook.
+    // The current column renders straight from customListsForBook, so a new
+    // book's lists replace the old ones on rerender.
     rerender(
       <UnconnectedCustomListsForBook
         {...commonProps}
@@ -343,6 +345,9 @@ describe("CustomListsForBook", () => {
         customListsForBook={[allCustomLists[0]] as any}
       />
     );
-    expect(screen.getByText("list 1")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "list 1" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "list 2" })
+    ).not.toBeInTheDocument();
   });
 });
