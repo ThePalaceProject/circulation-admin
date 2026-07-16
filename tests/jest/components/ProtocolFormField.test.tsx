@@ -331,7 +331,7 @@ describe("ProtocolFormField — setting types", () => {
 
   it("renders a hidden setting inside an invisible wrapper and reads its value via ref", () => {
     const ref = React.createRef<ProtocolFormField>();
-    const { container } = render(
+    render(
       <ProtocolFormField
         setting={{ ...baseSetting, hidden: true }}
         disabled={false}
