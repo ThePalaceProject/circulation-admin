@@ -102,6 +102,7 @@ describe("ConfigTabContainer", () => {
         "Patron Authentication",
         "Metadata",
         "External Catalogs",
+        "Discovery",
         "Sitewide Announcements",
       ]) {
         expect(screen.getByRole("link", { name })).toBeInTheDocument();
