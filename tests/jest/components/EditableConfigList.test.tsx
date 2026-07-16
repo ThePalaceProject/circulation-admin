@@ -1,18 +1,15 @@
 import * as React from "react";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import {
   EditableConfigList,
   EditFormProps,
+  AdditionalContentProps,
 } from "../../../src/components/EditableConfigList";
 import renderWithContext from "../testUtils/renderWithContext";
 import { ConfigurationSettings } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
-
-// NB: This adds tests to the already existing tests in:
-// - `src/components/__tests__/EditableConfigList-test.tsx`.
-//
-// Those tests should eventually be migrated here and
-// adapted to the Jest/React Testing Library paradigm.
+import * as navigate from "../../../src/utils/navigate";
 
 describe("EditableConfigList - library association disclosure", () => {
   // ── Test doubles ──────────────────────────────────────────────────────────
@@ -401,5 +398,599 @@ describe("EditableConfigList - library association disclosure", () => {
         "nypl"
       );
     });
+  });
+});
+
+// These exercise the abstract base class through concrete test subclasses,
+// asserting observable DOM instead of reaching into instances.
+describe("EditableConfigList - base class via test subclasses", () => {
+  interface Thing {
+    id: number;
+    label: string;
+    level?: number;
+  }
+
+  interface Things {
+    things: Thing[];
+  }
+
+  // Closure-controlled permission flags.
+  let canCreate: boolean;
+  let canDelete: boolean;
+  let canEdit: boolean;
+
+  // A test EditForm that surfaces the props the base class passes to it, so
+  // prop-only assertions can be checked against the rendered DOM.
+  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>> {
+    render(): JSX.Element {
+      const { disabled, save, item, listDataKey, adminLevel } = this.props;
+      return (
+        <div className="thing-edit-form">
+          <span data-testid="ef-disabled">{String(disabled)}</span>
+          <span data-testid="ef-has-save">{String(!!save)}</span>
+          <span data-testid="ef-datakey">{listDataKey}</span>
+          <span data-testid="ef-item">{item ? String(item.id) : "none"}</span>
+          <span data-testid="ef-adminlevel">{String(adminLevel)}</span>
+          <button
+            type="button"
+            data-testid="ef-save"
+            onClick={() => save && save(new FormData())}
+          >
+            submit form
+          </button>
+        </div>
+      );
+    }
+  }
+
+  class ThingAdditionalContent extends React.Component<
+    AdditionalContentProps<Things, Thing>
+  > {
+    render(): JSX.Element {
+      return (
+        <div
+          className="additional-content"
+          data-item-id={String((this.props.item as any)?.id)}
+          data-csrf={this.props.csrfToken}
+        >
+          Test Additional Content
+        </div>
+      );
+    }
+  }
+
+  // Uses the base implementations of canCreate/canDelete/canEdit.
+  class BaseThingList extends EditableConfigList<Things, Thing> {
+    EditForm = ThingEditForm;
+    listDataKey = "things";
+    itemTypeName = "thing";
+    urlBase = "/admin/things/";
+    identifierKey = "id";
+    labelKey = "label";
+  }
+
+  // Overrides permission checks from the closure flags.
+  class ThingEditableConfigList extends BaseThingList {
+    label(item): string {
+      return "test " + super.label(item);
+    }
+    canCreate() {
+      return canCreate;
+    }
+    canDelete() {
+      return canDelete;
+    }
+    canEdit() {
+      return canEdit;
+    }
+  }
+
+  class OneThingEditableConfigList extends ThingEditableConfigList {
+    limitOne = true;
+  }
+
+  class ThingAdditionalContentEditableConfigList extends ThingEditableConfigList {
+    AdditionalContent = ThingAdditionalContent;
+  }
+
+  class CapsThingList extends BaseThingList {
+    itemTypeName = "CDN";
+  }
+
+  class ThingWithSelfTests extends ThingEditableConfigList {
+    links = {
+      info: (
+        <>
+          Self-tests for the things have been moved to{" "}
+          <a href="/admin/web/troubleshooting/self-tests/thingServices">
+            the troubleshooting page
+          </a>
+          .
+        </>
+      ),
+      footer: (
+        <>
+          Problems with your things? Please visit{" "}
+          <a href="/admin/web/troubleshooting/self-tests/thingServices">
+            the troubleshooting page
+          </a>
+          .
+        </>
+      ),
+    };
+  }
+
+  const thingData: Thing = { id: 5, label: "label" };
+  const thingsData: Things = { things: [thingData] };
+
+  let fetchData: jest.Mock;
+  let editItem: jest.Mock;
+  let deleteItem: jest.Mock;
+
+  const systemConfig: Partial<ConfigurationSettings> = {
+    csrfToken: "token",
+    featureFlags: defaultFeatureFlags,
+    roles: [{ role: "system", library: "nypl" }],
+  };
+
+  const configWithRoles = (
+    roles: Partial<ConfigurationSettings>["roles"]
+  ): Partial<ConfigurationSettings> => ({
+    csrfToken: "token",
+    featureFlags: defaultFeatureFlags,
+    roles,
+  });
+
+  const baseProps = (overrides: Record<string, any> = {}) => ({
+    data: thingsData,
+    fetchData,
+    editItem,
+    deleteItem,
+    csrfToken: "token",
+    isFetching: false,
+    ...overrides,
+  });
+
+  beforeEach(() => {
+    fetchData = jest.fn();
+    editItem = jest.fn().mockResolvedValue(undefined);
+    deleteItem = jest.fn().mockResolvedValue(undefined);
+    canCreate = true;
+    canDelete = true;
+    canEdit = true;
+    jest.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("shows an error message if there's a problem loading the list", () => {
+    const { container, rerender } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(container.querySelector(".alert-danger")).toBeNull();
+
+    const fetchError = {
+      status: 404,
+      response: "test load error",
+      url: "test url",
+    };
+    rerender(<ThingEditableConfigList {...baseProps({ fetchError })} />);
+    expect(container.querySelector(".alert-danger")).not.toBeNull();
+    expect(screen.getByText("Error: test load error")).toBeInTheDocument();
+
+    // Hidden when the user goes to the form.
+    rerender(
+      <ThingEditableConfigList
+        {...baseProps({ fetchError, editOrCreate: "create" })}
+      />
+    );
+    expect(container.querySelector(".alert-danger")).toBeNull();
+  });
+
+  it("shows form submission error message only if the form is displayed", () => {
+    const formError = {
+      status: 400,
+      response: "test submission error",
+      url: "test url",
+    };
+    const { container, rerender } = renderWithContext(
+      <ThingEditableConfigList {...baseProps({ formError })} />,
+      systemConfig
+    );
+    // Not displayed while looking at the list.
+    expect(container.querySelector(".alert-danger")).toBeNull();
+
+    rerender(
+      <ThingEditableConfigList
+        {...baseProps({ formError, editOrCreate: "create" })}
+      />
+    );
+    expect(container.querySelector(".alert-danger")).not.toBeNull();
+    expect(
+      screen.getByText("Error: test submission error")
+    ).toBeInTheDocument();
+
+    // Hidden when the user goes back to the list.
+    rerender(
+      <ThingEditableConfigList
+        {...baseProps({ formError, editOrCreate: "" })}
+      />
+    );
+    expect(container.querySelector(".alert-danger")).toBeNull();
+  });
+
+  it("shows a success message with an edit link on create", () => {
+    const { container } = renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({ responseBody: "itemType", editOrCreate: "create" })}
+      />,
+      systemConfig
+    );
+    const success = container.querySelector(".alert-success");
+    expect(success).not.toBeNull();
+    expect(success.textContent).toBe("Successfully created a new thing");
+    const link = success.querySelector<HTMLAnchorElement>("a");
+    expect(link).not.toBeNull();
+    expect(link.getAttribute("href")).toBe("/admin/things/edit/itemType");
+  });
+
+  it("shows a success message without a link on edit", () => {
+    const { container } = renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({ responseBody: "itemType", editOrCreate: "edit" })}
+      />,
+      systemConfig
+    );
+    const success = container.querySelector(".alert-success");
+    expect(success).not.toBeNull();
+    expect(success.textContent).toBe("Successfully edited this thing");
+    expect(success.querySelector("a")).toBeNull();
+  });
+
+  it("keeps all-caps item type names uppercase in the success message", () => {
+    const { container } = renderWithContext(
+      <CapsThingList
+        {...baseProps({ responseBody: "itemType", editOrCreate: "create" })}
+      />,
+      systemConfig
+    );
+    const success = container.querySelector(".alert-success");
+    expect(success.textContent).toBe("Successfully created a new CDN");
+  });
+
+  it("shows a loading indicator only while fetching", () => {
+    const { rerender } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    rerender(<ThingEditableConfigList {...baseProps({ isFetching: true })} />);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("shows the thing header", () => {
+    renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Thing configuration" })
+    ).toBeInTheDocument();
+  });
+
+  it("shows the thing list with an edit link and a count", () => {
+    const { container } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    const items = container.querySelectorAll("ul > li");
+    expect(items).toHaveLength(1);
+    expect(items[0].textContent).toContain("test label");
+    const editLink = items[0].querySelector<HTMLAnchorElement>(".edit-item");
+    expect(editLink.getAttribute("href")).toBe("/admin/things/edit/5");
+    expect(
+      container.querySelector(".list-container header div").textContent
+    ).toBe("1 configured");
+  });
+
+  it("updates the thing list when new data arrives", () => {
+    const { container, rerender } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    const newThingsData = {
+      things: [thingData, { id: 6, label: "another thing" }],
+    };
+    rerender(
+      <ThingEditableConfigList {...baseProps({ data: newThingsData })} />
+    );
+    const items = container.querySelectorAll("ul > li");
+    expect(items).toHaveLength(2);
+    expect(items[1].textContent).toContain("test another thing");
+    expect(
+      items[1]
+        .querySelector<HTMLAnchorElement>(".edit-item")
+        .getAttribute("href")
+    ).toBe("/admin/things/edit/6");
+  });
+
+  it("shows the create link, which respects canCreate", () => {
+    const { container, rerender } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    const createLink =
+      container.querySelector<HTMLAnchorElement>(".create-item");
+    expect(createLink.textContent).toBe("Create new thing");
+    expect(createLink.getAttribute("href")).toBe("/admin/things/create");
+
+    canCreate = false;
+    rerender(<ThingEditableConfigList {...baseProps()} />);
+    expect(container.querySelector(".create-item")).toBeNull();
+  });
+
+  it("uses the base canCreate (true) when a subclass does not override it", () => {
+    const { container } = renderWithContext(
+      <BaseThingList {...baseProps()} />,
+      systemConfig
+    );
+    expect(container.querySelector(".create-item")).not.toBeNull();
+  });
+
+  it("hides the create link if only one item is allowed and it already exists", () => {
+    const { container, rerender } = renderWithContext(
+      <OneThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(container.querySelector(".create-item")).toBeNull();
+
+    rerender(
+      <OneThingEditableConfigList {...baseProps({ data: { things: [] } })} />
+    );
+    const createLink =
+      container.querySelector<HTMLAnchorElement>(".create-item");
+    expect(createLink).not.toBeNull();
+    expect(createLink.getAttribute("href")).toBe("/admin/things/create");
+  });
+
+  it("shows a view button instead of an edit button when canEdit is false", () => {
+    canEdit = false;
+    const { container } = renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({
+          data: { things: [{ id: 6, label: "View Only", level: 3 }] },
+        })}
+      />,
+      configWithRoles([{ role: "manager", library: "nypl" }])
+    );
+    const editItemLink = container.querySelector(".edit-item");
+    expect(editItemLink.textContent).toContain("View");
+    expect(editItemLink.textContent).not.toContain("Edit");
+  });
+
+  it("shows a delete button when canDelete is true and hides it otherwise", () => {
+    // Base canDelete: system admin (level 3) → delete button shown.
+    const shown = renderWithContext(
+      <BaseThingList {...baseProps()} />,
+      systemConfig
+    );
+    expect(shown.container.querySelector(".delete-item")).not.toBeNull();
+    shown.unmount();
+
+    // Base canDelete for a librarian (level 1) → no delete button.
+    const hiddenByRole = renderWithContext(
+      <BaseThingList {...baseProps()} />,
+      configWithRoles([{ role: "librarian", library: "nypl" }])
+    );
+    expect(hiddenByRole.container.querySelector(".delete-item")).toBeNull();
+    hiddenByRole.unmount();
+
+    // Explicit override returning false → no delete button.
+    canDelete = false;
+    const hiddenByOverride = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(hiddenByOverride.container.querySelector(".delete-item")).toBeNull();
+  });
+
+  it("deletes an item only after the user confirms", async () => {
+    const user = userEvent.setup();
+    const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+    const { container } = renderWithContext(
+      <BaseThingList {...baseProps()} />,
+      systemConfig
+    );
+    const deleteButton =
+      container.querySelector<HTMLButtonElement>(".delete-item");
+    expect(deleteButton).not.toBeNull();
+
+    await user.click(deleteButton);
+    expect(deleteItem).toHaveBeenCalledTimes(0);
+
+    confirmSpy.mockReturnValue(true);
+    await user.click(deleteButton);
+    await waitFor(() => expect(deleteItem).toHaveBeenCalledTimes(1));
+    expect(deleteItem).toHaveBeenCalledWith(5);
+  });
+
+  it("renders the create form and its header", () => {
+    renderWithContext(
+      <ThingEditableConfigList {...baseProps({ editOrCreate: "create" })} />,
+      systemConfig
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Create a new thing" })
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("ef-item")).toHaveTextContent("none");
+    expect(screen.getByTestId("ef-disabled")).toHaveTextContent("false");
+    expect(screen.getByTestId("ef-datakey")).toHaveTextContent("things");
+    expect(screen.getByTestId("ef-has-save")).toHaveTextContent("true");
+  });
+
+  it("renders the edit form with the item and an editable header", () => {
+    renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({ editOrCreate: "edit", identifier: "5" })}
+      />,
+      systemConfig
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Edit test label" })
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("ef-item")).toHaveTextContent("5");
+    expect(screen.getByTestId("ef-disabled")).toHaveTextContent("false");
+    expect(screen.getByTestId("ef-has-save")).toHaveTextContent("true");
+  });
+
+  it("shows a non-editable header, no save function, and a disabled form when canEdit is false", () => {
+    canEdit = false;
+    renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({ editOrCreate: "edit", identifier: "5" })}
+      />,
+      systemConfig
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: "test label" })
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("ef-has-save")).toHaveTextContent("false");
+    expect(screen.getByTestId("ef-disabled")).toHaveTextContent("true");
+  });
+
+  it("updates the edit-form header when the item's label changes", () => {
+    const { rerender } = renderWithContext(
+      <ThingEditableConfigList
+        {...baseProps({ editOrCreate: "edit", identifier: "5" })}
+      />,
+      systemConfig
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Edit test label" })
+    ).toBeInTheDocument();
+
+    rerender(
+      <ThingEditableConfigList
+        {...baseProps({
+          editOrCreate: "edit",
+          identifier: "5",
+          data: { things: [{ id: 5, label: "new thing!" }] },
+        })}
+      />
+    );
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Edit test new thing!" })
+    ).toBeInTheDocument();
+  });
+
+  it("fetches on mount, passes a working save function, and refetches on save", async () => {
+    const user = userEvent.setup();
+    renderWithContext(
+      <ThingEditableConfigList {...baseProps({ editOrCreate: "create" })} />,
+      systemConfig
+    );
+    expect(fetchData).toHaveBeenCalledTimes(1);
+    expect(editItem).toHaveBeenCalledTimes(0);
+
+    await user.click(screen.getByTestId("ef-save"));
+    expect(editItem).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(fetchData).toHaveBeenCalledTimes(2));
+  });
+
+  it("does not fetch on mount if a fetch is already in progress", () => {
+    renderWithContext(
+      <ThingEditableConfigList {...baseProps({ isFetching: true })} />,
+      systemConfig
+    );
+    expect(fetchData).toHaveBeenCalledTimes(0);
+  });
+
+  it("navigates to the edit page after successfully creating a limit-one item", async () => {
+    const user = userEvent.setup();
+    const navigateSpy = jest
+      .spyOn(navigate, "navigateTo")
+      .mockImplementation(() => undefined);
+    renderWithContext(
+      <OneThingEditableConfigList
+        {...baseProps({ editOrCreate: "create", responseBody: "99" })}
+      />,
+      systemConfig
+    );
+    await user.click(screen.getByTestId("ef-save"));
+    await waitFor(
+      () => expect(navigateSpy).toHaveBeenCalledWith("/admin/things/edit/99"),
+      { timeout: 3000 }
+    );
+  });
+
+  it("does not render AdditionalContent unless the subclass supplies it", () => {
+    const { container, unmount } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    expect(container.querySelector(".additional-content")).toBeNull();
+    unmount();
+
+    const withContent = renderWithContext(
+      <ThingAdditionalContentEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    const additional = withContent.container.querySelector<HTMLElement>(
+      ".additional-content"
+    );
+    expect(additional).not.toBeNull();
+    expect(additional.textContent).toBe("Test Additional Content");
+    expect(additional.getAttribute("data-item-id")).toBe("5");
+    expect(additional.getAttribute("data-csrf")).toBe("token");
+  });
+
+  it("shows the troubleshooting link and info alert only when there are self-tests", () => {
+    const { container, unmount } = renderWithContext(
+      <ThingEditableConfigList {...baseProps()} />,
+      systemConfig
+    );
+    // No self-tests configured → neither the info alert nor the footer link.
+    expect(container.querySelector(".alert-info")).toBeNull();
+    expect(screen.queryByText(/visit the troubleshooting page/)).toBeNull();
+    unmount();
+
+    const withSelfTests = renderWithContext(
+      <ThingWithSelfTests {...baseProps()} />,
+      systemConfig
+    );
+    const info = withSelfTests.container.querySelector(".alert-info");
+    expect(info.textContent).toBe(
+      "Self-tests for the things have been moved to the troubleshooting page."
+    );
+    expect(info.querySelector("a").getAttribute("href")).toBe(
+      "/admin/web/troubleshooting/self-tests/thingServices"
+    );
+
+    const footer = withSelfTests.container.querySelector("p");
+    expect(footer.textContent).toBe(
+      "Problems with your things? Please visit the troubleshooting page."
+    );
+    expect(footer.querySelector("a").getAttribute("href")).toBe(
+      "/admin/web/troubleshooting/self-tests/thingServices"
+    );
+  });
+
+  it("figures out what level of permissions the admin has", () => {
+    const adminLevelFor = (roles) => {
+      const { getByTestId, unmount } = renderWithContext(
+        <BaseThingList {...baseProps({ editOrCreate: "create" })} />,
+        configWithRoles(roles)
+      );
+      const level = getByTestId("ef-adminlevel").textContent;
+      unmount();
+      return level;
+    };
+
+    expect(adminLevelFor([{ role: "system", library: "nypl" }])).toBe("3");
+    expect(adminLevelFor([{ role: "manager", library: "nypl" }])).toBe("2");
+    expect(adminLevelFor([{ role: "librarian", library: "nypl" }])).toBe("1");
   });
 });
