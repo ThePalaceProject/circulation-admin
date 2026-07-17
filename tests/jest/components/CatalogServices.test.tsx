@@ -1,7 +1,11 @@
 import * as React from "react";
 import { screen, within } from "@testing-library/react";
-import { CatalogServices } from "../../../src/components/CatalogServices";
+import CatalogServicesConnected, {
+  CatalogServices,
+} from "../../../src/components/CatalogServices";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 describe("CatalogServices", () => {
@@ -61,10 +65,6 @@ describe("CatalogServices", () => {
     );
   });
 });
-
-import CatalogServicesConnected from "../../../src/components/CatalogServices";
-import { renderWithProviders } from "../testUtils/withProviders";
-import buildStore from "../../../src/store";
 
 describe("CatalogServices - connected wiring", () => {
   afterEach(() => jest.restoreAllMocks());

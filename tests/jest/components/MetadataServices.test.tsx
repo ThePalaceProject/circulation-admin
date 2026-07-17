@@ -1,7 +1,11 @@
 import * as React from "react";
 import { screen, within } from "@testing-library/react";
-import { MetadataServices } from "../../../src/components/MetadataServices";
+import MetadataServicesConnected, {
+  MetadataServices,
+} from "../../../src/components/MetadataServices";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 describe("MetadataServices", () => {
@@ -57,10 +61,6 @@ describe("MetadataServices", () => {
     );
   });
 });
-
-import MetadataServicesConnected from "../../../src/components/MetadataServices";
-import { renderWithProviders } from "../testUtils/withProviders";
-import buildStore from "../../../src/store";
 
 describe("MetadataServices - connected wiring", () => {
   afterEach(() => jest.restoreAllMocks());
