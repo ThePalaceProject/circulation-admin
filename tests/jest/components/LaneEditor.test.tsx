@@ -1,7 +1,6 @@
 import * as React from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { stub } from "sinon";
 import { LaneData } from "../../../src/interfaces";
 import LaneEditor from "../../../src/components/LaneEditor";
 import * as navigate from "../../../src/utils/navigate";
@@ -62,11 +61,15 @@ const customListsData = [
   { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
 ];
 
-const editLane = stub().returns(new Promise<void>((resolve) => resolve()));
+const editLane = jest
+  .fn()
+  .mockReturnValue(new Promise<void>((resolve) => resolve()));
 
-const deleteLane = stub().returns(new Promise<void>((resolve) => resolve()));
+const deleteLane = jest
+  .fn()
+  .mockReturnValue(new Promise<void>((resolve) => resolve()));
 
-const toggleLaneVisibility = stub();
+const toggleLaneVisibility = jest.fn();
 
 function createLaneData(displayName: string, isAutomated: boolean): LaneData {
   return {
@@ -104,7 +107,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={stub().returns(laneData)}
+          findParentOfLane={jest.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -139,7 +142,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={stub().returns(laneData)}
+          findParentOfLane={jest.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -177,7 +180,7 @@ describe("LaneEditor", () => {
         editOrCreate="edit"
         editLane={editLane}
         deleteLane={deleteLane}
-        findParentOfLane={stub().returns(laneData)}
+        findParentOfLane={jest.fn().mockReturnValue(laneData)}
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );

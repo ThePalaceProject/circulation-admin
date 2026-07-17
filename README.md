@@ -126,17 +126,23 @@ In order to run the app with `react-axe`, run `npm run dev-test-axe`. This will 
 
 ### Unit Tests
 
-Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions. Older tests are run using mocha and these tests can be found in the `__tests__` folders littered throughout the `src` tree. All new tests should be written using jest and placed in the `tests/jest` directory. The directory structure in `tests/jest` should mirror the structure in `src`.
+Like the codebase, the unit tests are written in Typescript. They cover React components as well as redux and utility functions. Tests run under jest and live in the `tests/jest` directory, whose structure mirrors `src`; each file is named `*.test.ts` / `*.test.tsx`, and shared fixture data lives in `tests/jest/fixtures`.
 
-To run the tests, perform `npm test`.
+Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), which drives components the way a user does — query by role and text, not by internal structure. `tests/jest/testUtils` has helpers for the common setup: `renderWithProviders()` wraps a component in the Redux store, app context, and QueryClient, and `renderWithContext()` does app context alone. Network calls are stubbed with `fetch-mock-jest` or MSW; the tests around the one you are writing will show which.
 
-We use GitHub Actions for continuous integration. Any pull requests submitted must have tests and those tests must pass on GitHub Actions.
+```bash
+npm test                       # the whole suite
+npm run test-jest-file <path>  # a single file
+npm run coverage               # the suite with a coverage report, written to coverage/jest/lcov.info
+```
+
+We use GitHub Actions for continuous integration. Any pull requests submitted must have tests and those tests must pass on GitHub Actions. Coverage is reported to Codecov, which will comment on the pull request if it drops.
 
 ### Nightwatch
 
-There are end-to-end tests that run on Nightwatch. This selenium-based test runner allows us to include integration tests for logging into the admin and clicking through different pages.
+There are end-to-end tests that run on Nightwatch. This selenium-based test runner allows us to include integration tests for logging into the admin and clicking through different pages. They live in `tests/browser` and are separate from the jest suite — `npm test` does not run them.
 
-To set up credentials and run the tests, check out the [README](/tests/README.md) in `/tests/.
+To set up credentials and run the tests, check out the [README](/tests/browser/README.md) in `/tests/browser`.
 
 ## Patron Blocking Rules — Keeping Documentation in Sync
 

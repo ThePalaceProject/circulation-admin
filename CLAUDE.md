@@ -16,15 +16,13 @@ npm run dev-server -- --env=backend=https://your-cm-url  # Dev server against re
 npm run prod                   # Production build
 npm run lint                   # Run ESLint (lint:js) + sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
-npm test                       # Full test suite (both jest projects)
+npm test                       # Full jest suite
 npm run test-jest-file <path>  # Single test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
 npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
-Run one jest project at a time with `npx jest --selectProjects=unit` (or `=legacy`). Note
-`--selectProjects` is variadic, so put file paths behind `--testPathPattern` rather than
-after it as positional arguments.
+Run a single file with `npx jest --testPathPattern='components/MyTest\.test'`.
 
 The dev server can also read the backend URL from `.env` or `.env.local` with `BACKEND=https://...`.
 
@@ -65,17 +63,31 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Everything runs under jest, split into **two jest `projects`** (see `jest.config.js`):
+Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`.
 
-1. **`unit`** (for all new tests): Tests in `tests/jest/` mirroring `src/` structure. Uses React Testing Library, jest-dom, and MSW for API mocking. Test utilities in `tests/jest/testUtils/withProviders.tsx` provide `renderWithProviders()` and `componentWithProviders()` to wrap components with Redux, Context, and QueryClient. Runs on `jest-fixed-jsdom` so MSW can intercept `fetch`.
+Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. For API mocking the tree uses both MSW and `fetch-mock-jest` — `fetch-mock-jest` is the more common choice, MSW mainly where a request handler is clearer. Follow whichever the neighboring tests use.
 
-2. **`legacy`**: Tests in `src/*/__tests__/` directories, still written with Enzyme, chai, and sinon. Being rewritten as `unit` tests; **do not add new ones**. Runs on `tests/jest/legacyJsdomEnvironment.js` — plain jsdom, because `jest-fixed-jsdom` substitutes undici's `FormData`, which rejects `new FormData(formElement)`. That environment also restores `global.jsdom` and tolerates unhandled promise rejections; both are documented in the file. Delete the project, the environment, and `tests/jest/legacy-setup.ts` along with the last enzyme test — that is what unblocks React 17+, since enzyme has no adapter beyond React 16.
+Helpers in `tests/jest/testUtils/`:
 
-Both projects need `testEnvironmentOptions.customExportConditions: [""]`. Without it, jsdom's default `["browser"]` condition resolves **sinon** to its ESM bundle and every suite that imports it fails to parse.
+- `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store.
+- `renderWithContext.tsx` — lighter: app Context only.
+- `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements.
 
-**Coverage:** Reported to Codecov under the `jest` flag. `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`, not inside `projects` — jest reads it off the global config, and setting it per-project leaves it globally undefined, so every executed file gets instrumented (including `tests/` helpers).
+**Writing tests — the traps that actually bite:**
 
-Jest's `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports; otherwise they are silently omitted rather than counted as uncovered, and the reported percentage rises while real coverage is unchanged.
+- Render the **connected default export**, not the unconnected named export, or `mapStateToProps`/`mapDispatchToProps` never run and their coverage is lost. Mocking a connected child in a parent's test drops that child's wiring the same way — cover the child in its own test.
+- Unhandled rejections fail the run: stub `fetch` and `await` a `findBy*` so on-mount fetches settle before the test ends.
+- `EditableInput` renders label and input as siblings with no `htmlFor`, so reach for `getByText`, not `getByLabelText`.
+- Mock react-router's `Link` as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
+
+**Environment:** `jest-fixed-jsdom` restores Node's `fetch`/`Response` globals so MSW can intercept them; `jest.polyfills.js` runs first via `setupFiles`. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
+
+**Coverage:** `npm run coverage` writes `coverage/jest/lcov.info`, uploaded to Codecov under the `jest` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. Two config constraints, both of which silently inflate the number if broken:
+
+- `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`; jest reads it off the global config, so nesting it leaves it globally undefined and every executed file gets instrumented, `tests/` helpers included.
+- `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports. Otherwise they are omitted from the report rather than counted as uncovered.
+
+**End-to-end:** Nightwatch/selenium tests live in `tests/browser/` (config: `nightwatch.json`, run via `npm run test-browser`). They need credentials and a selenium install, are not part of `npm test`, and do not run in CI; see `tests/browser/README.md`.
 
 ## Code Style
 
