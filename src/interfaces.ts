@@ -503,7 +503,6 @@ export interface CustomListsData {
 }
 
 export interface CustomListsSetting extends SettingData {
-  custom_lists?: CustomListData[];
   menuOptions?: JSX.Element[];
   menuTitle?: string;
 }
