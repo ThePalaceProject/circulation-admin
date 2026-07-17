@@ -1,7 +1,11 @@
 import * as React from "react";
 import { screen, within } from "@testing-library/react";
-import { MetadataServices } from "../../../src/components/MetadataServices";
+import MetadataServicesConnected, {
+  MetadataServices,
+} from "../../../src/components/MetadataServices";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 describe("MetadataServices", () => {
@@ -51,6 +55,38 @@ describe("MetadataServices", () => {
     expect(items[0]).toHaveTextContent("sample name: test protocol");
 
     const editLink = within(items[0]).getByRole("link");
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/metadata/edit/2"
+    );
+  });
+});
+
+describe("MetadataServices - connected wiring", () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(
+      async () =>
+        new Response(
+          JSON.stringify({
+            metadata_services: [
+              { id: 2, protocol: "test protocol", name: "Test Metadata" },
+            ],
+            protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+    );
+
+    renderWithProviders(<MetadataServicesConnected csrfToken="token" />, {
+      reduxProviderProps: { store: buildStore() },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
+
+    // The edit link only appears once the on-mount fetch resolves and
+    // mapStateToProps feeds the fetched service back in as props.
+    const editLink = await screen.findByRole("link", { name: /edit/i });
     expect(editLink).toHaveAttribute(
       "href",
       "/admin/web/config/metadata/edit/2"
