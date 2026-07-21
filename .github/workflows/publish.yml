@@ -43,7 +43,7 @@ jobs:
     # For push events, we need full git history (fetch-depth: 0) so dunamai can
     # generate a version from git tags. For release events, we only need the
     # current commit (fetch-depth: 1) since the version comes from the release tag.
-    - uses: actions/checkout@v7.0.0
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
         fetch-depth: ${{ github.event_name == 'release' && 1 || 0 }}
