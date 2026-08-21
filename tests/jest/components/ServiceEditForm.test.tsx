@@ -467,6 +467,17 @@ describe("ServiceEditForm", () => {
       );
     });
 
+    it("falls back to the short name for a library missing from allLibraries", () => {
+      const serviceWithUnknownLibrary = Object.assign({}, serviceData, {
+        libraries: [{ short_name: "unknown" }],
+      });
+      const { container } = renderForm({ item: serviceWithUnknownLibrary });
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("unknown");
+      expect(container.querySelector(".with-edit-button a")).toBeNull();
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

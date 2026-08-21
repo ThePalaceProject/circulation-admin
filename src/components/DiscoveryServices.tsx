@@ -16,6 +16,7 @@ import {
   LibraryRegistrationsData,
 } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
+import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 
 export interface DiscoveryServicesStateProps extends EditableConfigListStateProps<DiscoveryServicesData> {
   isFetchingLibraryRegistrations?: boolean;
@@ -97,12 +98,10 @@ export class DiscoveryServices extends GenericEditableConfigList<
     const allLibraries = this.props.data?.allLibraries ?? [];
     return registered.map((lib) => {
       const meta = allLibraries.find((l) => l.short_name === lib.short_name);
-      const uuid = meta?.uuid ?? lib.uuid;
-      const name = meta?.name ?? lib.name;
       return {
-        label: name ? `${name} - ${lib.short_name}` : lib.short_name,
+        label: libraryLabel(meta?.name ?? lib.name, lib.short_name),
         suffix: lib.stage ? ` - registered - ${lib.stage}` : " - registered",
-        href: uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined,
+        href: libraryConfigHref(meta?.uuid ?? lib.uuid),
       };
     });
   }

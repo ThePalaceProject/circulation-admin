@@ -8,14 +8,14 @@ import {
   LibraryRegistrationData,
   LibraryData,
 } from "../interfaces";
+import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
   protocol: string;
 }
 
-export interface LibraryRegistrationProps
-  extends ServiceEditFormProps<ServicesWithRegistrationsData> {
+export interface LibraryRegistrationProps extends ServiceEditFormProps<ServicesWithRegistrationsData> {
   registerLibrary: (library, registration_stage) => void;
   protocol: string;
 }
@@ -117,12 +117,31 @@ export default class LibraryRegistration extends React.Component<
     );
   }
 
+  /**
+   * Shows the library name and its short name, linked to the library's
+   * configuration page.
+   *
+   * The link opens in a new tab so that an accidental click cannot discard
+   * unsaved changes to the form this list is rendered in.
+   */
   name(library: LibraryData): JSX.Element {
+    const label = libraryLabel(library.name, library.short_name);
+    const href = libraryConfigHref(library.uuid);
     return (
       <div className="library-name">
-        <a href={`/admin/web/config/libraries/edit/${library.uuid}`}>
-          {library.name}
-        </a>
+        {href ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`${label} (opens in a new tab)`}
+            aria-label={`${label} (opens in a new tab)`}
+          >
+            {label}
+          </a>
+        ) : (
+          label
+        )}
       </div>
     );
   }
@@ -204,9 +223,9 @@ export default class LibraryRegistration extends React.Component<
   }
 
   updateRegistrationStage(library: LibraryData): void {
-    const registration_stage = (this.refs[
-      `stage-${library.short_name}`
-    ] as any).getValue();
+    const registration_stage = (
+      this.refs[`stage-${library.short_name}`] as any
+    ).getValue();
     this.setState({
       registration_stage: Object.assign({}, this.state.registration_stage, {
         [library.short_name]: registration_stage,

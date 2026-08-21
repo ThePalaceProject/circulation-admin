@@ -83,8 +83,8 @@ export const formatNumber = (n: number | string | null): string => {
   return !isNaN(Number(n))
     ? Intl.NumberFormat("en-US").format(Number(n))
     : n === String(n)
-    ? n
-    : "";
+      ? n
+      : "";
 };
 
 /**
@@ -94,3 +94,28 @@ export const formatNumber = (n: number | string | null): string => {
  */
 export const roundedNumber = (n: number): string =>
   n ? numeral(n).format("0.[0]a") : "0";
+
+/**
+ * Format a library for display as "<name> - <short name>", e.g.
+ * "New York Public Library - nypl".
+ *
+ * Both fields are optional on LibraryData, so fall back to whichever one is
+ * available. When neither is, show "(unnamed)" rather than a blank label, so
+ * that a library never appears in the UI as an unexplained empty value.
+ *
+ * @param name - the library's display name
+ * @param shortName - the library's short name
+ */
+export const libraryLabel = (name?: string, shortName?: string): string =>
+  name && shortName
+    ? `${name} - ${shortName}`
+    : name || shortName || "(unnamed)";
+
+/**
+ * Build the link to a library's configuration page, or undefined when the
+ * library's uuid is unknown.
+ *
+ * @param uuid - the library's uuid
+ */
+export const libraryConfigHref = (uuid?: string): string | undefined =>
+  uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;

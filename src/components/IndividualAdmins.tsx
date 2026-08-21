@@ -12,6 +12,7 @@ import {
   AdminRoleData,
 } from "../interfaces";
 import Admin from "../models/Admin";
+import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
 /** Right panel for individual admin configuration on the system configuration page.
@@ -42,15 +43,16 @@ export class IndividualAdmins extends EditableConfigList<
     const roles: AdminRoleData[] = item.roles || [];
     const allLibraries = this.getAllLibraries();
 
-    const getLibraryName = (shortName: string) => {
-      const name = allLibraries.find((l) => l.short_name === shortName)?.name;
-      return name ? `${name} - ${shortName}` : shortName;
-    };
+    const getLibraryName = (shortName: string) =>
+      libraryLabel(
+        allLibraries.find((l) => l.short_name === shortName)?.name,
+        shortName
+      );
 
-    const getLibraryHref = (shortName: string) => {
-      const uuid = allLibraries.find((l) => l.short_name === shortName)?.uuid;
-      return uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;
-    };
+    const getLibraryHref = (shortName: string) =>
+      libraryConfigHref(
+        allLibraries.find((l) => l.short_name === shortName)?.uuid
+      );
 
     const result: Array<{
       label: string;

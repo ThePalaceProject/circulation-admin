@@ -10,6 +10,7 @@ import ActionCreator from "../actions";
 import { LibrariesData, LibraryData, LanguagesData } from "../interfaces";
 import Admin from "../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
+import { libraryLabel } from "../utils/sharedFunctions";
 
 /** Right panel for library configuration on the system configuration page.
     Shows a list of current libraries and allows creating a new library or
@@ -59,11 +60,12 @@ export class Libraries extends GenericEditableConfigList<
 
   /** Shows the library name and its short name, e.g. "My Library - mylib". */
   label(item): string {
-    const name = item[this.labelKey];
-    if (name && item.short_name) {
-      return `${name} - ${item.short_name}`;
+    // With neither a name nor a short name, the uuid identifies the row better
+    // than the "(unnamed)" placeholder would.
+    if (!item[this.labelKey] && !item.short_name) {
+      return item.uuid;
     }
-    return name || item.short_name || item.uuid;
+    return libraryLabel(item[this.labelKey], item.short_name);
   }
 
   canCreate() {

@@ -11,7 +11,11 @@ import {
   ServiceData,
   ServicesData,
 } from "../interfaces";
-import { clearForm } from "../utils/sharedFunctions";
+import {
+  clearForm,
+  libraryConfigHref,
+  libraryLabel,
+} from "../utils/sharedFunctions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {
@@ -600,11 +604,6 @@ export default class ServiceEditForm<
     return null;
   }
 
-  libraryLabel(shortName: string): string {
-    const library = this.getLibrary(shortName);
-    return library ? `${library.name} - ${library.short_name}` : "";
-  }
-
   /**
    * Renders the associated library's label, linked to that library's
    * configuration page when its uuid is known.
@@ -614,10 +613,11 @@ export default class ServiceEditForm<
    */
   renderLibraryLabel(shortName: string): JSX.Element | string {
     const library = this.getLibrary(shortName);
-    const label = this.libraryLabel(shortName);
-    return library && library.uuid ? (
+    const label = libraryLabel(library?.name, shortName);
+    const href = libraryConfigHref(library?.uuid);
+    return href ? (
       <a
-        href={`/admin/web/config/libraries/edit/${library.uuid}`}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         title={`${label} (opens in a new tab)`}

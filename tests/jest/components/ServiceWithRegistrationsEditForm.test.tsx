@@ -22,8 +22,9 @@ const protocolsData = [
   },
 ];
 const allLibraries = [
-  { short_name: "nypl", name: "New York Public Library" },
-  { short_name: "bpl", name: "Brooklyn Public Library" },
+  { short_name: "nypl", name: "New York Public Library", uuid: "uuid-nypl" },
+  { short_name: "bpl", name: "Brooklyn Public Library", uuid: "uuid-bpl" },
+  // No uuid, so this one has no configuration page to link to.
   { short_name: "qpl", name: "Queens Public Library" },
 ];
 const libraryRegistrationsData = [
@@ -75,15 +76,29 @@ describe("ServiceWithRegistrationsEditForm", () => {
       screen.getByRole("heading", { name: "Register libraries" })
     ).toBeInTheDocument();
 
+    // Each library is labeled "<name> - <short name>" and, when its uuid is
+    // known, links to its configuration page in a new tab.
+    const nyplLink = screen.getByRole("link", {
+      name: "New York Public Library - nypl (opens in a new tab)",
+    });
+    expect(nyplLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/libraries/edit/uuid-nypl"
+    );
+    expect(nyplLink).toHaveAttribute("target", "_blank");
+    expect(nyplLink).toHaveAttribute("rel", "noopener noreferrer");
+
     expect(
-      screen.getByRole("link", { name: "New York Public Library" })
+      screen.getByRole("link", {
+        name: "Brooklyn Public Library - bpl (opens in a new tab)",
+      })
     ).toBeInTheDocument();
+
+    // Without a uuid there is no link, just the label.
+    expect(screen.getByText("Queens Public Library - qpl")).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Brooklyn Public Library" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Queens Public Library" })
-    ).toBeInTheDocument();
+      screen.queryByRole("link", { name: /Queens Public Library/ })
+    ).toBeNull();
 
     // Statuses come from `data.libraryRegistrations`.
     expect(screen.getByText("Registered")).toHaveClass("bg-success");
