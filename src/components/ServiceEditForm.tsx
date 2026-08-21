@@ -41,7 +41,7 @@ export interface ServiceEditFormState {
 /** Form for editing service configuration based on protocol information from the server.
     Used on most tabs on the system configuration page. */
 export default class ServiceEditForm<
-  T extends ServicesData
+  T extends ServicesData,
 > extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
   private extraForm = React.createRef();
   constructor(props) {
@@ -134,11 +134,8 @@ export default class ServiceEditForm<
   render(): JSX.Element {
     const protocol = this.findProtocol();
     const listDataKey = this.props.listDataKey;
-    const {
-      requiredFields,
-      nonRequiredFields,
-      extraFields,
-    } = this.protocolSettings(protocol);
+    const { requiredFields, nonRequiredFields, extraFields } =
+      this.protocolSettings(protocol);
     const showLibrariesForm =
       !this.sitewide(protocol) ||
       this.protocolLibrarySettings(protocol).length > 0;
@@ -389,17 +386,14 @@ export default class ServiceEditForm<
                       disabled={disabled}
                       onEdit={() => this.expandLibrary(library)}
                     >
-                      {this.getLibrary(library.short_name) &&
-                        this.getLibrary(library.short_name).name}
+                      {this.renderLibraryLabel(library.short_name)}
                     </WithEditButton>
                   )}
                 {!(
                   this.props.data &&
                   this.props.data.protocols &&
                   this.protocolHasLibrarySettings(protocol)
-                ) &&
-                  this.getLibrary(library.short_name) &&
-                  this.getLibrary(library.short_name).name}
+                ) && this.renderLibraryLabel(library.short_name)}
               </WithRemoveButton>
               {this.isExpanded(library) && (
                 <div className="edit-library-settings">
@@ -412,7 +406,7 @@ export default class ServiceEditForm<
                         setting={setting}
                         disabled={disabled}
                         value={
-                          ((library as unknown) as Record<string, string>)[
+                          (library as unknown as Record<string, string>)[
                             setting.key
                           ]
                         }
@@ -573,8 +567,8 @@ export default class ServiceEditForm<
           extraSettings.includes(s.key)
             ? extraFields.push(s)
             : s.required
-            ? requiredFields.push(s)
-            : nonRequiredFields.push(s);
+              ? requiredFields.push(s)
+              : nonRequiredFields.push(s);
         });
     }
     return { requiredFields, nonRequiredFields, extraFields };
@@ -604,6 +598,25 @@ export default class ServiceEditForm<
       }
     }
     return null;
+  }
+
+  libraryLabel(shortName: string): string {
+    const library = this.getLibrary(shortName);
+    return library ? `${library.name} - ${library.short_name}` : "";
+  }
+
+  /**
+   * Renders the associated library's label, linked to that library's
+   * configuration page when its uuid is known.
+   */
+  renderLibraryLabel(shortName: string): JSX.Element | string {
+    const library = this.getLibrary(shortName);
+    const label = this.libraryLabel(shortName);
+    return library && library.uuid ? (
+      <a href={`/admin/web/config/libraries/edit/${library.uuid}`}>{label}</a>
+    ) : (
+      label
+    );
   }
 
   availableLibraries(): LibraryData[] {
@@ -703,9 +716,9 @@ export default class ServiceEditForm<
     );
     const newLibrary = { short_name: library.short_name };
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (this.refs[
-        library.short_name + "_" + setting.key
-      ] as any).getValue();
+      const value = (
+        this.refs[library.short_name + "_" + setting.key] as any
+      ).getValue();
       if (value) {
         newLibrary[setting.key] = value;
       }

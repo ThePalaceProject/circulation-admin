@@ -417,6 +417,35 @@ describe("ServiceEditForm", () => {
       expect(libraries[0]).toHaveTextContent("New York Public Library");
     });
 
+    it("labels an associated library with its name and short name", () => {
+      const { container } = renderForm({ item: serviceData });
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+    });
+
+    it("links an associated library to its configuration page", () => {
+      const dataWithUuids = Object.assign({}, servicesData, {
+        allLibraries: [
+          Object.assign({}, allLibraries[0], { uuid: "nypl-uuid" }),
+          allLibraries[1],
+        ],
+      });
+      const { container } = renderForm({
+        data: dataWithUuids,
+        item: serviceData,
+      });
+      const link = container.querySelector(
+        ".with-edit-button a"
+      ) as HTMLAnchorElement;
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "/admin/web/config/libraries/edit/nypl-uuid"
+      );
+      expect(link).toHaveTextContent("New York Public Library - nypl");
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

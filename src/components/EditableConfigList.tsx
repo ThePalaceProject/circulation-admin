@@ -322,7 +322,9 @@ export abstract class GenericEditableConfigList<
         (l) => l.short_name === lib.short_name
       );
       return {
-        label: libraryData?.name || lib.short_name,
+        label: libraryData?.name
+          ? `${libraryData.name} - ${lib.short_name}`
+          : lib.short_name,
         href: libraryData?.uuid
           ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
           : undefined,

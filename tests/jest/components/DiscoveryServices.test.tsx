@@ -215,7 +215,9 @@ describe("DiscoveryServices - registered library disclosure", () => {
     fireEvent.click(container.querySelector(".association-toggle"));
 
     const item = container.querySelector(".associated-items li");
-    expect(item.textContent).toBe("Alpha Library - registered - production");
+    expect(item.textContent).toBe(
+      "Alpha Library - alpha - registered - production"
+    );
   });
 
   it("shows '- registered' without a stage when stage is absent", () => {
@@ -231,7 +233,7 @@ describe("DiscoveryServices - registered library disclosure", () => {
     fireEvent.click(container.querySelector(".association-toggle"));
 
     const item = container.querySelector(".associated-items li");
-    expect(item.textContent).toBe("Alpha Library - registered");
+    expect(item.textContent).toBe("Alpha Library - alpha - registered");
   });
 
   // ── Sorting ───────────────────────────────────────────────────────────────
@@ -290,7 +292,7 @@ describe("DiscoveryServices - registered library disclosure", () => {
       ".associated-items a"
     );
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe("Alpha Library");
+    expect(link.textContent).toBe("Alpha Library - alpha");
     expect(link.href).toContain("/admin/web/config/libraries/edit/uuid-alpha");
     // The suffix should not be inside the link.
     expect(link.nextSibling.textContent).toBe(" - registered - production");
@@ -312,7 +314,7 @@ describe("DiscoveryServices - registered library disclosure", () => {
 
     expect(container.querySelector(".associated-items a")).toBeNull();
     expect(container.querySelector(".associated-items li").textContent).toBe(
-      "Delta Library - registered - testing"
+      "Delta Library - delta - registered - testing"
     );
   });
 

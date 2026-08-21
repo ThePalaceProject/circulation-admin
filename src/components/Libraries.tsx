@@ -15,18 +15,17 @@ import LibraryEditForm from "./LibraryEditForm";
     Shows a list of current libraries and allows creating a new library or
     editing or deleting an existing library. */
 
-export interface LibrariesStateProps
-  extends EditableConfigListStateProps<LibrariesData> {
+export interface LibrariesStateProps extends EditableConfigListStateProps<LibrariesData> {
   additionalData?: LanguagesData;
 }
 
-export interface LibrariesDispatchProps
-  extends EditableConfigListDispatchProps<LibrariesData> {
+export interface LibrariesDispatchProps extends EditableConfigListDispatchProps<LibrariesData> {
   fetchLanguages: () => void;
 }
 
 export interface LibrariesProps
-  extends LibrariesStateProps,
+  extends
+    LibrariesStateProps,
     LibrariesDispatchProps,
     EditableConfigListOwnProps {}
 
@@ -58,8 +57,13 @@ export class Libraries extends GenericEditableConfigList<
     return undefined;
   }
 
+  /** Shows the library name and its short name, e.g. "My Library - mylib". */
   label(item): string {
-    return item[this.labelKey] || item.short_name || item.uuid;
+    const name = item[this.labelKey];
+    if (name && item.short_name) {
+      return `${name} - ${item.short_name}`;
+    }
+    return name || item.short_name || item.uuid;
   }
 
   canCreate() {

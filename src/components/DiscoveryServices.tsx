@@ -17,25 +17,22 @@ import {
 } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 
-export interface DiscoveryServicesStateProps
-  extends EditableConfigListStateProps<DiscoveryServicesData> {
+export interface DiscoveryServicesStateProps extends EditableConfigListStateProps<DiscoveryServicesData> {
   isFetchingLibraryRegistrations?: boolean;
 }
 
-export interface DiscoveryServicesDispatchProps
-  extends EditableConfigListDispatchProps<DiscoveryServicesData> {
+export interface DiscoveryServicesDispatchProps extends EditableConfigListDispatchProps<DiscoveryServicesData> {
   registerLibrary: (data: FormData) => Promise<void>;
   fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
 }
 
 export interface DiscoveryServicesProps
-  extends DiscoveryServicesStateProps,
+  extends
+    DiscoveryServicesStateProps,
     DiscoveryServicesDispatchProps,
     EditableConfigListOwnProps {}
 
-export class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<
-  DiscoveryServicesData
-> {}
+export class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {}
 
 /** Right panel for discovery services on the system configuration page.
     Shows a list of current discovery services and allows creating a new
@@ -88,8 +85,8 @@ export class DiscoveryServices extends GenericEditableConfigList<
     return count === 0
       ? "no registered libraries"
       : count === 1
-      ? "1 registered library"
-      : `${count} registered libraries`;
+        ? "1 registered library"
+        : `${count} registered libraries`;
   }
 
   protected getAssociatedEntries(
@@ -101,8 +98,9 @@ export class DiscoveryServices extends GenericEditableConfigList<
     return registered.map((lib) => {
       const meta = allLibraries.find((l) => l.short_name === lib.short_name);
       const uuid = meta?.uuid ?? lib.uuid;
+      const name = meta?.name ?? lib.name;
       return {
-        label: meta?.name ?? lib.name ?? lib.short_name,
+        label: name ? `${name} - ${lib.short_name}` : lib.short_name,
         suffix: lib.stage ? ` - registered - ${lib.stage}` : " - registered",
         href: uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined,
       };

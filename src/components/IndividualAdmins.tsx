@@ -33,9 +33,7 @@ export class IndividualAdmins extends EditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
-  private getRolesSummary(
-    item: IndividualAdminData
-  ): Array<{
+  private getRolesSummary(item: IndividualAdminData): Array<{
     label: string;
     suffix?: string;
     href?: string;
@@ -44,8 +42,10 @@ export class IndividualAdmins extends EditableConfigList<
     const roles: AdminRoleData[] = item.roles || [];
     const allLibraries = this.getAllLibraries();
 
-    const getLibraryName = (shortName: string) =>
-      allLibraries.find((l) => l.short_name === shortName)?.name || shortName;
+    const getLibraryName = (shortName: string) => {
+      const name = allLibraries.find((l) => l.short_name === shortName)?.name;
+      return name ? `${name} - ${shortName}` : shortName;
+    };
 
     const getLibraryHref = (shortName: string) => {
       const uuid = allLibraries.find((l) => l.short_name === shortName)?.uuid;

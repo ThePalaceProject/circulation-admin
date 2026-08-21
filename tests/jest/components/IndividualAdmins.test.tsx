@@ -148,7 +148,7 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     const items = container.querySelectorAll(".associated-items li");
     expect(items).toHaveLength(1);
-    expect(items[0].textContent).toBe("Alpha Library - Manager");
+    expect(items[0].textContent).toBe("Alpha Library - alpha - Manager");
   });
 
   it("shows '<library> - Librarian' for a librarian role", () => {
@@ -162,7 +162,7 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     const items = container.querySelectorAll(".associated-items li");
     expect(items).toHaveLength(1);
-    expect(items[0].textContent).toBe("Beta Library - Librarian");
+    expect(items[0].textContent).toBe("Beta Library - beta - Librarian");
   });
 
   it("shows the highest role (Manager) when a library has both manager and librarian roles", () => {
@@ -179,7 +179,7 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     const items = container.querySelectorAll(".associated-items li");
     expect(items).toHaveLength(1);
-    expect(items[0].textContent).toBe("Alpha Library - Manager");
+    expect(items[0].textContent).toBe("Alpha Library - alpha - Manager");
   });
 
   // ── Sitewide roles ────────────────────────────────────────────────────────
@@ -238,8 +238,8 @@ describe("IndividualAdmins - role association disclosure", () => {
     const items = container.querySelectorAll(".associated-items li");
     const texts = Array.from(items).map((li) => li.textContent);
     expect(texts).toContain("All libraries - Manager");
-    expect(texts).toContain("Alpha Library - Manager");
-    expect(texts).toContain("Beta Library - Librarian");
+    expect(texts).toContain("Alpha Library - alpha - Manager");
+    expect(texts).toContain("Beta Library - beta - Librarian");
   });
 
   it("shows both 'All libraries' and per-library entries when librarian-all and library roles coexist", () => {
@@ -257,7 +257,7 @@ describe("IndividualAdmins - role association disclosure", () => {
     const items = container.querySelectorAll(".associated-items li");
     const texts = Array.from(items).map((li) => li.textContent);
     expect(texts).toContain("All libraries - Librarian");
-    expect(texts).toContain("Gamma Library - Librarian");
+    expect(texts).toContain("Gamma Library - gamma - Librarian");
   });
 
   // ── Sorting ───────────────────────────────────────────────────────────────
@@ -276,9 +276,9 @@ describe("IndividualAdmins - role association disclosure", () => {
     fireEvent.click(container.querySelector(".association-toggle"));
 
     const items = container.querySelectorAll(".associated-items li");
-    expect(items[0].textContent).toBe("Alpha Library - Manager");
-    expect(items[1].textContent).toBe("Beta Library - Librarian");
-    expect(items[2].textContent).toBe("Gamma Library - Manager");
+    expect(items[0].textContent).toBe("Alpha Library - alpha - Manager");
+    expect(items[1].textContent).toBe("Beta Library - beta - Librarian");
+    expect(items[2].textContent).toBe("Gamma Library - gamma - Manager");
   });
 
   // ── Links ─────────────────────────────────────────────────────────────────
@@ -296,7 +296,7 @@ describe("IndividualAdmins - role association disclosure", () => {
       ".associated-items a"
     );
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe("Alpha Library");
+    expect(link.textContent).toBe("Alpha Library - alpha");
     expect(link.href).toContain("/admin/web/config/libraries/edit/uuid-alpha");
     // The role suffix should not be part of the link.
     expect(link.nextSibling.textContent).toBe(" - Manager");
@@ -313,7 +313,7 @@ describe("IndividualAdmins - role association disclosure", () => {
 
     expect(container.querySelector(".associated-items a")).toBeNull();
     expect(container.querySelector(".associated-items li").textContent).toBe(
-      "Delta Library - Librarian"
+      "Delta Library - delta - Librarian"
     );
   });
 

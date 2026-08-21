@@ -37,7 +37,7 @@ describe("Libraries - connected wiring", () => {
     // The library and its edit control appear once the on-mount fetch resolves
     // and mapStateToProps feeds the fetched data back in as props.
     expect(
-      await screen.findByText("New York Public Library")
+      await screen.findByText("New York Public Library - nypl")
     ).toBeInTheDocument();
     const editLink = await screen.findByRole("link", { name: /edit/i });
     expect(editLink).toHaveAttribute(
