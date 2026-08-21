@@ -446,6 +446,27 @@ describe("ServiceEditForm", () => {
       expect(link).toHaveTextContent("New York Public Library - nypl");
     });
 
+    it("opens the associated library link in a new tab, so unsaved edits survive a stray click", () => {
+      const dataWithUuids = Object.assign({}, servicesData, {
+        allLibraries: [
+          Object.assign({}, allLibraries[0], { uuid: "nypl-uuid" }),
+          allLibraries[1],
+        ],
+      });
+      const { container } = renderForm({
+        data: dataWithUuids,
+        item: serviceData,
+      });
+      const link = container.querySelector(
+        ".with-edit-button a"
+      ) as HTMLAnchorElement;
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      expect(link).toHaveAccessibleName(
+        "New York Public Library - nypl (opens in a new tab)"
+      );
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

@@ -608,12 +608,23 @@ export default class ServiceEditForm<
   /**
    * Renders the associated library's label, linked to that library's
    * configuration page when its uuid is known.
+   *
+   * The link opens in a new tab so that an accidental click cannot discard
+   * unsaved changes to the form the link is rendered in.
    */
   renderLibraryLabel(shortName: string): JSX.Element | string {
     const library = this.getLibrary(shortName);
     const label = this.libraryLabel(shortName);
     return library && library.uuid ? (
-      <a href={`/admin/web/config/libraries/edit/${library.uuid}`}>{label}</a>
+      <a
+        href={`/admin/web/config/libraries/edit/${library.uuid}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`${label} (opens in a new tab)`}
+        aria-label={`${label} (opens in a new tab)`}
+      >
+        {label}
+      </a>
     ) : (
       label
     );
