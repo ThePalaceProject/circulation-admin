@@ -11,11 +11,8 @@ import {
   ServiceData,
   ServicesData,
 } from "../interfaces";
-import {
-  clearForm,
-  libraryConfigHref,
-  libraryLabel,
-} from "../utils/sharedFunctions";
+import { clearForm, libraryLabel } from "../utils/sharedFunctions";
+import LibraryConfigLink from "./LibraryConfigLink";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {
@@ -460,7 +457,7 @@ export default class ServiceEditForm<
                     this.state.selectedLibrary === "library.short_name"
                   }
                 >
-                  {library.name}
+                  {libraryLabel(library.name, library.short_name)}
                 </option>
               ))}
             </EditableInput>
@@ -604,29 +601,16 @@ export default class ServiceEditForm<
     return null;
   }
 
-  /**
-   * Renders the associated library's label, linked to that library's
-   * configuration page when its uuid is known.
-   *
-   * The link opens in a new tab so that an accidental click cannot discard
-   * unsaved changes to the form the link is rendered in.
-   */
-  renderLibraryLabel(shortName: string): JSX.Element | string {
+  /** Renders the associated library's label, linked to that library's
+   *  configuration page when its uuid is known. */
+  renderLibraryLabel(shortName: string): JSX.Element {
     const library = this.getLibrary(shortName);
-    const label = libraryLabel(library?.name, shortName);
-    const href = libraryConfigHref(library?.uuid);
-    return href ? (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={`${label} (opens in a new tab)`}
-        aria-label={`${label} (opens in a new tab)`}
-      >
-        {label}
-      </a>
-    ) : (
-      label
+    return (
+      <LibraryConfigLink
+        name={library?.name}
+        short_name={shortName}
+        uuid={library?.uuid}
+      />
     );
   }
 

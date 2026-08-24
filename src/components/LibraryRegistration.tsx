@@ -8,7 +8,7 @@ import {
   LibraryRegistrationData,
   LibraryData,
 } from "../interfaces";
-import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
+import LibraryConfigLink from "./LibraryConfigLink";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
@@ -117,31 +117,16 @@ export default class LibraryRegistration extends React.Component<
     );
   }
 
-  /**
-   * Shows the library name and its short name, linked to the library's
-   * configuration page.
-   *
-   * The link opens in a new tab so that an accidental click cannot discard
-   * unsaved changes to the form this list is rendered in.
-   */
+  /** Shows the library name and its short name, linked to the library's
+   *  configuration page. */
   name(library: LibraryData): JSX.Element {
-    const label = libraryLabel(library.name, library.short_name);
-    const href = libraryConfigHref(library.uuid);
     return (
       <div className="library-name">
-        {href ? (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`${label} (opens in a new tab)`}
-            aria-label={`${label} (opens in a new tab)`}
-          >
-            {label}
-          </a>
-        ) : (
-          label
-        )}
+        <LibraryConfigLink
+          name={library.name}
+          short_name={library.short_name}
+          uuid={library.uuid}
+        />
       </div>
     );
   }

@@ -94,8 +94,13 @@ describe("ServiceWithRegistrationsEditForm", () => {
       })
     ).toBeInTheDocument();
 
-    // Without a uuid there is no link, just the label.
-    expect(screen.getByText("Queens Public Library - qpl")).toBeInTheDocument();
+    // Without a uuid there is no link, just the label. The same label also
+    // appears as an "Add Library" option, so scope to the registration list.
+    expect(
+      screen
+        .getAllByText("Queens Public Library - qpl")
+        .some((element) => element.classList.contains("library-name"))
+    ).toBe(true);
     expect(
       screen.queryByRole("link", { name: /Queens Public Library/ })
     ).toBeNull();
