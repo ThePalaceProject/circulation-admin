@@ -317,6 +317,21 @@ describe("IndividualAdmins - role association disclosure", () => {
     );
   });
 
+  it("shows just the short name, unlinked, for a role whose library is missing from allLibraries", () => {
+    const { container } = renderAdmins([
+      {
+        email: "mgr@example.com",
+        roles: [{ role: "manager", library: "omega" }],
+      },
+    ]);
+    fireEvent.click(container.querySelector(".association-toggle"));
+
+    expect(container.querySelector(".associated-items a")).toBeNull();
+    expect(container.querySelector(".associated-items li").textContent).toBe(
+      "omega - Manager"
+    );
+  });
+
   // ── Expand all / Collapse all buttons ────────────────────────────────────
 
   it("Expand all expands all admins that have roles", () => {

@@ -45,4 +45,23 @@ describe("Libraries - connected wiring", () => {
       "/admin/web/config/libraries/edit/uuid-nypl"
     );
   });
+
+  it("falls back to the uuid as the label for a library with no name and no short name", async () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(
+      async () =>
+        new Response(
+          JSON.stringify({
+            libraries: [{ uuid: "uuid-anon", settings: {} }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+    );
+
+    renderWithProviders(<Libraries csrfToken="token" />, {
+      reduxProviderProps: { store: buildStore() },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
+
+    expect(await screen.findByText("uuid-anon")).toBeInTheDocument();
+  });
 });

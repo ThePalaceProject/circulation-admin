@@ -318,6 +318,34 @@ describe("DiscoveryServices - registered library disclosure", () => {
     );
   });
 
+  it("falls back to the registration record's own name and uuid for a library missing from allLibraries", () => {
+    const { container } = renderServices({
+      discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [
+            {
+              short_name: "omega",
+              name: "Omega Library",
+              uuid: "uuid-omega",
+              status: "success",
+              stage: "testing",
+            } as any,
+          ],
+        },
+      ],
+    });
+    fireEvent.click(container.querySelector(".association-toggle"));
+
+    const link = container.querySelector<HTMLAnchorElement>(
+      ".associated-items a"
+    );
+    expect(link).not.toBeNull();
+    expect(link.textContent).toBe("Omega Library - omega");
+    expect(link.href).toContain("/admin/web/config/libraries/edit/uuid-omega");
+  });
+
   // ── Per-service isolation ─────────────────────────────────────────────────
 
   it("shows each service's own registered libraries independently", () => {
