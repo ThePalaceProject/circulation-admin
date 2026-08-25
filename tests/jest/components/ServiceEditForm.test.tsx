@@ -465,6 +465,11 @@ describe("ServiceEditForm", () => {
       expect(link).toHaveAccessibleName(
         "New York Public Library - nypl (opens in a new tab)"
       );
+      // The visible new-tab cue for sighted users; hidden from screen readers,
+      // which get the aria-label wording instead.
+      const icon = link.querySelector("i.fa-external-link");
+      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveAttribute("aria-hidden", "true");
     });
 
     it("falls back to the short name for a library missing from allLibraries", () => {

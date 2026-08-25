@@ -28,7 +28,7 @@ export default function LibraryConfigLink({
       rel="noopener noreferrer"
       aria-label={`${label} (opens in a new tab)`}
     >
-      {label}
+      {label} <i className="fa fa-external-link" aria-hidden="true" />
     </a>
   ) : (
     <>{label}</>

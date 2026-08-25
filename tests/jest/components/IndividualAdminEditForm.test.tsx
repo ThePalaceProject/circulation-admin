@@ -246,6 +246,12 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
     expect(email.readOnly).toBe(true);
   });
 
+  it("labels each library row in the role table with the name and short name", () => {
+    renderForm();
+    expect(screen.getByText("NYPL - nypl")).toBeInTheDocument();
+    expect(screen.getByText("BPL - bpl")).toBeInTheDocument();
+  });
+
   it("requires the email and password fields", () => {
     const { container } = renderForm();
     expect(container.querySelectorAll(".required-field")).toHaveLength(2);
