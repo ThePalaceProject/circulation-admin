@@ -43,7 +43,7 @@ export class IndividualAdmins extends EditableConfigList<
     const roles: AdminRoleData[] = item.roles || [];
     const allLibraries = this.getAllLibraries();
 
-    const getLibraryName = (shortName: string) =>
+    const getLibraryLabel = (shortName: string) =>
       libraryLabel(
         allLibraries.find((l) => l.short_name === shortName)?.name,
         shortName
@@ -91,7 +91,7 @@ export class IndividualAdmins extends EditableConfigList<
 
     for (const [shortName, role] of Object.entries(libraryHighestRole)) {
       result.push({
-        label: getLibraryName(shortName),
+        label: getLibraryLabel(shortName),
         suffix: role === "manager" ? " - Manager" : " - Librarian",
         href: getLibraryHref(shortName),
       });
