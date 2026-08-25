@@ -2,6 +2,8 @@ import {
   findDefault,
   formatString,
   isEqual,
+  libraryConfigHref,
+  libraryLabel,
 } from "../../../src/utils/sharedFunctions";
 
 describe("findDefault", () => {
@@ -117,5 +119,35 @@ describe("isEqual", () => {
   });
   it("returns true if the arrays have the same duplicates", () => {
     expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).toBe(true);
+  });
+});
+
+describe("libraryLabel", () => {
+  it("combines the name and the short name", () => {
+    expect(libraryLabel("New York Public Library", "nypl")).toBe(
+      "New York Public Library - nypl"
+    );
+  });
+  it("falls back to the short name when there is no name", () => {
+    expect(libraryLabel(undefined, "nypl")).toBe("nypl");
+  });
+  it("falls back to the name when there is no short name", () => {
+    expect(libraryLabel("New York Public Library", undefined)).toBe(
+      "New York Public Library"
+    );
+  });
+  it("returns a placeholder when neither is available", () => {
+    expect(libraryLabel(undefined, undefined)).toBe("(unnamed)");
+  });
+});
+
+describe("libraryConfigHref", () => {
+  it("builds the library configuration url from a uuid", () => {
+    expect(libraryConfigHref("uuid-nypl")).toBe(
+      "/admin/web/config/libraries/edit/uuid-nypl"
+    );
+  });
+  it("returns undefined without a uuid", () => {
+    expect(libraryConfigHref(undefined)).toBeUndefined();
   });
 });

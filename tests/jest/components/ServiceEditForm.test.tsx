@@ -417,6 +417,72 @@ describe("ServiceEditForm", () => {
       expect(libraries[0]).toHaveTextContent("New York Public Library");
     });
 
+    it("labels an associated library with its name and short name", () => {
+      const { container } = renderForm({ item: serviceData });
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+    });
+
+    it("links an associated library to its configuration page", () => {
+      const dataWithUuids = Object.assign({}, servicesData, {
+        allLibraries: [
+          Object.assign({}, allLibraries[0], { uuid: "nypl-uuid" }),
+          allLibraries[1],
+        ],
+      });
+      const { container } = renderForm({
+        data: dataWithUuids,
+        item: serviceData,
+      });
+      const link = container.querySelector(
+        ".with-edit-button a"
+      ) as HTMLAnchorElement;
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute(
+        "href",
+        "/admin/web/config/libraries/edit/nypl-uuid"
+      );
+      expect(link).toHaveTextContent("New York Public Library - nypl");
+    });
+
+    it("opens the associated library link in a new tab, so unsaved edits survive a stray click", () => {
+      const dataWithUuids = Object.assign({}, servicesData, {
+        allLibraries: [
+          Object.assign({}, allLibraries[0], { uuid: "nypl-uuid" }),
+          allLibraries[1],
+        ],
+      });
+      const { container } = renderForm({
+        data: dataWithUuids,
+        item: serviceData,
+      });
+      const link = container.querySelector(
+        ".with-edit-button a"
+      ) as HTMLAnchorElement;
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      expect(link).toHaveAccessibleName(
+        "New York Public Library - nypl (opens in a new tab)"
+      );
+      // The visible new-tab cue for sighted users; hidden from screen readers,
+      // which get the aria-label wording instead.
+      const icon = link.querySelector("i.fa-external-link");
+      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveAttribute("aria-hidden", "true");
+    });
+
+    it("falls back to the short name for a library missing from allLibraries", () => {
+      const serviceWithUnknownLibrary = Object.assign({}, serviceData, {
+        libraries: [{ short_name: "unknown" }],
+      });
+      const { container } = renderForm({ item: serviceWithUnknownLibrary });
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("unknown");
+      expect(container.querySelector(".with-edit-button a")).toBeNull();
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

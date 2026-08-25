@@ -12,6 +12,7 @@ import {
   AdminRoleData,
 } from "../interfaces";
 import Admin from "../models/Admin";
+import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
 /** Right panel for individual admin configuration on the system configuration page.
@@ -33,9 +34,7 @@ export class IndividualAdmins extends EditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
-  private getRolesSummary(
-    item: IndividualAdminData
-  ): Array<{
+  private getRolesSummary(item: IndividualAdminData): Array<{
     label: string;
     suffix?: string;
     href?: string;
@@ -44,13 +43,16 @@ export class IndividualAdmins extends EditableConfigList<
     const roles: AdminRoleData[] = item.roles || [];
     const allLibraries = this.getAllLibraries();
 
-    const getLibraryName = (shortName: string) =>
-      allLibraries.find((l) => l.short_name === shortName)?.name || shortName;
+    const getLibraryLabel = (shortName: string) =>
+      libraryLabel(
+        allLibraries.find((l) => l.short_name === shortName)?.name,
+        shortName
+      );
 
-    const getLibraryHref = (shortName: string) => {
-      const uuid = allLibraries.find((l) => l.short_name === shortName)?.uuid;
-      return uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;
-    };
+    const getLibraryHref = (shortName: string) =>
+      libraryConfigHref(
+        allLibraries.find((l) => l.short_name === shortName)?.uuid
+      );
 
     const result: Array<{
       label: string;
@@ -89,7 +91,7 @@ export class IndividualAdmins extends EditableConfigList<
 
     for (const [shortName, role] of Object.entries(libraryHighestRole)) {
       result.push({
-        label: getLibraryName(shortName),
+        label: getLibraryLabel(shortName),
         suffix: role === "manager" ? " - Manager" : " - Librarian",
         href: getLibraryHref(shortName),
       });

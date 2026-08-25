@@ -8,14 +8,14 @@ import {
   LibraryRegistrationData,
   LibraryData,
 } from "../interfaces";
+import LibraryConfigLink from "./LibraryConfigLink";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
   protocol: string;
 }
 
-export interface LibraryRegistrationProps
-  extends ServiceEditFormProps<ServicesWithRegistrationsData> {
+export interface LibraryRegistrationProps extends ServiceEditFormProps<ServicesWithRegistrationsData> {
   registerLibrary: (library, registration_stage) => void;
   protocol: string;
 }
@@ -117,12 +117,16 @@ export default class LibraryRegistration extends React.Component<
     );
   }
 
+  /** Shows the library name and its short name, linked to the library's
+   *  configuration page. */
   name(library: LibraryData): JSX.Element {
     return (
       <div className="library-name">
-        <a href={`/admin/web/config/libraries/edit/${library.uuid}`}>
-          {library.name}
-        </a>
+        <LibraryConfigLink
+          name={library.name}
+          short_name={library.short_name}
+          uuid={library.uuid}
+        />
       </div>
     );
   }
@@ -204,9 +208,9 @@ export default class LibraryRegistration extends React.Component<
   }
 
   updateRegistrationStage(library: LibraryData): void {
-    const registration_stage = (this.refs[
-      `stage-${library.short_name}`
-    ] as any).getValue();
+    const registration_stage = (
+      this.refs[`stage-${library.short_name}`] as any
+    ).getValue();
     this.setState({
       registration_stage: Object.assign({}, this.state.registration_stage, {
         [library.short_name]: registration_stage,

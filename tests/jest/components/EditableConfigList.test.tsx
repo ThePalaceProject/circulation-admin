@@ -290,9 +290,9 @@ describe("EditableConfigList - library association disclosure", () => {
 
     const items = container.querySelectorAll(".associated-items li");
     expect(items).toHaveLength(3);
-    expect(items[0].textContent).toBe("Alpha Library");
-    expect(items[1].textContent).toBe("Beta Library");
-    expect(items[2].textContent).toBe("Gamma Library");
+    expect(items[0].textContent).toBe("Alpha Library - alpha");
+    expect(items[1].textContent).toBe("Beta Library - beta");
+    expect(items[2].textContent).toBe("Gamma Library - gamma");
   });
 
   it("renders a library with a uuid as a link to its config page", () => {
@@ -305,7 +305,7 @@ describe("EditableConfigList - library association disclosure", () => {
       ".associated-items a"
     );
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe("Alpha Library");
+    expect(link.textContent).toBe("Alpha Library - alpha");
     expect(link.href).toContain("/admin/web/config/libraries/edit/uuid-alpha");
   });
 
@@ -317,7 +317,7 @@ describe("EditableConfigList - library association disclosure", () => {
 
     expect(container.querySelector(".associated-items a")).toBeNull();
     expect(container.querySelector(".associated-items li").textContent).toBe(
-      "Delta Library"
+      "Delta Library - delta"
     );
   });
 
@@ -373,8 +373,8 @@ describe("EditableConfigList - library association disclosure", () => {
       const items = container.querySelectorAll(".associated-items li");
       expect(items).toHaveLength(2);
       // Sorted alphabetically by resolved display name.
-      expect(items[0].textContent).toBe("Alpha Library");
-      expect(items[1].textContent).toBe("Beta Library");
+      expect(items[0].textContent).toBe("Alpha Library - alpha");
+      expect(items[1].textContent).toBe("Beta Library - beta");
     });
 
     it("falls back to short_name when allLibraries is absent from the data", () => {

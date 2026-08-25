@@ -156,8 +156,8 @@ describe("Collections - associated library disclosure", () => {
 
     const items = container.querySelectorAll(".associated-items li");
     // Sorted alphabetically: Alpha, Beta
-    expect(items[0].textContent).toBe("Alpha Library");
-    expect(items[1].textContent).toBe("Beta Library");
+    expect(items[0].textContent).toBe("Alpha Library - alpha");
+    expect(items[1].textContent).toBe("Beta Library - beta");
   });
 
   it("links a library name to its config page when a uuid is available", () => {
@@ -177,7 +177,7 @@ describe("Collections - associated library disclosure", () => {
       ".associated-items a"
     );
     expect(link).not.toBeNull();
-    expect(link.textContent).toBe("Alpha Library");
+    expect(link.textContent).toBe("Alpha Library - alpha");
     expect(link.href).toContain("/admin/web/config/libraries/edit/uuid-alpha");
   });
 
@@ -196,7 +196,7 @@ describe("Collections - associated library disclosure", () => {
 
     expect(container.querySelector(".associated-items a")).toBeNull();
     expect(container.querySelector(".associated-items li").textContent).toBe(
-      "Delta Library"
+      "Delta Library - delta"
     );
   });
 

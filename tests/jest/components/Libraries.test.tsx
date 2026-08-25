@@ -37,12 +37,31 @@ describe("Libraries - connected wiring", () => {
     // The library and its edit control appear once the on-mount fetch resolves
     // and mapStateToProps feeds the fetched data back in as props.
     expect(
-      await screen.findByText("New York Public Library")
+      await screen.findByText("New York Public Library - nypl")
     ).toBeInTheDocument();
     const editLink = await screen.findByRole("link", { name: /edit/i });
     expect(editLink).toHaveAttribute(
       "href",
       "/admin/web/config/libraries/edit/uuid-nypl"
     );
+  });
+
+  it("falls back to the uuid as the label for a library with no name and no short name", async () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(
+      async () =>
+        new Response(
+          JSON.stringify({
+            libraries: [{ uuid: "uuid-anon", settings: {} }],
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        )
+    );
+
+    renderWithProviders(<Libraries csrfToken="token" />, {
+      reduxProviderProps: { store: buildStore() },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
+
+    expect(await screen.findByText("uuid-anon")).toBeInTheDocument();
   });
 });

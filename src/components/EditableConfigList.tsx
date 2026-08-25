@@ -14,6 +14,7 @@ import DisclosureIcon from "./icons/DisclosureIcon";
 import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
 import { navigateTo } from "../utils/navigate";
+import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -322,10 +323,8 @@ export abstract class GenericEditableConfigList<
         (l) => l.short_name === lib.short_name
       );
       return {
-        label: libraryData?.name || lib.short_name,
-        href: libraryData?.uuid
-          ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
-          : undefined,
+        label: libraryLabel(libraryData?.name, lib.short_name),
+        href: libraryConfigHref(libraryData?.uuid),
       };
     });
   }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableInput from "./EditableInput";
-import { clearForm } from "../utils/sharedFunctions";
+import { clearForm, libraryLabel } from "../utils/sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 import { Panel, Form } from "library-simplified-reusable-components";
@@ -191,7 +191,7 @@ export default class IndividualAdminEditForm extends React.Component<
               this.props.data.allLibraries &&
               this.props.data.allLibraries.map((library) => (
                 <tr key={library.short_name}>
-                  <td>{library.name}</td>
+                  <td>{libraryLabel(library.name, library.short_name)}</td>
                   <td>
                     <EditableInput
                       elementType="input"
@@ -199,9 +199,8 @@ export default class IndividualAdminEditForm extends React.Component<
                       disabled={this.isDisabled("manager", library.short_name)}
                       name={"manager-" + library.short_name}
                       ref={(componentInstance) => {
-                        this.libraryManagerRefs[
-                          library.short_name
-                        ] = componentInstance;
+                        this.libraryManagerRefs[library.short_name] =
+                          componentInstance;
                       }}
                       label=""
                       aria-label={`Administrator of ${library.short_name}`}
@@ -221,9 +220,8 @@ export default class IndividualAdminEditForm extends React.Component<
                       )}
                       name={"librarian-" + library.short_name}
                       ref={(componentInstance) => {
-                        this.librarianRefs[
-                          library.short_name
-                        ] = componentInstance;
+                        this.librarianRefs[library.short_name] =
+                          componentInstance;
                       }}
                       label=""
                       aria-label={`User of ${library.short_name}`}
