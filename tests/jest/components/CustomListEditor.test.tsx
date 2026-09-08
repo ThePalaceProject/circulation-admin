@@ -364,4 +364,12 @@ describe("CustomListEditor", () => {
       container.querySelector(".sharing-info button")
     ).not.toBeInTheDocument();
   });
+
+  it("does not render a share button once the list is already shared", () => {
+    const { container } = renderEditor({ isShared: true });
+
+    expect(
+      container.querySelector(".sharing-info button")
+    ).not.toBeInTheDocument();
+  });
 });
