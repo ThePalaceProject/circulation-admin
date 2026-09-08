@@ -364,4 +364,19 @@ describe("CustomListEditor", () => {
       container.querySelector(".sharing-info button")
     ).not.toBeInTheDocument();
   });
+
+  it("does not render a share button once the list is already shared, and shows the shared-state copy", () => {
+    const { container } = renderEditor({ isShared: true });
+
+    expect(
+      container.querySelector(".sharing-info button")
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        "This list has been shared with other libraries, and will automatically be made available to any libraries registered in this Collection Manager, including libraries registered in the future.",
+        { exact: false }
+      )
+    ).toBeInTheDocument();
+  });
 });

@@ -182,8 +182,8 @@ export default function CustomListEditor({
                     </p>
                     <p>
                       {isShared
-                        ? "This list has been shared with other libraries."
-                        : "This list can be shared with the other libraries that are currently configured in this Collection Manager."}{" "}
+                        ? "This list has been shared with other libraries, and will automatically be made available to any libraries registered in this Collection Manager, including libraries registered in the future."
+                        : "This list can be shared with other libraries. Once shared, it will automatically be made available to any libraries registered in this Collection Manager, including libraries registered in the future."}{" "}
                       A shared list may be edited only by the owning library.
                       Each library that is subscribed to a shared list will
                       obtain only the titles that are available to that library.
@@ -193,20 +193,13 @@ export default function CustomListEditor({
                       <i>Once shared, a list cannot be unshared or deleted.</i>
                     </p>
 
-                    {isShared && (
-                      <p>
-                        Sharing this list again will make it available to any
-                        libraries that have been registered in this Collection
-                        Manager since the list was last shared.
-                      </p>
+                    {!isShared && (
+                      <ShareButton
+                        disabled={isSharePending}
+                        pending={isSharePending}
+                        submit={share}
+                      />
                     )}
-
-                    <ShareButton
-                      disabled={isSharePending}
-                      pending={isSharePending}
-                      submit={share}
-                      text={isShared ? "Share again" : "Share"}
-                    />
                   </div>
                 ) : (
                   <div className="sharing-info">
