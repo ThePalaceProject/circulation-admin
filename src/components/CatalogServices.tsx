@@ -5,6 +5,10 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
+import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
 import { CatalogServicesData, CatalogServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
@@ -37,9 +41,7 @@ function mapStateToProps(state) {
     {},
     (state.editor.catalogServices && state.editor.catalogServices.data) || {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of catalog services; formError = an error upon submission
   // of the create/edit form.
   return {
@@ -58,7 +60,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchCatalogServices()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchCatalogServices());
+    },
     editItem: (data: FormData) => dispatch(actions.editCatalogService(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteCatalogService(identifier)),

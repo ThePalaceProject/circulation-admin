@@ -14,6 +14,7 @@ import {
 import { clearForm, libraryLabel } from "../utils/sharedFunctions";
 import LibraryConfigLink from "./LibraryConfigLink";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { Alert } from "react-bootstrap";
 
 export interface ServiceEditFormProps<T> {
   data: T;
@@ -368,9 +369,20 @@ export default class ServiceEditForm<
   }
 
   renderLibrariesForm(protocol: ProtocolData, disabled: boolean) {
-    return (
+    // allLibraries is undefined until the library list request settles;
+    // wait rather than flash unlinked short names that change on arrival.
+    // The status line stays mounted and only its text changes, so screen
+    // readers announce both the wait and its end.
+    const loading = !this.props.data?.allLibraries;
+    const librariesFieldset = !loading && (
       <fieldset className="update-libraries">
         <legend className="visuallyHidden">Libraries</legend>
+        {this.props.data.allLibrariesError && (
+          <Alert bsStyle="danger">
+            The library list failed to load. Associated libraries are shown by
+            short name only, and libraries cannot be added.
+          </Alert>
+        )}
         <div className="form-group">
           {this.state.libraries.map((library) => (
             <div key={library.short_name}>
@@ -488,6 +500,12 @@ export default class ServiceEditForm<
           </div>
         )}
       </fieldset>
+    );
+    return (
+      <>
+        <p role="status">{loading ? "Loading libraries..." : ""}</p>
+        {librariesFieldset}
+      </>
     );
   }
 
