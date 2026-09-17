@@ -498,10 +498,13 @@ describe("IndividualAdmins - connect wiring", () => {
   afterEach(() => jest.restoreAllMocks());
 
   it("renders the connected default export, fetching on mount", async () => {
-    jest.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ individualAdmins: [] }), {
-        headers: { "Content-Type": "application/json" },
-      })
+    // A Response body can only be read once, so build one per fetch call.
+    jest.spyOn(globalThis, "fetch").mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ individualAdmins: [] }), {
+          headers: { "Content-Type": "application/json" },
+        })
+      )
     );
 
     renderWithProviders(

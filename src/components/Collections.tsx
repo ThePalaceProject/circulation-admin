@@ -10,6 +10,10 @@ import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
+import {
   CollectionsData,
   CollectionData,
   LibraryData,
@@ -21,13 +25,11 @@ import CollectionReapButton from "./CollectionReapButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
-export interface CollectionsStateProps
-  extends EditableConfigListStateProps<CollectionsData> {
+export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
   isFetchingLibraryRegistrations?: boolean;
 }
 
-export interface CollectionsDispatchProps
-  extends EditableConfigListDispatchProps<CollectionsData> {
+export interface CollectionsDispatchProps extends EditableConfigListDispatchProps<CollectionsData> {
   registerLibrary: (data: FormData) => Promise<void>;
   fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
   importCollection: (
@@ -38,13 +40,12 @@ export interface CollectionsDispatchProps
 }
 
 export interface CollectionsProps
-  extends CollectionsStateProps,
+  extends
+    CollectionsStateProps,
     CollectionsDispatchProps,
     EditableConfigListOwnProps {}
 
-export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
-  CollectionsData
-> {
+export class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {
   context: ServiceWithRegistrationsEditForm<CollectionsData>["context"] & {
     importCollection: (
       collectionId: string | number,
@@ -209,9 +210,7 @@ function mapStateToProps(state) {
     {},
     (state.editor.collections && state.editor.collections.data) || {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of collections; formError = an error upon
   // submission of the create/edit form.
   return {
@@ -228,7 +227,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchCollections()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchCollections());
+    },
     editItem: (data: FormData) => dispatch(actions.editCollection(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteCollection(identifier)),

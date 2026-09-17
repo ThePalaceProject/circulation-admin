@@ -9,6 +9,10 @@ import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
+import {
   DiscoveryServicesData,
   DiscoveryServiceData,
   LibraryData,
@@ -120,9 +124,7 @@ function mapStateToProps(state) {
     (state.editor.discoveryServices && state.editor.discoveryServices.data) ||
       {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   if (
     state.editor.discoveryServiceLibraryRegistrations &&
     state.editor.discoveryServiceLibraryRegistrations.data
@@ -156,7 +158,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchDiscoveryServices()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchDiscoveryServices());
+    },
     editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteDiscoveryService(identifier)),

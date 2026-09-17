@@ -7,6 +7,10 @@ import EditableConfigList, {
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
+import {
   IndividualAdminsData,
   IndividualAdminData,
   AdminRoleData,
@@ -176,9 +180,7 @@ function mapStateToProps(state) {
     {},
     (state.editor.individualAdmins && state.editor.individualAdmins.data) || {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the
   // create/edit form.
   return {
@@ -197,7 +199,14 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchIndividualAdmins()),
+    fetchData: () => {
+      // The pre-auth setup page has no admin yet, so a libraries request
+      // could only fail; skip it there.
+      if (!ownProps.settingUp) {
+        fetchLibrariesIfNeeded(dispatch, actions);
+      }
+      return dispatch(actions.fetchIndividualAdmins());
+    },
     editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteIndividualAdmin(identifier)),

@@ -6,6 +6,10 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
+import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
 import { MetadataServicesData, MetadataServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
@@ -49,9 +53,7 @@ function mapStateToProps(state) {
     {},
     (state.editor.metadataServices && state.editor.metadataServices.data) || {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of metadata services; formError = an error upon submission of the
   // create/edit form.
   return {
@@ -70,7 +72,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchMetadataServices()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchMetadataServices());
+    },
     editItem: (data: FormData) => dispatch(actions.editMetadataService(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteMetadataService(identifier)),

@@ -77,6 +77,21 @@ describe("PatronAuthServices", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("fetches the libraries list along with the services on mount", async () => {
+    const fetchSpy = stubFetch(listData);
+    renderConnected(<PatronAuthServices csrfToken="token" />);
+
+    await waitFor(() => {
+      const urls = fetchSpy.mock.calls.map((call) => String(call[0]));
+      expect(urls).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("/admin/patron_auth_services"),
+          expect.stringContaining("/admin/libraries"),
+        ])
+      );
+    });
+  });
+
   it("shows the neighborhood analytics panel when creating a service whose protocol has a neighborhood_mode setting", async () => {
     const neighborhoodSetting = {
       key: "neighborhood_mode",
