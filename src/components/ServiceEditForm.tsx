@@ -635,8 +635,8 @@ export default class ServiceEditForm<
     this.setState(newState);
   }
 
-  isExpanded(library) {
-    return this.state.expandedLibraries.indexOf(library.short_name) !== -1;
+  isExpanded(library, expandedLibraries = this.state.expandedLibraries) {
+    return expandedLibraries.includes(library.short_name);
   }
 
   /**
@@ -688,9 +688,7 @@ export default class ServiceEditForm<
 
   expandLibrary(library) {
     this.setState((prevState) => ({
-      expandedLibraries: prevState.expandedLibraries.includes(
-        library.short_name
-      )
+      expandedLibraries: this.isExpanded(library, prevState.expandedLibraries)
         ? prevState.expandedLibraries.filter(
             (shortName) => shortName !== library.short_name
           )
@@ -733,12 +731,10 @@ export default class ServiceEditForm<
       }
       (this.refs[setting.key] as any).clear();
     }
-    const libraries = this.state.libraries.concat(newLibrary);
-    const newState = Object.assign({}, this.state, {
-      libraries,
+    this.setState((prevState) => ({
+      libraries: [...prevState.libraries, newLibrary],
       selectedLibrary: null,
-    });
-    this.setState(newState);
+    }));
   }
 
   handleData(data: FormData) {

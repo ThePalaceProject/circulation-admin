@@ -207,9 +207,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<PatronAut
           this.newLibraryRulesRef.current.getValue();
       }
     }
-    const libraries = this.state.libraries.concat(newLibrary);
-    this.setState(
-      Object.assign({}, this.state, { libraries, selectedLibrary: null })
-    );
+    this.setState((prevState) => ({
+      libraries: [...prevState.libraries, newLibrary],
+      selectedLibrary: null,
+    }));
   }
 }
