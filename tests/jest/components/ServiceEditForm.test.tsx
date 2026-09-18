@@ -896,6 +896,27 @@ describe("ServiceEditForm", () => {
       expect(libraries).toHaveLength(0);
     });
 
+    it("removes an expanded library and closes its settings", async () => {
+      const user = userEvent.setup();
+      const { container } = renderForm({ item: serviceData });
+      const libraryItem = container.querySelector(
+        ".with-remove-button"
+      ) as HTMLElement;
+
+      await user.click(
+        libraryItem.querySelector("button.edit-btn") as HTMLElement
+      );
+      expect(
+        container.querySelector(".edit-library-settings")
+      ).toBeInTheDocument();
+
+      await user.click(
+        libraryItem.querySelector("button.remove-btn") as HTMLElement
+      );
+      expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);
+      expect(container.querySelector(".edit-library-settings")).toBeNull();
+    });
+
     it("edits a library", async () => {
       const user = userEvent.setup();
       const { container } = renderForm({ item: serviceData });
@@ -1057,6 +1078,28 @@ describe("ServiceEditForm", () => {
       // A successful response (no error) clears the form fields.
       rerenderForm(rerender, { responseBody: "new service" });
       expect(nameInput().value).toBe("");
+    });
+
+    it("clears every associated library after a successful save (PP-5153)", () => {
+      const threeLibraries = {
+        ...serviceData,
+        libraries: [
+          { short_name: "nypl" },
+          { short_name: "bpl" },
+          { short_name: "qpl" },
+        ],
+      };
+      const { container, rerender } = renderForm({ item: threeLibraries });
+      expect(container.querySelectorAll(".with-remove-button")).toHaveLength(3);
+
+      // clearForm fires onRemove once per library inside one React batch.
+      // Each removal must build on the previous one, otherwise only the last
+      // one survives and the other libraries stay in the list.
+      rerenderForm(rerender, {
+        item: threeLibraries,
+        responseBody: "new service",
+      });
+      expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);
     });
 
     it("doesn't clear the form if there's an error message", async () => {
