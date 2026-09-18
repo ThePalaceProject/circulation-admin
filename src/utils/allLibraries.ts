@@ -47,10 +47,9 @@ export function settledAllLibraries(state): {
 export function fetchLibrariesIfNeeded(dispatch, actions: ActionCreator): void {
   dispatch((thunkDispatch, getState) => {
     const libraries = getState().editor.libraries;
-    if (
-      !libraries?.isFetching &&
-      (!libraries?.isLoaded || libraries?.fetchError)
-    ) {
+    const inFlight = libraries?.isFetching;
+    const settledCleanly = libraries?.isLoaded && !libraries.fetchError;
+    if (!inFlight && !settledCleanly) {
       thunkDispatch(actions.fetchLibraries()).catch(() => {});
     }
   });
