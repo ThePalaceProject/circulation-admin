@@ -896,6 +896,27 @@ describe("ServiceEditForm", () => {
       expect(libraries).toHaveLength(0);
     });
 
+    it("removes an expanded library and closes its settings", async () => {
+      const user = userEvent.setup();
+      const { container } = renderForm({ item: serviceData });
+      const libraryItem = container.querySelector(
+        ".with-remove-button"
+      ) as HTMLElement;
+
+      await user.click(
+        libraryItem.querySelector("button.edit-btn") as HTMLElement
+      );
+      expect(
+        container.querySelector(".edit-library-settings")
+      ).toBeInTheDocument();
+
+      await user.click(
+        libraryItem.querySelector("button.remove-btn") as HTMLElement
+      );
+      expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);
+      expect(container.querySelector(".edit-library-settings")).toBeNull();
+    });
+
     it("edits a library", async () => {
       const user = userEvent.setup();
       const { container } = renderForm({ item: serviceData });

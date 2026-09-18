@@ -258,6 +258,92 @@ describe("PatronAuthServiceEditForm – serialization", () => {
   });
 });
 
+describe("PatronAuthServiceEditForm – per-library settings", () => {
+  const LIB_SETTING_KEY = "lib_setting";
+  const protocolWithLibrarySettings = {
+    ...SIP2_PROTOCOL_DATA,
+    library_settings: [{ key: LIB_SETTING_KEY, label: "Library setting" }],
+  };
+  const dataWithLibrarySettings: PatronAuthServicesData = {
+    ...servicesData,
+    protocols: [protocolWithLibrarySettings, OTHER_PROTOCOL_DATA],
+  };
+  const settingInput = (root: ParentNode) =>
+    root.querySelector(`input[name="${LIB_SETTING_KEY}"]`) as HTMLInputElement;
+
+  it("keeps a library setting entered when adding a new library", async () => {
+    const user = userEvent.setup();
+    const item = {
+      id: 3,
+      protocol: SIP2_PROTOCOL,
+      settings: {},
+      libraries: [],
+    };
+    const { container } = renderForm(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        data={dataWithLibrarySettings}
+        item={item}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: /Add Library/i }),
+      LIBRARY_SHORT_NAME
+    );
+    await user.type(settingInput(container), "added value");
+    await user.click(screen.getByRole("button", { name: /Add Library/i }));
+
+    // Reopen the new library's settings; the value entered on add is there.
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    const editSection = container.querySelector(
+      ".edit-library-settings"
+    ) as HTMLElement;
+    expect(settingInput(editSection).value).toBe("added value");
+  });
+
+  it("keeps a library setting changed when editing an existing library", async () => {
+    const user = userEvent.setup();
+    const item = {
+      ...buildSIP2Item(),
+      libraries: [
+        { short_name: LIBRARY_SHORT_NAME, [LIB_SETTING_KEY]: "old value" },
+      ],
+    };
+    const { container } = renderForm(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        data={dataWithLibrarySettings}
+        item={item}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    const clickEdit = () =>
+      user.click(screen.getByRole("button", { name: /Edit/i }));
+    await clickEdit();
+    let editSection = container.querySelector(
+      ".edit-library-settings"
+    ) as HTMLElement;
+    expect(settingInput(editSection).value).toBe("old value");
+
+    await user.clear(settingInput(editSection));
+    await user.type(settingInput(editSection), "new value");
+    await user.click(
+      editSection.querySelector("button.edit-library") as HTMLElement
+    );
+
+    // Saving collapses the library; reopening shows the saved value.
+    expect(container.querySelector(".edit-library-settings")).toBeNull();
+    await clickEdit();
+    editSection = container.querySelector(
+      ".edit-library-settings"
+    ) as HTMLElement;
+    expect(settingInput(editSection).value).toBe("new value");
+  });
+});
+
 describe("PatronAuthServiceEditForm – save button gating", () => {
   it("disables the per-library Save button immediately when a new rule is added", async () => {
     const user = userEvent.setup();
