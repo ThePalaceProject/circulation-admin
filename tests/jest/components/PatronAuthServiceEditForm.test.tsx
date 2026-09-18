@@ -217,8 +217,11 @@ describe("PatronAuthServiceEditForm – serialization", () => {
 
     await user.click(saveButton);
 
-    // The library should now be collapsed (indicating editLibrary was called)
+    // Saving collapses the library. Reopening it shows the rule was stored in
+    // library state, not just read from the editor.
     expect(screen.queryByRole("button", { name: /Add Rule/i })).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    expect(screen.getByLabelText(/Rule Name/i)).toHaveValue("Test Rule");
   });
 
   it("includes patron_blocking_rules in payload when adding a new library", async () => {
@@ -253,8 +256,11 @@ describe("PatronAuthServiceEditForm – serialization", () => {
 
     await user.click(addButton);
 
-    // After adding, the library should appear in the list, editor no longer in "new library" form
+    // The new-library editor is gone. Opening the added library shows the rule
+    // was stored in library state.
     expect(screen.queryByLabelText(/Rule Name/i)).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    expect(screen.getByLabelText(/Rule Name/i)).toHaveValue("New Rule");
   });
 });
 

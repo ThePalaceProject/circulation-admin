@@ -4,7 +4,7 @@ import {
   PatronAuthServicesData,
   ProtocolData,
 } from "../interfaces";
-import ServiceEditForm from "./ServiceEditForm";
+import ServiceEditForm, { LibraryFormMode } from "./ServiceEditForm";
 import PatronBlockingRulesEditor, {
   PatronBlockingRulesEditorHandle,
 } from "./PatronBlockingRulesEditor";
@@ -14,8 +14,8 @@ const NEW_LIBRARY_KEY = "__new__";
 
 /** Extends ServiceEditForm with patron-blocking-rules support for protocols that
  *  support it. The editor is injected via the hook methods added
- *  to ServiceEditForm; editLibrary and addLibrary are overridden to collect the
- *  rules from the editor ref and persist them in library state. */
+ *  to ServiceEditForm; buildLibrary is overridden to collect the rules from
+ *  the editor ref and persist them in library state. */
 export default class PatronAuthServiceEditForm extends ServiceEditForm<PatronAuthServicesData> {
   private newLibraryRulesRef =
     React.createRef<PatronBlockingRulesEditorHandle>();
@@ -158,58 +158,21 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<PatronAut
     );
   }
 
-  editLibrary(library: LibraryWithSettingsData, protocol: ProtocolData) {
-    // Read the form refs before setState. The updater passed to setState
-    // must only compute the next state from prevState, with no side effects.
-    const newLibrary: LibraryWithSettingsData = {
-      short_name: library.short_name,
-    };
-    for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (
-        this.refs[`${library.short_name}_${setting.key}`] as any
-      ).getValue();
-      if (value) {
-        (newLibrary as unknown as Record<string, string>)[setting.key] = value;
-      }
-    }
+  buildLibrary(
+    shortName: string,
+    protocol: ProtocolData,
+    mode: LibraryFormMode
+  ): LibraryWithSettingsData {
+    const library = super.buildLibrary(shortName, protocol, mode);
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
-      const editorRef = this.libraryRulesRefs.get(library.short_name);
+      const editorRef =
+        mode === "add"
+          ? this.newLibraryRulesRef
+          : this.libraryRulesRefs.get(shortName);
       if (editorRef?.current) {
-        newLibrary.patron_blocking_rules = editorRef.current.getValue();
+        library.patron_blocking_rules = editorRef.current.getValue();
       }
     }
-    this.setState((prevState) => ({
-      libraries: [
-        ...prevState.libraries.filter(
-          (stateLibrary) => stateLibrary.short_name !== library.short_name
-        ),
-        newLibrary,
-      ],
-      expandedLibraries: prevState.expandedLibraries.filter(
-        (shortName) => shortName !== library.short_name
-      ),
-    }));
-  }
-
-  addLibrary(protocol: ProtocolData) {
-    const name = this.state.selectedLibrary;
-    const newLibrary: LibraryWithSettingsData = { short_name: name };
-    for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (this.refs[setting.key] as any).getValue();
-      if (value) {
-        (newLibrary as unknown as Record<string, string>)[setting.key] = value;
-      }
-      (this.refs[setting.key] as any).clear();
-    }
-    if (supportsPatronBlockingRules(protocol && protocol.name)) {
-      if (this.newLibraryRulesRef.current) {
-        newLibrary.patron_blocking_rules =
-          this.newLibraryRulesRef.current.getValue();
-      }
-    }
-    this.setState((prevState) => ({
-      libraries: [...prevState.libraries, newLibrary],
-      selectedLibrary: null,
-    }));
+    return library;
   }
 }

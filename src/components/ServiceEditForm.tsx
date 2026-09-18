@@ -31,6 +31,10 @@ export interface ServiceEditFormProps<T> {
   libraryRemovalAllowed?: (library: LibraryWithSettingsData) => boolean;
 }
 
+/** Which library form buildLibrary reads: the "add library" form or an
+ *  existing library's settings. */
+export type LibraryFormMode = "add" | "edit";
+
 export interface ServiceEditFormState {
   protocol: string;
   parentId: string | null;
@@ -696,18 +700,40 @@ export default class ServiceEditForm<
     }));
   }
 
-  editLibrary(library, protocol: ProtocolData) {
-    // Read the form refs before setState. The updater passed to setState
-    // must only compute the next state from prevState, with no side effects.
-    const newLibrary = { short_name: library.short_name };
+  /**
+   * Builds the library entry that addLibrary and editLibrary store in state,
+   * reading the protocol's per-library settings from their form refs.
+   *
+   * Subclasses that render extra per-library controls (see
+   * renderExtraAssociatedLibrarySettings and renderExtraNewLibrarySettings)
+   * override this, call super, and attach their values to the result.
+   *
+   * @param shortName the library's short name
+   * @param protocol the service protocol
+   * @param mode "add" reads the refs of the "add library" form; "edit" reads
+   *   the refs of an existing library's settings
+   */
+  buildLibrary(
+    shortName: string,
+    protocol: ProtocolData,
+    mode: LibraryFormMode
+  ): LibraryWithSettingsData {
+    const settings: Record<string, string> = {};
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (
-        this.refs[library.short_name + "_" + setting.key] as any
-      ).getValue();
+      const refKey =
+        mode === "add" ? setting.key : `${shortName}_${setting.key}`;
+      const value = (this.refs[refKey] as any).getValue();
       if (value) {
-        newLibrary[setting.key] = value;
+        settings[setting.key] = value;
       }
     }
+    return { short_name: shortName, ...settings };
+  }
+
+  editLibrary(library: LibraryWithSettingsData, protocol: ProtocolData) {
+    // Read the form refs before setState. The updater passed to setState
+    // must only compute the next state from prevState, with no side effects.
+    const newLibrary = this.buildLibrary(library.short_name, protocol, "edit");
     this.setState((prevState) => ({
       libraries: [
         ...prevState.libraries.filter(
@@ -722,13 +748,12 @@ export default class ServiceEditForm<
   }
 
   addLibrary(protocol: ProtocolData) {
-    const name = this.state.selectedLibrary;
-    const newLibrary = { short_name: name };
+    const newLibrary = this.buildLibrary(
+      this.state.selectedLibrary,
+      protocol,
+      "add"
+    );
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (this.refs[setting.key] as any).getValue();
-      if (value) {
-        newLibrary[setting.key] = value;
-      }
       (this.refs[setting.key] as any).clear();
     }
     this.setState((prevState) => ({
