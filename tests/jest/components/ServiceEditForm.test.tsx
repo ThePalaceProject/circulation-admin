@@ -4,6 +4,7 @@ import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import ServiceEditForm, {
+  libraryRefKey,
   ServiceEditFormProps,
   ServiceEditFormState,
 } from "../../../src/components/ServiceEditForm";
@@ -997,6 +998,15 @@ describe("ServiceEditForm", () => {
           ) as HTMLSelectElement
         ).value
       ).toBe("option3");
+    });
+
+    it("builds library ref keys for add and edit mode", () => {
+      expect(libraryRefKey("key", "add")).toBe("key");
+      expect(libraryRefKey("key", "edit", "nypl")).toBe("nypl_key");
+      // Compile-time guard: ts-jest fails this file if the overloads stop
+      // rejecting an edit-mode call with no short name.
+      // @ts-expect-error edit mode must pass the library short name
+      libraryRefKey("key", "edit");
     });
 
     it("calls save when the form is submitted", async () => {

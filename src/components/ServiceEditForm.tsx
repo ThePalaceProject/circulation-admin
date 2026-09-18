@@ -415,7 +415,11 @@ export default class ServiceEditForm<
                             setting.key
                           ]
                         }
-                        ref={library.short_name + "_" + setting.key}
+                        ref={libraryRefKey(
+                          setting.key,
+                          "edit",
+                          library.short_name
+                        )}
                       />
                     ))}
                   {this.renderExtraAssociatedLibrarySettings(
@@ -476,7 +480,7 @@ export default class ServiceEditForm<
                       setting={setting}
                       disabled={disabled}
                       readOnly={disabled}
-                      ref={setting.key}
+                      ref={libraryRefKey(setting.key, "add")}
                     />
                   ))}
                 {this.renderExtraNewLibrarySettings(protocol, disabled)}
@@ -718,10 +722,11 @@ export default class ServiceEditForm<
     protocol: ProtocolData,
     mode: LibraryFormMode
   ): LibraryWithSettingsData {
-    const settings: Record<string, string> = {};
+    // Values are whatever each field's getValue() returns. List and menu
+    // settings return arrays, not strings.
+    const settings: Record<string, any> = {};
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      const refKey =
-        mode === "add" ? setting.key : `${shortName}_${setting.key}`;
+      const refKey = libraryRefKey(setting.key, mode, shortName);
       const value = (this.refs[refKey] as any).getValue();
       if (value) {
         settings[setting.key] = value;
@@ -747,6 +752,15 @@ export default class ServiceEditForm<
     }));
   }
 
+  /**
+   * Adds the library selected in the "add library" form to state.
+   *
+   * Clears only the protocol's own add-form fields. Controls from
+   * renderExtraNewLibrarySettings reset because the add-library panel
+   * unmounts when selectedLibrary is cleared. Any add-form state a subclass
+   * keeps outside that panel (for example in instance fields) must be reset
+   * by the subclass.
+   */
   addLibrary(protocol: ProtocolData) {
     const newLibrary = this.buildLibrary(
       this.state.selectedLibrary,
@@ -754,7 +768,7 @@ export default class ServiceEditForm<
       "add"
     );
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      (this.refs[setting.key] as any).clear();
+      (this.refs[libraryRefKey(setting.key, "add")] as any).clear();
     }
     this.setState((prevState) => ({
       libraries: [...prevState.libraries, newLibrary],
@@ -776,4 +790,27 @@ export default class ServiceEditForm<
       await this.props.save(modifiedData);
     }
   }
+}
+
+/**
+ * The string ref under which a per-library setting's form field is
+ * registered. The "add library" form uses the bare setting key. An existing
+ * library's settings prefix it with the library's short name, so several
+ * libraries can be expanded at once.
+ *
+ * The overloads make the short name a required argument unless the mode is
+ * known to be "add", so a caller cannot omit it by mistake.
+ */
+export function libraryRefKey(settingKey: string, mode: "add"): string;
+export function libraryRefKey(
+  settingKey: string,
+  mode: LibraryFormMode,
+  shortName: string
+): string;
+export function libraryRefKey(
+  settingKey: string,
+  mode: LibraryFormMode,
+  shortName?: string
+): string {
+  return mode === "add" ? settingKey : `${shortName}_${settingKey}`;
 }

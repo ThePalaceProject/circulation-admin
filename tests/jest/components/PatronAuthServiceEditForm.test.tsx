@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as fetchMock from "fetch-mock-jest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -274,8 +274,10 @@ describe("PatronAuthServiceEditForm – per-library settings", () => {
     ...servicesData,
     protocols: [protocolWithLibrarySettings, OTHER_PROTOCOL_DATA],
   };
-  const settingInput = (root: ParentNode) =>
-    root.querySelector(`input[name="${LIB_SETTING_KEY}"]`) as HTMLInputElement;
+  const settingInput = (root: HTMLElement) =>
+    within(root).getByRole("textbox", {
+      name: /Library setting/i,
+    }) as HTMLInputElement;
 
   it("keeps a library setting entered when adding a new library", async () => {
     const user = userEvent.setup();
