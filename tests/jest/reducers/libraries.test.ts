@@ -16,18 +16,32 @@ describe("libraries reducer", () => {
     expect(state.fetchError).toBeNull();
   });
 
-  it("keeps the failed state visible while a retry is in flight", () => {
+  it("moves the previous failure to lastFetchError while a retry is in flight", () => {
     const failed = libraries(undefined, { type: FAILURE, error: fetchError });
     expect(failed.fetchError).toEqual(fetchError);
     expect(failed.isLoaded).toBe(true);
 
     const retrying = libraries(failed, { type: REQUEST });
     expect(retrying.isFetching).toBe(true);
-    expect(retrying.fetchError).toEqual(fetchError);
-    expect(retrying.isLoaded).toBe(true);
+    // fetchError keeps meaning "the current request failed"; the old
+    // failure moves to lastFetchError so consumers can keep showing it.
+    expect(retrying.fetchError).toBeNull();
+    expect(retrying.lastFetchError).toEqual(fetchError);
+    expect(retrying.isLoaded).toBe(false);
   });
 
-  it("clears the failure once a retry succeeds", () => {
+  it("keeps lastFetchError through a retry's SUCCESS until LOAD", () => {
+    let state = libraries(undefined, { type: FAILURE, error: fetchError });
+    state = libraries(state, { type: REQUEST });
+    state = libraries(state, { type: SUCCESS });
+
+    expect(state.data).toBeNull();
+    expect(state.isLoaded).toBe(false);
+    expect(state.fetchError).toBeNull();
+    expect(state.lastFetchError).toEqual(fetchError);
+  });
+
+  it("clears the old failure once a retry succeeds", () => {
     const data = { libraries: [{ short_name: "nypl" }] };
     let state = libraries(undefined, { type: FAILURE, error: fetchError });
     state = libraries(state, { type: REQUEST });
@@ -35,7 +49,22 @@ describe("libraries reducer", () => {
     state = libraries(state, { type: LOAD, data });
 
     expect(state.fetchError).toBeNull();
+    expect(state.lastFetchError).toBeNull();
     expect(state.isLoaded).toBe(true);
     expect(state.data).toEqual(data);
+  });
+
+  it("reports only the new failure when a retry fails again", () => {
+    const newError = {
+      status: 502,
+      response: "worse",
+      url: "/admin/libraries",
+    };
+    let state = libraries(undefined, { type: FAILURE, error: fetchError });
+    state = libraries(state, { type: REQUEST });
+    state = libraries(state, { type: FAILURE, error: newError });
+
+    expect(state.fetchError).toEqual(newError);
+    expect(state.lastFetchError).toBeNull();
   });
 });

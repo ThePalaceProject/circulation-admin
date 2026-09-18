@@ -499,7 +499,7 @@ describe("IndividualAdmins - connect wiring", () => {
 
   it("renders the connected default export, fetching on mount", async () => {
     // A Response body can only be read once, so build one per fetch call.
-    jest.spyOn(globalThis, "fetch").mockImplementation(() =>
+    const fetchSpy = jest.spyOn(globalThis, "fetch").mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify({ individualAdmins: [] }), {
           headers: { "Content-Type": "application/json" },
@@ -520,5 +520,12 @@ describe("IndividualAdmins - connect wiring", () => {
     expect(
       await screen.findByText("Create new individual admin")
     ).toBeInTheDocument();
+
+    // Outside setup mode, fetchData also requests the libraries list (the
+    // settingUp half of that guard is pinned in SetupPage.test.tsx).
+    const urls = fetchSpy.mock.calls.map((call) => String(call[0]));
+    expect(urls).toEqual(
+      expect.arrayContaining([expect.stringContaining("/admin/libraries")])
+    );
   });
 });

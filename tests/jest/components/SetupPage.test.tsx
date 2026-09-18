@@ -40,5 +40,19 @@ describe("SetupPage", () => {
         name: "Set up your system admin account",
       })
     ).toBeInTheDocument();
+
+    // settingUp skips the libraries request, which cannot succeed before an
+    // admin exists. The positive check keeps the negative one honest.
+    const urls = (globalThis.fetch as jest.Mock).mock.calls.map((call) =>
+      String(call[0])
+    );
+    expect(urls).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("/admin/individual_admins"),
+      ])
+    );
+    expect(urls).not.toEqual(
+      expect.arrayContaining([expect.stringContaining("/admin/libraries")])
+    );
   });
 });

@@ -5,7 +5,7 @@ import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
 import bookCover from "./bookCover";
 import customListsForBook from "./customListsForBook";
 import diagnostics from "./diagnostics";
-import libraries from "./libraries";
+import libraries, { LibrariesState } from "./libraries";
 import collections from "./collections";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
@@ -38,7 +38,6 @@ import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import patronManager from "./managePatrons";
 import {
-  LibrariesData,
   CollectionsData,
   IndividualAdminsData,
   PatronAuthServicesData,
@@ -65,7 +64,7 @@ export interface State {
   bookCover: FetchEditState<string>;
   customListsForBook: FetchEditState<CustomListsData>;
   diagnostics: FetchEditState<DiagnosticsData>;
-  libraries: FetchEditState<LibrariesData>;
+  libraries: LibrariesState;
   collections: FetchEditState<CollectionsData>;
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
@@ -74,9 +73,7 @@ export interface State {
   catalogServices: FetchEditState<CatalogServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
   registerLibraryWithDiscoveryService: RegisterLibraryState;
-  discoveryServiceLibraryRegistrations: FetchEditState<
-    LibraryRegistrationsData
-  >;
+  discoveryServiceLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;

@@ -498,9 +498,11 @@ describe("ServiceEditForm", () => {
       );
 
       rerenderForm(rerender, { item: serviceData });
-      // The status line stays mounted (so screen readers announce the text
-      // change) but empties out.
-      expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+      // The status line stays mounted and announces completion; the
+      // completion text is visually hidden.
+      const status = container.querySelector('[role="status"]');
+      expect(status).toHaveTextContent("Libraries loaded.");
+      expect(status).toHaveClass("visuallyHidden");
       const editable = container.querySelectorAll(".with-edit-button");
       expect(editable).toHaveLength(1);
       expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
@@ -523,10 +525,22 @@ describe("ServiceEditForm", () => {
       expect(container.querySelector(".alert-danger")).toHaveTextContent(
         "The library list failed to load"
       );
+      // The live status must not claim success on failure.
+      expect(container.querySelector('[role="status"]')).toHaveTextContent(
+        "Libraries failed to load."
+      );
       // The associated library still renders, by short name.
       const editable = container.querySelectorAll(".with-edit-button");
       expect(editable).toHaveLength(1);
       expect(editable[0]).toHaveTextContent("nypl");
+    });
+
+    it("says when no libraries are configured", () => {
+      const emptyData = Object.assign({}, servicesData, { allLibraries: [] });
+      const { container } = renderForm({ data: emptyData });
+      expect(container.querySelector(".update-libraries")).toHaveTextContent(
+        "No libraries are configured."
+      );
     });
 
     it("renders removable and editable libraries", () => {
