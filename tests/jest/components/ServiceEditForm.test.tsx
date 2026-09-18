@@ -483,6 +483,66 @@ describe("ServiceEditForm", () => {
       expect(container.querySelector(".with-edit-button a")).toBeNull();
     });
 
+    it("shows a loading indicator in the Libraries panel until allLibraries arrives", () => {
+      // Undefined allLibraries means the library list is still loading.
+      const dataStillLoading = Object.assign({}, servicesData, {
+        allLibraries: undefined,
+      });
+      const { container, rerender } = renderForm({
+        data: dataStillLoading,
+        item: serviceData,
+      });
+      expect(container.querySelector(".update-libraries")).toBeNull();
+      expect(container.querySelector('[role="status"]')).toHaveTextContent(
+        "Loading libraries..."
+      );
+
+      rerenderForm(rerender, { item: serviceData });
+      // The status line stays mounted and announces completion; the
+      // completion text is visually hidden.
+      const status = container.querySelector('[role="status"]');
+      expect(status).toHaveTextContent("Libraries loaded.");
+      expect(status).toHaveClass("visuallyHidden");
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+    });
+
+    it("explains a failed library list load in the Libraries panel", () => {
+      // On failure allLibraries settles to [] and allLibrariesError is set.
+      const dataWithError = Object.assign({}, servicesData, {
+        allLibraries: [],
+        allLibrariesError: {
+          status: 500,
+          response: "nope",
+          url: "/admin/libraries",
+        },
+      });
+      const { container } = renderForm({
+        data: dataWithError,
+        item: serviceData,
+      });
+      expect(container.querySelector(".alert-danger")).toHaveTextContent(
+        "The library list failed to load"
+      );
+      // The live status must not claim success on failure.
+      expect(container.querySelector('[role="status"]')).toHaveTextContent(
+        "Libraries failed to load."
+      );
+      // The associated library still renders, by short name.
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("nypl");
+    });
+
+    it("says when no libraries are configured", () => {
+      const emptyData = Object.assign({}, servicesData, { allLibraries: [] });
+      const { container } = renderForm({ data: emptyData });
+      expect(container.querySelector(".update-libraries")).toHaveTextContent(
+        "No libraries are configured."
+      );
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

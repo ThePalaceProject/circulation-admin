@@ -6,6 +6,10 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
+import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
 import PatronAuthServiceEditForm from "./PatronAuthServiceEditForm";
 import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
@@ -63,9 +67,7 @@ function mapStateToProps(state, ownProps) {
     (state.editor.patronAuthServices && state.editor.patronAuthServices.data) ||
       {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of patron auth services; formError = an error upon submission
   // of the create/edit form.
   return {
@@ -85,7 +87,10 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchPatronAuthServices()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchPatronAuthServices());
+    },
     editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deletePatronAuthService(identifier)),

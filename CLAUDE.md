@@ -91,7 +91,7 @@ Helpers in `tests/jest/testUtils/`:
 
 ## Code Style
 
-- Prettier: double quotes, semicolons, trailing commas (es5), 80 char width
+- Prettier (double quotes, semicolons, trailing commas (es5), printWidth 80) and ESLint are authoritative for formatting and style. The husky pre-commit hook auto-formats staged files with Prettier, and CI runs ESLint (`npm run lint:js`), so do not flag or hand-verify formatting. printWidth is a soft target, not a hard limit; lines Prettier leaves longer than 80 (e.g., interface `extends` clauses) are fine, and there is no ESLint max-len rule.
 - ESLint (flat config, `eslint.config.mjs`) with `jsx-a11y/strict` — runs on the whole tree in CI via `npm run lint:js` (`eslint . --max-warnings 0`, so warnings fail the build) and on staged files via the husky pre-commit hook. `npm run lint` runs ESLint (`lint:js`) followed by sass-lint.
 - `@typescript-eslint/no-explicit-any` is disabled (any is allowed)
 - Prefer template literals over string concatenation for building strings with variables
