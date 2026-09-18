@@ -16,12 +16,9 @@ const NEW_LIBRARY_KEY = "__new__";
  *  support it. The editor is injected via the hook methods added
  *  to ServiceEditForm; editLibrary and addLibrary are overridden to collect the
  *  rules from the editor ref and persist them in library state. */
-export default class PatronAuthServiceEditForm extends ServiceEditForm<
-  PatronAuthServicesData
-> {
-  private newLibraryRulesRef = React.createRef<
-    PatronBlockingRulesEditorHandle
-  >();
+export default class PatronAuthServiceEditForm extends ServiceEditForm<PatronAuthServicesData> {
+  private newLibraryRulesRef =
+    React.createRef<PatronBlockingRulesEditorHandle>();
   private libraryRulesRefs = new Map<
     string,
     React.RefObject<PatronBlockingRulesEditorHandle>
@@ -162,23 +159,17 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
   }
 
   editLibrary(library: LibraryWithSettingsData, protocol: ProtocolData) {
-    const libraries = this.state.libraries.filter(
-      (stateLibrary) => stateLibrary.short_name !== library.short_name
-    );
-    const expandedLibraries = this.state.expandedLibraries.filter(
-      (shortName) => shortName !== library.short_name
-    );
+    // Read the form refs before setState. The updater passed to setState
+    // must only compute the next state from prevState, with no side effects.
     const newLibrary: LibraryWithSettingsData = {
       short_name: library.short_name,
     };
     for (const setting of this.protocolLibrarySettings(protocol)) {
-      const value = (this.refs[
-        `${library.short_name}_${setting.key}`
-      ] as any).getValue();
+      const value = (
+        this.refs[`${library.short_name}_${setting.key}`] as any
+      ).getValue();
       if (value) {
-        ((newLibrary as unknown) as Record<string, string>)[
-          setting.key
-        ] = value;
+        (newLibrary as unknown as Record<string, string>)[setting.key] = value;
       }
     }
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
@@ -187,10 +178,17 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         newLibrary.patron_blocking_rules = editorRef.current.getValue();
       }
     }
-    libraries.push(newLibrary);
-    this.setState(
-      Object.assign({}, this.state, { libraries, expandedLibraries })
-    );
+    this.setState((prevState) => ({
+      libraries: [
+        ...prevState.libraries.filter(
+          (stateLibrary) => stateLibrary.short_name !== library.short_name
+        ),
+        newLibrary,
+      ],
+      expandedLibraries: prevState.expandedLibraries.filter(
+        (shortName) => shortName !== library.short_name
+      ),
+    }));
   }
 
   addLibrary(protocol: ProtocolData) {
@@ -199,15 +197,14 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (this.refs[setting.key] as any).getValue();
       if (value) {
-        ((newLibrary as unknown) as Record<string, string>)[
-          setting.key
-        ] = value;
+        (newLibrary as unknown as Record<string, string>)[setting.key] = value;
       }
       (this.refs[setting.key] as any).clear();
     }
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
       if (this.newLibraryRulesRef.current) {
-        newLibrary.patron_blocking_rules = this.newLibraryRulesRef.current.getValue();
+        newLibrary.patron_blocking_rules =
+          this.newLibraryRulesRef.current.getValue();
       }
     }
     const libraries = this.state.libraries.concat(newLibrary);

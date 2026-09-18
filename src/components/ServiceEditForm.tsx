@@ -674,41 +674,33 @@ export default class ServiceEditForm<
    * @param library
    */
   removeLibrary(library) {
-    const libraries = this.state.libraries.filter(
-      (stateLibrary) => stateLibrary.short_name !== library.short_name
-    );
-    const expandedLibraries = this.state.expandedLibraries.filter(
-      (shortName) => shortName !== library.short_name
-    );
-    const newState = Object.assign({}, this.state, {
-      libraries,
-      expandedLibraries,
-    });
-    this.setState(newState);
+    // Called once per library inside a single React batch, so each removal
+    // must build on the previous one, rather than on the `this.state`.
+    this.setState((prevState) => ({
+      libraries: prevState.libraries.filter(
+        (stateLibrary) => stateLibrary.short_name !== library.short_name
+      ),
+      expandedLibraries: prevState.expandedLibraries.filter(
+        (shortName) => shortName !== library.short_name
+      ),
+    }));
   }
 
   expandLibrary(library) {
-    if (!this.isExpanded(library)) {
-      const expandedLibraries = this.state.expandedLibraries;
-      expandedLibraries.push(library.short_name);
-      const newState = Object.assign({}, this.state, { expandedLibraries });
-      this.setState(newState);
-    } else {
-      const expandedLibraries = this.state.expandedLibraries.filter(
-        (shortName) => shortName !== library.short_name
-      );
-      const newState = Object.assign({}, this.state, { expandedLibraries });
-      this.setState(newState);
-    }
+    this.setState((prevState) => ({
+      expandedLibraries: prevState.expandedLibraries.includes(
+        library.short_name
+      )
+        ? prevState.expandedLibraries.filter(
+            (shortName) => shortName !== library.short_name
+          )
+        : [...prevState.expandedLibraries, library.short_name],
+    }));
   }
 
   editLibrary(library, protocol: ProtocolData) {
-    const libraries = this.state.libraries.filter(
-      (stateLibrary) => stateLibrary.short_name !== library.short_name
-    );
-    const expandedLibraries = this.state.expandedLibraries.filter(
-      (shortName) => shortName !== library.short_name
-    );
+    // Read the form refs before setState. The updater passed to setState
+    // must only compute the next state from prevState, with no side effects.
     const newLibrary = { short_name: library.short_name };
     for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (
@@ -718,12 +710,17 @@ export default class ServiceEditForm<
         newLibrary[setting.key] = value;
       }
     }
-    libraries.push(newLibrary);
-    const newState = Object.assign({}, this.state, {
-      libraries,
-      expandedLibraries,
-    });
-    this.setState(newState);
+    this.setState((prevState) => ({
+      libraries: [
+        ...prevState.libraries.filter(
+          (stateLibrary) => stateLibrary.short_name !== library.short_name
+        ),
+        newLibrary,
+      ],
+      expandedLibraries: prevState.expandedLibraries.filter(
+        (shortName) => shortName !== library.short_name
+      ),
+    }));
   }
 
   addLibrary(protocol: ProtocolData) {
