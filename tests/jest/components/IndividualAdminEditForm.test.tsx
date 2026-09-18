@@ -202,6 +202,67 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
   const roleCheckbox = (role: string) =>
     screen.getByRole("checkbox", { name: roleNames[role] });
 
+  const failureData = {
+    individualAdmins: [adminData],
+    allLibraries: [],
+    allLibrariesError: {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    },
+  };
+
+  it("waits for the library list before showing per-library roles", () => {
+    const { container } = renderForm({
+      item: adminData,
+      data: { individualAdmins: [adminData] },
+    });
+    expect(container.querySelector("table.library-admin-roles")).toBeNull();
+    expect(container.querySelector('[role="status"]')).toHaveTextContent(
+      "Loading libraries..."
+    );
+    // Sitewide toggles rewrite an existing admin's hidden per-library roles
+    // wholesale, so role edits are disabled until the list is available.
+    expect(roleCheckbox("system")).toBeDisabled();
+  });
+
+  it("explains a failed library list load when editing an existing admin", () => {
+    // On failure allLibraries settles to [] and allLibrariesError is set.
+    const { container } = renderForm({ item: adminData, data: failureData });
+    expect(
+      screen.getByText(
+        /library roles cannot be shown, and no roles can be changed/
+      )
+    ).toBeInTheDocument();
+    expect(container.querySelector('[role="status"]')).toHaveTextContent(
+      "Libraries failed to load."
+    );
+    expect(roleCheckbox("system")).toBeDisabled();
+    // All role edits are disabled, so the empty table shell is dropped.
+    expect(container.querySelector("table.library-admin-roles")).toBeNull();
+  });
+
+  it("still allows sitewide roles for a new admin when the library list failed", () => {
+    // A new admin has no hidden per-library roles to clobber.
+    const { container } = renderForm({ data: failureData });
+    expect(
+      screen.getByText(/Sitewide roles can still be assigned/)
+    ).toBeInTheDocument();
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    // No misleading "no libraries" row under a failure.
+    expect(container.querySelector("tbody")).toBeEmptyDOMElement();
+  });
+
+  it("says when no libraries are configured", () => {
+    renderForm({
+      data: { individualAdmins: [adminData], allLibraries: [] },
+    });
+    expect(
+      screen.getByText("No libraries are configured.")
+    ).toBeInTheDocument();
+  });
+
   const expectRoles = (expected: string[]) => {
     for (const role of allRoles) {
       if (expected.includes(role)) {

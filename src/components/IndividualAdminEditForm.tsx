@@ -2,9 +2,15 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableInput from "./EditableInput";
 import { clearForm, libraryLabel } from "../utils/sharedFunctions";
-import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
+import {
+  IndividualAdminsData,
+  IndividualAdminData,
+  LibraryData,
+} from "../interfaces";
 import Admin from "../models/Admin";
 import { Panel, Form } from "library-simplified-reusable-components";
+import { Alert } from "react-bootstrap";
+import LibrariesLoadStatus from "./LibrariesLoadStatus";
 
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
@@ -58,6 +64,7 @@ export default class IndividualAdminEditForm extends React.Component<
     this.submit = this.submit.bind(this);
     this.renderForm = this.renderForm.bind(this);
     this.renderRoleForm = this.renderRoleForm.bind(this);
+    this.renderRolesTable = this.renderRolesTable.bind(this);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -143,6 +150,9 @@ export default class IndividualAdminEditForm extends React.Component<
   }
 
   renderRoleForm() {
+    // Wait for the sitewide library list before showing per-library roles,
+    // mirroring the Libraries panel in ServiceEditForm.
+    const { allLibraries, allLibrariesError } = this.props.data;
     return (
       <fieldset>
         <legend className="visuallyHidden">Roles</legend>
@@ -156,86 +166,109 @@ export default class IndividualAdminEditForm extends React.Component<
           checked={this.isSelected("system")}
           onChange={() => this.handleRoleChange("system")}
         />
-        <table className="library-admin-roles">
-          <thead>
-            <tr>
-              <th></th>
-              <th>
-                <EditableInput
-                  elementType="input"
-                  type="checkbox"
-                  disabled={this.isDisabled("manager-all")}
-                  name="manager-all"
-                  ref={this.managerAllRef}
-                  label="Administrator"
-                  checked={this.isSelected("manager-all")}
-                  onChange={() => this.handleRoleChange("manager-all")}
-                />
-              </th>
-              <th>
-                <EditableInput
-                  elementType="input"
-                  type="checkbox"
-                  disabled={this.isDisabled("librarian-all")}
-                  name="librarian-all"
-                  ref={this.librarianAllRef}
-                  label="User"
-                  checked={this.isSelected("librarian-all")}
-                  onChange={() => this.handleRoleChange("librarian-all")}
-                />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.data &&
-              this.props.data.allLibraries &&
-              this.props.data.allLibraries.map((library) => (
-                <tr key={library.short_name}>
-                  <td>{libraryLabel(library.name, library.short_name)}</td>
-                  <td>
-                    <EditableInput
-                      elementType="input"
-                      type="checkbox"
-                      disabled={this.isDisabled("manager", library.short_name)}
-                      name={"manager-" + library.short_name}
-                      ref={(componentInstance) => {
-                        this.libraryManagerRefs[library.short_name] =
-                          componentInstance;
-                      }}
-                      label=""
-                      aria-label={`Administrator of ${library.short_name}`}
-                      checked={this.isSelected("manager", library.short_name)}
-                      onChange={() =>
-                        this.handleRoleChange("manager", library.short_name)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <EditableInput
-                      elementType="input"
-                      type="checkbox"
-                      disabled={this.isDisabled(
-                        "librarian",
-                        library.short_name
-                      )}
-                      name={"librarian-" + library.short_name}
-                      ref={(componentInstance) => {
-                        this.librarianRefs[library.short_name] =
-                          componentInstance;
-                      }}
-                      label=""
-                      aria-label={`User of ${library.short_name}`}
-                      checked={this.isSelected("librarian", library.short_name)}
-                      onChange={() =>
-                        this.handleRoleChange("librarian", library.short_name)
-                      }
-                    />
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <LibrariesLoadStatus
+          allLibraries={allLibraries}
+          allLibrariesError={allLibrariesError}
+        />
+        {allLibrariesError && (
+          <Alert bsStyle="danger">
+            {this.props.item
+              ? "The library list failed to load. This admin's library roles cannot be shown, and no roles can be changed."
+              : "The library list failed to load. Sitewide roles can still be assigned, but per-library roles cannot."}
+          </Alert>
+        )}
+        {/* For an existing admin a failed load disables all role edits, so
+            an empty table shell would only add noise; drop it. */}
+        {allLibraries &&
+          !(this.props.item && allLibrariesError) &&
+          this.renderRolesTable(allLibraries, allLibrariesError)}
       </fieldset>
+    );
+  }
+
+  renderRolesTable(
+    allLibraries: LibraryData[],
+    allLibrariesError?: FetchErrorData
+  ) {
+    return (
+      <table className="library-admin-roles">
+        <thead>
+          <tr>
+            <th></th>
+            <th>
+              <EditableInput
+                elementType="input"
+                type="checkbox"
+                disabled={this.isDisabled("manager-all")}
+                name="manager-all"
+                ref={this.managerAllRef}
+                label="Administrator"
+                checked={this.isSelected("manager-all")}
+                onChange={() => this.handleRoleChange("manager-all")}
+              />
+            </th>
+            <th>
+              <EditableInput
+                elementType="input"
+                type="checkbox"
+                disabled={this.isDisabled("librarian-all")}
+                name="librarian-all"
+                ref={this.librarianAllRef}
+                label="User"
+                checked={this.isSelected("librarian-all")}
+                onChange={() => this.handleRoleChange("librarian-all")}
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {allLibraries.length === 0 && !allLibrariesError && (
+            <tr>
+              <td colSpan={3}>No libraries are configured.</td>
+            </tr>
+          )}
+          {allLibraries.map((library) => (
+            <tr key={library.short_name}>
+              <td>{libraryLabel(library.name, library.short_name)}</td>
+              <td>
+                <EditableInput
+                  elementType="input"
+                  type="checkbox"
+                  disabled={this.isDisabled("manager", library.short_name)}
+                  name={`manager-${library.short_name}`}
+                  ref={(componentInstance) => {
+                    this.libraryManagerRefs[library.short_name] =
+                      componentInstance;
+                  }}
+                  label=""
+                  aria-label={`Administrator of ${library.short_name}`}
+                  checked={this.isSelected("manager", library.short_name)}
+                  onChange={() =>
+                    this.handleRoleChange("manager", library.short_name)
+                  }
+                />
+              </td>
+              <td>
+                <EditableInput
+                  elementType="input"
+                  type="checkbox"
+                  disabled={this.isDisabled("librarian", library.short_name)}
+                  name={`librarian-${library.short_name}`}
+                  ref={(componentInstance) => {
+                    this.librarianRefs[library.short_name] = componentInstance;
+                  }}
+                  label=""
+                  aria-label={`User of ${library.short_name}`}
+                  checked={this.isSelected("librarian", library.short_name)}
+                  onChange={() =>
+                    this.handleRoleChange("librarian", library.short_name)
+                  }
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   }
 
@@ -267,6 +300,15 @@ export default class IndividualAdminEditForm extends React.Component<
 
   isDisabled(role: string, library?: string) {
     if (this.props.disabled) {
+      return true;
+    }
+    // Sitewide toggles rewrite an existing admin's (hidden) per-library
+    // roles wholesale, so edits stay disabled until the library list is
+    // available. A new admin has no roles yet, so nothing can be clobbered.
+    if (
+      this.props.item &&
+      (!this.props.data.allLibraries || this.props.data.allLibrariesError)
+    ) {
       return true;
     }
     if (role === "system" || this.isSelected("system")) {

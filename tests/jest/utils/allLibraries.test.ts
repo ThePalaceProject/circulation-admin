@@ -36,6 +36,26 @@ describe("settledAllLibraries", () => {
       settledAllLibraries(stateWith({ data: null, isLoaded: true, fetchError }))
     ).toEqual({ allLibraries: [], allLibrariesError: fetchError });
   });
+
+  it("keeps a previous failure settled while a retry is in flight", () => {
+    // The reducer moves the old failure to lastFetchError during a retry.
+    const lastFetchError = {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    };
+    expect(
+      settledAllLibraries(
+        stateWith({
+          data: null,
+          isLoaded: false,
+          isFetching: true,
+          fetchError: null,
+          lastFetchError,
+        })
+      )
+    ).toEqual({ allLibraries: [], allLibrariesError: lastFetchError });
+  });
 });
 
 describe("fetchLibrariesIfNeeded", () => {

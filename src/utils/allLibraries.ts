@@ -11,7 +11,9 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
  * empty object while the request is still pending. A failed request settles
  * to an empty list plus the error. Consumers can therefore tell "still
  * loading" (allLibraries undefined) apart from "no libraries" ([]), and can
- * report a failure.
+ * report a failure. A retry after a failure also counts as settled (the
+ * reducer keeps the old failure as lastFetchError), so the previous error
+ * stays visible while the retry runs.
  *
  * Merge the result into the `data` prop built by a config page's
  * mapStateToProps.
@@ -21,12 +23,18 @@ export function settledAllLibraries(state): {
   allLibrariesError?: FetchErrorData;
 } {
   const libraries = state.editor.libraries;
-  if (!libraries?.data && !libraries?.isLoaded) {
+  if (
+    !libraries?.data &&
+    !libraries?.isLoaded &&
+    !libraries?.fetchError &&
+    !libraries?.lastFetchError
+  ) {
     return {};
   }
   return {
     allLibraries: libraries.data?.libraries ?? [],
-    allLibrariesError: libraries.fetchError ?? undefined,
+    allLibrariesError:
+      libraries.fetchError ?? libraries.lastFetchError ?? undefined,
   };
 }
 
