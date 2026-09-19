@@ -24,17 +24,20 @@ export function settledAllLibraries(state): {
 } {
   const libraries = state.editor.libraries;
   if (
-    !libraries?.data &&
     !libraries?.isLoaded &&
     !libraries?.fetchError &&
     !libraries?.lastFetchError
   ) {
     return {};
   }
+  // With a loaded list in hand, a failure recorded by a concurrent or
+  // later request is not worth blocking the UI over; show the list.
+  const loaded = libraries.data?.libraries;
   return {
-    allLibraries: libraries.data?.libraries ?? [],
-    allLibrariesError:
-      libraries.fetchError ?? libraries.lastFetchError ?? undefined,
+    allLibraries: loaded ?? [],
+    allLibrariesError: loaded
+      ? undefined
+      : (libraries.fetchError ?? libraries.lastFetchError ?? undefined),
   };
 }
 

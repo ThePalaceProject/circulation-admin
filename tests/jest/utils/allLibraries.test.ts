@@ -26,6 +26,21 @@ describe("settledAllLibraries", () => {
     ).toEqual({ allLibraries: libraries, allLibrariesError: undefined });
   });
 
+  it("does not report an error when a loaded list is present", () => {
+    // Two overlapping requests can leave a loaded list next to a recorded
+    // failure; the list wins.
+    const fetchError = {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    };
+    expect(
+      settledAllLibraries(
+        stateWith({ data: { libraries }, isLoaded: true, fetchError })
+      )
+    ).toEqual({ allLibraries: libraries, allLibrariesError: undefined });
+  });
+
   it("settles to an empty list plus the error on failure", () => {
     const fetchError = {
       status: 500,

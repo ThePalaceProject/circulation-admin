@@ -30,6 +30,26 @@ describe("libraries reducer", () => {
     expect(retrying.isLoaded).toBe(false);
   });
 
+  it("keeps the loaded list while a refetch is in flight", () => {
+    const data = { libraries: [{ short_name: "nypl" }] };
+    let state = libraries(undefined, { type: LOAD, data });
+    state = libraries(state, { type: REQUEST });
+
+    expect(state.isFetching).toBe(true);
+    expect(state.data).toEqual(data);
+    expect(state.isLoaded).toBe(true);
+  });
+
+  it("keeps lastFetchError when a second request starts before the retry settles", () => {
+    // The header's fetch and the Libraries tab's fetch can overlap.
+    let state = libraries(undefined, { type: FAILURE, error: fetchError });
+    state = libraries(state, { type: REQUEST });
+    state = libraries(state, { type: REQUEST });
+
+    expect(state.fetchError).toBeNull();
+    expect(state.lastFetchError).toEqual(fetchError);
+  });
+
   it("keeps lastFetchError through a retry's SUCCESS until LOAD", () => {
     let state = libraries(undefined, { type: FAILURE, error: fetchError });
     state = libraries(state, { type: REQUEST });

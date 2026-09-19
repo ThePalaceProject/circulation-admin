@@ -27,7 +27,18 @@ const librariesAction = (action: string) =>
 export default (state: LibrariesState | undefined, action): LibrariesState => {
   const next: LibrariesState = fetchEditReducer(state, action);
   if (action.type === librariesAction(ActionCreator.REQUEST)) {
-    return { ...next, lastFetchError: state?.fetchError ?? null };
+    // Keep the already-loaded list visible while a refetch is in flight
+    // (the Libraries tab refetches on every config-page mount and after
+    // every save), so consumers do not flip back to "loading". Also fall
+    // back to the already-retained failure so that a second request
+    // starting before the first settles (e.g. the header's fetch and the
+    // Libraries tab's fetch overlap) does not discard it.
+    return {
+      ...next,
+      data: state?.data ?? null,
+      isLoaded: !!state?.data,
+      lastFetchError: state?.fetchError ?? state?.lastFetchError ?? null,
+    };
   }
   if (
     action.type === librariesAction(ActionCreator.FAILURE) ||
