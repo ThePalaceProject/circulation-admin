@@ -254,6 +254,27 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
     expect(container.querySelector("tbody")).toBeEmptyDOMElement();
   });
 
+  it("warns when the library list could not be refreshed, without blocking edits", () => {
+    renderForm({
+      item: adminData,
+      data: {
+        individualAdmins: [adminData],
+        allLibraries,
+        allLibrariesRefreshError: {
+          status: 500,
+          response: "nope",
+          url: "/admin/libraries",
+        },
+      },
+    });
+    expect(
+      screen.getByText(/The library list could not be refreshed/)
+    ).toBeInTheDocument();
+    // The stale list still renders and roles stay editable.
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-nypl")).toBeEnabled();
+  });
+
   it("says when no libraries are configured", () => {
     renderForm({
       data: { individualAdmins: [adminData], allLibraries: [] },

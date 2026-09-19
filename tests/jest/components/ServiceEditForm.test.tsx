@@ -536,6 +536,25 @@ describe("ServiceEditForm", () => {
       expect(editable[0]).toHaveTextContent("nypl");
     });
 
+    it("warns when the library list could not be refreshed", () => {
+      const staleData = Object.assign({}, servicesData, {
+        allLibrariesRefreshError: {
+          status: 500,
+          response: "nope",
+          url: "/admin/libraries",
+        },
+      });
+      const { container } = renderForm({ data: staleData, item: serviceData });
+      expect(container.querySelector(".alert-warning")).toHaveTextContent(
+        "The library list could not be refreshed"
+      );
+      // The stale list still renders in full, links included.
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+      expect(container.querySelector(".alert-danger")).toBeNull();
+    });
+
     it("says when no libraries are configured", () => {
       const emptyData = Object.assign({}, servicesData, { allLibraries: [] });
       const { container } = renderForm({ data: emptyData });

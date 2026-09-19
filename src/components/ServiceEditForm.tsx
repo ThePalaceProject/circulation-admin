@@ -386,6 +386,12 @@ export default class ServiceEditForm<
             short name only, and libraries cannot be added.
           </Alert>
         )}
+        {this.props.data.allLibrariesRefreshError && (
+          <Alert bsStyle="warning">
+            The library list could not be refreshed. Showing the last loaded
+            list, which may be out of date.
+          </Alert>
+        )}
         {this.props.data.allLibraries.length === 0 &&
           !this.props.data.allLibrariesError && (
             <p>No libraries are configured.</p>

@@ -15,12 +15,17 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
  * reducer keeps the old failure as lastFetchError), so the previous error
  * stays visible while the retry runs.
  *
+ * A failure with no list at all is blocking (allLibrariesError); a failure
+ * recorded while a loaded list is in hand only means the list may be out of
+ * date (allLibrariesRefreshError).
+ *
  * Merge the result into the `data` prop built by a config page's
  * mapStateToProps.
  */
 export function settledAllLibraries(state): {
   allLibraries?: LibraryData[];
   allLibrariesError?: FetchErrorData;
+  allLibrariesRefreshError?: FetchErrorData;
 } {
   const libraries = state.editor.libraries;
   if (
@@ -31,13 +36,14 @@ export function settledAllLibraries(state): {
     return {};
   }
   // With a loaded list in hand, a failure recorded by a concurrent or
-  // later request is not worth blocking the UI over; show the list.
+  // later request is not worth blocking the UI over; show the list and
+  // report the failure as a non-blocking refresh error instead.
   const loaded = libraries.data?.libraries;
+  const error = libraries.fetchError ?? libraries.lastFetchError ?? undefined;
   return {
     allLibraries: loaded ?? [],
-    allLibrariesError: loaded
-      ? undefined
-      : (libraries.fetchError ?? libraries.lastFetchError ?? undefined),
+    allLibrariesError: loaded ? undefined : error,
+    allLibrariesRefreshError: loaded ? error : undefined,
   };
 }
 

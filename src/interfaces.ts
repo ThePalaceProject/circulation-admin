@@ -392,6 +392,8 @@ export interface ServicesData {
   allLibraries?: LibraryData[];
   /** Set when the sitewide library list failed to load. */
   allLibrariesError?: FetchErrorData;
+  /** Set when the list is loaded but a later refresh of it failed. */
+  allLibrariesRefreshError?: FetchErrorData;
 }
 
 export interface ServicesWithRegistrationsData extends ServicesData {
@@ -434,6 +436,8 @@ export interface IndividualAdminsData {
   allLibraries?: LibraryData[];
   /** Set when the sitewide library list failed to load. */
   allLibrariesError?: FetchErrorData;
+  /** Set when the list is loaded but a later refresh of it failed. */
+  allLibrariesRefreshError?: FetchErrorData;
 }
 
 export interface PatronAuthServiceData extends ServiceData {}

@@ -152,7 +152,8 @@ export default class IndividualAdminEditForm extends React.Component<
   renderRoleForm() {
     // Wait for the sitewide library list before showing per-library roles,
     // mirroring the Libraries panel in ServiceEditForm.
-    const { allLibraries, allLibrariesError } = this.props.data;
+    const { allLibraries, allLibrariesError, allLibrariesRefreshError } =
+      this.props.data;
     return (
       <fieldset>
         <legend className="visuallyHidden">Roles</legend>
@@ -175,6 +176,12 @@ export default class IndividualAdminEditForm extends React.Component<
             {this.props.item
               ? "The library list failed to load. This admin's library roles cannot be shown, and no roles can be changed."
               : "The library list failed to load. Sitewide roles can still be assigned, but per-library roles cannot."}
+          </Alert>
+        )}
+        {allLibrariesRefreshError && (
+          <Alert bsStyle="warning">
+            The library list could not be refreshed. Showing the last loaded
+            list, which may be out of date.
           </Alert>
         )}
         {/* For an existing admin a failed load disables all role edits, so

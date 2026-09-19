@@ -26,9 +26,10 @@ describe("settledAllLibraries", () => {
     ).toEqual({ allLibraries: libraries, allLibrariesError: undefined });
   });
 
-  it("does not report an error when a loaded list is present", () => {
-    // Two overlapping requests can leave a loaded list next to a recorded
-    // failure; the list wins.
+  it("reports a failure next to a loaded list as a refresh error", () => {
+    // Two overlapping requests, or a failed refresh of a loaded list, can
+    // leave a list next to a recorded failure; the list wins and the
+    // failure downgrades to a non-blocking refresh error.
     const fetchError = {
       status: 500,
       response: "nope",
@@ -38,7 +39,11 @@ describe("settledAllLibraries", () => {
       settledAllLibraries(
         stateWith({ data: { libraries }, isLoaded: true, fetchError })
       )
-    ).toEqual({ allLibraries: libraries, allLibrariesError: undefined });
+    ).toEqual({
+      allLibraries: libraries,
+      allLibrariesError: undefined,
+      allLibrariesRefreshError: fetchError,
+    });
   });
 
   it("settles to an empty list plus the error on failure", () => {
