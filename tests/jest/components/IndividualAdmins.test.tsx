@@ -46,6 +46,84 @@ describe("IndividualAdmins - role association disclosure", () => {
 
   // ── Toggle visibility ─────────────────────────────────────────────────────
 
+  it("shows no toggle while allLibraries has not settled", () => {
+    // Labels must render once, in final linked form, not flash bare short
+    // names that get rewritten when the sitewide list arrives.
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            {
+              email: "admin@example.org",
+              roles: [{ role: "manager", library: "alpha" }],
+            },
+          ],
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    expect(container.querySelector(".association-toggle")).toBeNull();
+  });
+
+  it("shows the sysadmin entry before allLibraries settles", () => {
+    // The synthetic sysadmin entry never consults the library list and can
+    // never be rewritten by it, so it is not held back.
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            { email: "root@example.org", roles: [{ role: "system" }] },
+          ],
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    fireEvent.click(container.querySelector(".association-toggle"));
+    expect(container.querySelector(".associated-items li").textContent).toBe(
+      "sysadmin"
+    );
+  });
+
+  it("names roles, not libraries, when the library list failed to load", () => {
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            {
+              email: "admin@example.org",
+              roles: [{ role: "manager", library: "alpha" }],
+            },
+          ],
+          allLibraries: [],
+          allLibrariesError: {
+            status: 500,
+            response: "nope",
+            url: "/admin/libraries",
+          },
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    expect(container.querySelector(".alert-danger")).toHaveTextContent(
+      "Roles are shown by library short name only."
+    );
+  });
+
   it("shows no toggle for an admin with no roles field", () => {
     const { container } = renderAdmins([{ email: "noroles@example.com" }]);
     expect(container.querySelector(".association-toggle")).toBeNull();

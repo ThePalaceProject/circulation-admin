@@ -3,8 +3,8 @@
 // state.editor.libraries.
 
 import ActionCreator from "../actions";
-import { LibraryData } from "../interfaces";
-import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { AllLibrariesData } from "../interfaces";
+import { LibrariesState } from "../reducers/libraries";
 
 /**
  * Returns the sitewide library list once its request has settled, or an
@@ -15,35 +15,27 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
  * reducer keeps the old failure as lastFetchError), so the previous error
  * stays visible while the retry runs.
  *
- * A failure with no list at all is blocking (allLibrariesError); a failure
- * recorded while a loaded list is in hand only means the list may be out of
- * date (allLibrariesRefreshError).
+ * A failure with no list at all is blocking (allLibrariesError). A failure
+ * beside the retained copy of the list means the copy may be out of date
+ * (allLibrariesRefreshError). A failure beside a current list is reported
+ * as neither: the list on screen is up to date, and concurrent requests
+ * with mixed outcomes must not degrade a working page.
  *
  * Merge the result into the `data` prop built by a config page's
  * mapStateToProps.
  */
-export function settledAllLibraries(state): {
-  allLibraries?: LibraryData[];
-  allLibrariesError?: FetchErrorData;
-  allLibrariesRefreshError?: FetchErrorData;
-} {
+export function settledAllLibraries(state): AllLibrariesData {
   const libraries = state.editor.libraries;
-  if (
-    !libraries?.isLoaded &&
-    !libraries?.fetchError &&
-    !libraries?.lastFetchError
-  ) {
+  const current = currentLibraries(libraries);
+  const loaded = retainedLibraries(libraries);
+  const error = retainedError(libraries);
+  if (!loaded && !error) {
     return {};
   }
-  // With a loaded list in hand, a failure recorded by a concurrent or
-  // later request is not worth blocking the UI over; show the list and
-  // report the failure as a non-blocking refresh error instead.
-  const loaded = libraries.data?.libraries;
-  const error = libraries.fetchError ?? libraries.lastFetchError ?? undefined;
   return {
     allLibraries: loaded ?? [],
     allLibrariesError: loaded ? undefined : error,
-    allLibrariesRefreshError: loaded ? error : undefined,
+    allLibrariesRefreshError: loaded && !current ? error : undefined,
   };
 }
 
@@ -57,9 +49,30 @@ export function fetchLibrariesIfNeeded(dispatch, actions: ActionCreator): void {
   dispatch((thunkDispatch, getState) => {
     const libraries = getState().editor.libraries;
     const inFlight = libraries?.isFetching;
-    const settledCleanly = libraries?.isLoaded && !libraries.fetchError;
+    const settledCleanly =
+      !!retainedLibraries(libraries) && !retainedError(libraries);
     if (!inFlight && !settledCleanly) {
       thunkDispatch(actions.fetchLibraries()).catch(() => {});
     }
   });
 }
+
+// The predicates settled-ness is derived from, feeding both functions
+// above. The two deliberately differ on one state: a failure beside a
+// current list is nothing to report for settledAllLibraries, while
+// fetchLibrariesIfNeeded still retries it to clear the stray fetchError.
+// isLoaded is deliberately not consulted: actions from the shared
+// EDIT_LIBRARY prefix can clear fetchError while leaving isLoaded true,
+// and isLoaded alone proves neither a list nor an error worth showing.
+
+/** The current list, from data. */
+const currentLibraries = (libraries?: LibrariesState) =>
+  libraries?.data?.libraries;
+
+/** The list in hand: the current one, or the copy retained during a refetch. */
+const retainedLibraries = (libraries?: LibrariesState) =>
+  currentLibraries(libraries) ?? libraries?.lastData?.libraries;
+
+/** The failure in hand: the current one, or the one a retry is retrying. */
+const retainedError = (libraries?: LibrariesState) =>
+  libraries?.fetchError ?? libraries?.lastFetchError ?? undefined;

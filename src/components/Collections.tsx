@@ -115,6 +115,7 @@ export class Collections extends GenericEditableConfigList<
 > {
   EditForm = CollectionEditForm;
   listDataKey = "collections";
+  usesLibraryList = true;
   itemTypeName = "collection";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "id";
@@ -147,7 +148,7 @@ export class Collections extends GenericEditableConfigList<
   }
 
   protected getAllLibraries() {
-    return this.props.data?.allLibraries ?? [];
+    return this.props.data.allLibraries;
   }
 
   componentDidMount() {

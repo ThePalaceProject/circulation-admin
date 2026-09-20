@@ -23,6 +23,12 @@ describe("EditableConfigList - library association disclosure", () => {
   interface ServicesData {
     services: ServiceItem[];
     allLibraries?: Array<{ short_name: string; name?: string; uuid?: string }>;
+    allLibrariesError?: { status: number; response: string; url: string };
+    allLibrariesRefreshError?: {
+      status: number;
+      response: string;
+      url: string;
+    };
   }
 
   class TestEditForm extends React.Component<
@@ -36,6 +42,7 @@ describe("EditableConfigList - library association disclosure", () => {
   class TestServiceList extends EditableConfigList<ServicesData, ServiceItem> {
     EditForm = TestEditForm;
     listDataKey = "services";
+    usesLibraryList = true;
     itemTypeName = "service";
     urlBase = "/admin/services/";
     identifierKey = "id";
@@ -377,7 +384,71 @@ describe("EditableConfigList - library association disclosure", () => {
       expect(items[1].textContent).toBe("Beta Library - beta");
     });
 
-    it("falls back to short_name when allLibraries is absent from the data", () => {
+    it("shows an alert and bare short names when the library list failed to load", () => {
+      const { container } = renderWithContext(
+        <TestServiceList
+          data={{
+            services: [
+              { id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] },
+            ],
+            allLibraries: [],
+            allLibrariesError: {
+              status: 500,
+              response: "nope",
+              url: "/admin/libraries",
+            },
+          }}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        config
+      );
+      expect(container.querySelector(".alert-danger")).toHaveTextContent(
+        "The library list failed to load"
+      );
+      // The associations still render, by short name, below the alert.
+      fireEvent.click(container.querySelector(".association-toggle"));
+      expect(container.querySelector(".associated-items li").textContent).toBe(
+        "nypl"
+      );
+    });
+
+    it("shows a warning when the library list is stale", () => {
+      const { container } = renderWithContext(
+        <TestServiceList
+          data={{
+            services: [
+              { id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] },
+            ],
+            allLibraries: [{ short_name: "nypl", name: "NYPL" }],
+            allLibrariesRefreshError: {
+              status: 500,
+              response: "nope",
+              url: "/admin/libraries",
+            },
+          }}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        config
+      );
+      expect(container.querySelector(".alert-warning")).toHaveTextContent(
+        "The library list could not be refreshed"
+      );
+      // The associations still render, from the retained list.
+      fireEvent.click(container.querySelector(".association-toggle"));
+      expect(container.querySelector(".associated-items li").textContent).toBe(
+        "NYPL - nypl"
+      );
+    });
+
+    it("holds the association panel until allLibraries settles", () => {
       const { container } = renderWithContext(
         <TestServiceList
           data={{
@@ -393,9 +464,12 @@ describe("EditableConfigList - library association disclosure", () => {
         />,
         config
       );
-      fireEvent.click(container.querySelector(".association-toggle"));
-      expect(container.querySelector(".associated-items li").textContent).toBe(
-        "nypl"
+      // With the sitewide list unsettled, no toggle renders at all, so the
+      // panel cannot flash bare short names that get rewritten when the
+      // list arrives. The status line explains and announces the gap.
+      expect(container.querySelector(".association-toggle")).toBeNull();
+      expect(container.querySelector('[role="status"]')).toHaveTextContent(
+        "Loading libraries..."
       );
     });
   });

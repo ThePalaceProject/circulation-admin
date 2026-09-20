@@ -52,6 +52,22 @@ describe("DiscoveryServices - registered library disclosure", () => {
 
   // ── Toggle visibility ─────────────────────────────────────────────────────
 
+  it("shows no toggle while allLibraries has not settled", () => {
+    // Labels must render once, in final linked form, not flash bare short
+    // names that get rewritten when the sitewide list arrives.
+    const { container } = renderServices({
+      discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],
+      allLibraries: undefined,
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [{ short_name: "alpha", status: "success" }],
+        },
+      ] as any,
+    });
+    expect(container.querySelector(".association-toggle")).toBeNull();
+  });
+
   it("shows no toggle when libraryRegistrations data has not yet loaded", () => {
     const { container } = renderServices({
       discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],

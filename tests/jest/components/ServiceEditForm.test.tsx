@@ -526,14 +526,15 @@ describe("ServiceEditForm", () => {
       expect(container.querySelector(".alert-danger")).toHaveTextContent(
         "The library list failed to load"
       );
-      // The live status must not claim success on failure.
-      expect(container.querySelector('[role="status"]')).toHaveTextContent(
-        "Libraries failed to load."
-      );
+      // The role="alert" danger Alert announces the failure itself, so the
+      // status region empties rather than duplicating the announcement.
+      expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
       // The associated library still renders, by short name.
       const editable = container.querySelectorAll(".with-edit-button");
       expect(editable).toHaveLength(1);
       expect(editable[0]).toHaveTextContent("nypl");
+      // A removal could not be undone in-session, so it is disabled too.
+      expect(container.querySelector("button.remove-btn")).toBeDisabled();
     });
 
     it("warns when the library list could not be refreshed", () => {
@@ -548,11 +549,16 @@ describe("ServiceEditForm", () => {
       expect(container.querySelector(".alert-warning")).toHaveTextContent(
         "The library list could not be refreshed"
       );
-      // The stale list still renders in full, links included.
+      // The role="alert" warning announces the refresh failure itself, so
+      // the status region empties rather than duplicating the announcement.
+      expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+      // The stale list still renders in full, links included, and the
+      // panel stays editable; only the blocking error disables removal.
       const editable = container.querySelectorAll(".with-edit-button");
       expect(editable).toHaveLength(1);
       expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
       expect(container.querySelector(".alert-danger")).toBeNull();
+      expect(container.querySelector("button.remove-btn")).toBeEnabled();
     });
 
     it("says when no libraries are configured", () => {

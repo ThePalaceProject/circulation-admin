@@ -11,6 +11,7 @@ import Admin from "../models/Admin";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { Alert } from "react-bootstrap";
 import LibrariesLoadStatus from "./LibrariesLoadStatus";
+import LibrariesRefreshWarning from "./LibrariesRefreshWarning";
 
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
@@ -170,6 +171,7 @@ export default class IndividualAdminEditForm extends React.Component<
         <LibrariesLoadStatus
           allLibraries={allLibraries}
           allLibrariesError={allLibrariesError}
+          allLibrariesRefreshError={allLibrariesRefreshError}
         />
         {allLibrariesError && (
           <Alert bsStyle="danger">
@@ -178,12 +180,10 @@ export default class IndividualAdminEditForm extends React.Component<
               : "The library list failed to load. Sitewide roles can still be assigned, but per-library roles cannot."}
           </Alert>
         )}
-        {allLibrariesRefreshError && (
-          <Alert bsStyle="warning">
-            The library list could not be refreshed. Showing the last loaded
-            list, which may be out of date.
-          </Alert>
-        )}
+        <LibrariesRefreshWarning
+          allLibrariesRefreshError={allLibrariesRefreshError}
+          detail="Per-library roles cannot be changed until the list can be refreshed. Reload the page to try again."
+        />
         {/* For an existing admin a failed load disables all role edits, so
             an empty table shell would only add noise; drop it. */}
         {allLibraries &&
@@ -309,12 +309,23 @@ export default class IndividualAdminEditForm extends React.Component<
     if (this.props.disabled) {
       return true;
     }
-    // Sitewide toggles rewrite an existing admin's (hidden) per-library
-    // roles wholesale, so edits stay disabled until the library list is
-    // available. A new admin has no roles yet, so nothing can be clobbered.
+    // An existing admin is fully locked while the list is missing or
+    // failed to load: their per-library roles cannot be shown, and the
+    // sitewide toggles would rewrite those hidden roles wholesale.
     if (
       this.props.item &&
       (!this.props.data.allLibraries || this.props.data.allLibrariesError)
+    ) {
+      return true;
+    }
+    // Only the per-library toggles rebuild roles from the list (their
+    // un-check branches expand sitewide roles using it), so a stale list
+    // locks just those. The sitewide toggles replace the role set without
+    // consulting the list and stay assignable, so the form cannot be
+    // reduced to submitting a roleless admin.
+    if (
+      this.props.data.allLibrariesRefreshError &&
+      (role === "manager" || role === "librarian")
     ) {
       return true;
     }

@@ -21,6 +21,7 @@ export class CatalogServices extends EditableConfigList<
 > {
   EditForm = ServiceEditForm;
   listDataKey = "catalog_services";
+  usesLibraryList = true;
   itemTypeName = "catalog service";
   urlBase = "/admin/web/config/catalogServices/";
   identifierKey = "id";

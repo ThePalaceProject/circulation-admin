@@ -386,14 +386,22 @@ export interface ServiceData {
   goal?: string;
 }
 
-export interface ServicesData {
-  protocols: ProtocolData[];
+/**
+ * The sitewide library list fields produced by settledAllLibraries and
+ * merged into a config page's data. Extended by each data type whose page
+ * resolves library short names against the list.
+ */
+export interface AllLibrariesData {
   /** The sitewide library list; undefined until its request settles. */
   allLibraries?: LibraryData[];
   /** Set when the sitewide library list failed to load. */
   allLibrariesError?: FetchErrorData;
   /** Set when the list is loaded but a later refresh of it failed. */
   allLibrariesRefreshError?: FetchErrorData;
+}
+
+export interface ServicesData extends AllLibrariesData {
+  protocols: ProtocolData[];
 }
 
 export interface ServicesWithRegistrationsData extends ServicesData {
@@ -430,14 +438,8 @@ export interface IndividualAdminData {
   roles?: AdminRoleData[];
 }
 
-export interface IndividualAdminsData {
+export interface IndividualAdminsData extends AllLibrariesData {
   individualAdmins?: IndividualAdminData[];
-  /** The sitewide library list; undefined until its request settles. */
-  allLibraries?: LibraryData[];
-  /** Set when the sitewide library list failed to load. */
-  allLibrariesError?: FetchErrorData;
-  /** Set when the list is loaded but a later refresh of it failed. */
-  allLibrariesRefreshError?: FetchErrorData;
 }
 
 export interface PatronAuthServiceData extends ServiceData {}

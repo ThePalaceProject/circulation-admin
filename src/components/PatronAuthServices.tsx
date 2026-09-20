@@ -26,6 +26,7 @@ export class PatronAuthServices extends EditableConfigList<
   ExtraFormSection = NeighborhoodAnalyticsForm;
   extraFormKey = "neighborhood_mode";
   listDataKey = "patron_auth_services";
+  usesLibraryList = true;
   itemTypeName = "patron authentication service";
   urlBase = "/admin/web/config/patronAuth/";
   identifierKey = "id";

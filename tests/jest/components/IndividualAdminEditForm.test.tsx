@@ -234,9 +234,9 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
         /library roles cannot be shown, and no roles can be changed/
       )
     ).toBeInTheDocument();
-    expect(container.querySelector('[role="status"]')).toHaveTextContent(
-      "Libraries failed to load."
-    );
+    // The role="alert" danger Alert announces the failure itself, so the
+    // status region empties rather than duplicating the announcement.
+    expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
     expect(roleCheckbox("system")).toBeDisabled();
     // All role edits are disabled, so the empty table shell is dropped.
     expect(container.querySelector("table.library-admin-roles")).toBeNull();
@@ -254,25 +254,41 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
     expect(container.querySelector("tbody")).toBeEmptyDOMElement();
   });
 
-  it("warns when the library list could not be refreshed, without blocking edits", () => {
-    renderForm({
-      item: adminData,
-      data: {
-        individualAdmins: [adminData],
-        allLibraries,
-        allLibrariesRefreshError: {
-          status: 500,
-          response: "nope",
-          url: "/admin/libraries",
-        },
-      },
-    });
-    expect(
-      screen.getByText(/The library list could not be refreshed/)
-    ).toBeInTheDocument();
-    // The stale list still renders and roles stay editable.
+  const staleData = {
+    individualAdmins: [adminData],
+    allLibraries,
+    allLibrariesRefreshError: {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    },
+  };
+
+  it("locks only per-library roles for an existing admin while the list is stale", () => {
+    const { container } = renderForm({ item: adminData, data: staleData });
+    expect(container.querySelector(".alert-warning")).toHaveTextContent(
+      "Per-library roles cannot be changed until the list can be refreshed."
+    );
+    // The role="alert" warning announces the refresh failure itself, so
+    // the status region empties rather than duplicating the announcement.
+    expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+    // Only the per-library un-check branches expand sitewide roles from
+    // the (stale) list; sitewide toggles are list-independent and stay
+    // assignable, so submitting cannot be forced into a roleless admin.
     expect(roleCheckbox("system")).toBeEnabled();
-    expect(roleCheckbox("manager-nypl")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    expect(roleCheckbox("manager-nypl")).toBeDisabled();
+    expect(roleCheckbox("librarian-nypl")).toBeDisabled();
+  });
+
+  it("locks only per-library roles for a new admin while the list is stale", () => {
+    const { container } = renderForm({ data: staleData });
+    expect(container.querySelector(".alert-warning")).toHaveTextContent(
+      "Per-library roles cannot be changed"
+    );
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    expect(roleCheckbox("manager-nypl")).toBeDisabled();
   });
 
   it("says when no libraries are configured", () => {

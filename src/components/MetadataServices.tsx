@@ -22,6 +22,7 @@ export class MetadataServices extends EditableConfigList<
 > {
   EditForm = ServiceEditForm;
   listDataKey = "metadata_services";
+  usesLibraryList = true;
   itemTypeName = "metadata service";
   urlBase = "/admin/web/config/metadata/";
   identifierKey = "id";

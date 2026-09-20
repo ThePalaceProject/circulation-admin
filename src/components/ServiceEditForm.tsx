@@ -14,6 +14,7 @@ import {
 import { clearForm, libraryLabel } from "../utils/sharedFunctions";
 import LibraryConfigLink from "./LibraryConfigLink";
 import LibrariesLoadStatus from "./LibrariesLoadStatus";
+import LibrariesRefreshWarning from "./LibrariesRefreshWarning";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Alert } from "react-bootstrap";
 
@@ -383,15 +384,13 @@ export default class ServiceEditForm<
         {this.props.data.allLibrariesError && (
           <Alert bsStyle="danger">
             The library list failed to load. Associated libraries are shown by
-            short name only, and libraries cannot be added.
+            short name only, and library associations cannot be added or
+            removed.
           </Alert>
         )}
-        {this.props.data.allLibrariesRefreshError && (
-          <Alert bsStyle="warning">
-            The library list could not be refreshed. Showing the last loaded
-            list, which may be out of date.
-          </Alert>
-        )}
+        <LibrariesRefreshWarning
+          allLibrariesRefreshError={this.props.data.allLibrariesRefreshError}
+        />
         {this.props.data.allLibraries.length === 0 &&
           !this.props.data.allLibrariesError && (
             <p>No libraries are configured.</p>
@@ -400,13 +399,14 @@ export default class ServiceEditForm<
           {this.state.libraries.map((library) => (
             <div key={library.short_name}>
               <WithRemoveButton
-                disabled={disabled}
+                // A removal cannot be undone in-session while the library
+                // list is unavailable (Add Library needs the list).
+                disabled={disabled || !!this.props.data.allLibrariesError}
                 onRemove={() => this.removeLibrary(library)}
                 confirmRemoval={() => this.isLibraryRemovalPermitted(library)}
                 ref={library.short_name}
               >
-                {this.props.data &&
-                  this.props.data.protocols &&
+                {this.props.data.protocols &&
                   this.protocolHasLibrarySettings(protocol) && (
                     <WithEditButton
                       disabled={disabled}
@@ -416,15 +416,13 @@ export default class ServiceEditForm<
                     </WithEditButton>
                   )}
                 {!(
-                  this.props.data &&
                   this.props.data.protocols &&
                   this.protocolHasLibrarySettings(protocol)
                 ) && this.renderLibraryLabel(library.short_name)}
               </WithRemoveButton>
               {this.isExpanded(library) && (
                 <div className="edit-library-settings">
-                  {this.props.data &&
-                    this.props.data.protocols &&
+                  {this.props.data.protocols &&
                     this.protocolLibrarySettings(protocol) &&
                     this.protocolLibrarySettings(protocol).map((setting) => (
                       <ProtocolFormField
@@ -492,8 +490,7 @@ export default class ServiceEditForm<
             </EditableInput>
             {this.state.selectedLibrary && (
               <div>
-                {this.props.data &&
-                  this.props.data.protocols &&
+                {this.props.data.protocols &&
                   this.protocolLibrarySettings(protocol) &&
                   this.protocolLibrarySettings(protocol).map((setting) => (
                     <ProtocolFormField
@@ -523,6 +520,7 @@ export default class ServiceEditForm<
         <LibrariesLoadStatus
           allLibraries={this.props.data.allLibraries}
           allLibrariesError={this.props.data.allLibrariesError}
+          allLibrariesRefreshError={this.props.data.allLibrariesRefreshError}
         />
         {librariesFieldset}
       </>
@@ -630,7 +628,9 @@ export default class ServiceEditForm<
   }
 
   getLibrary(shortName: string): LibraryData {
-    const libraries = (this.props.data && this.props.data.allLibraries) || [];
+    // Only called from inside the Libraries panel, which renders after
+    // allLibraries has settled.
+    const libraries = this.props.data.allLibraries;
     for (const library of libraries) {
       if (library.short_name === shortName) {
         return library;
@@ -653,7 +653,9 @@ export default class ServiceEditForm<
   }
 
   availableLibraries(): LibraryData[] {
-    const libraries = (this.props.data && this.props.data.allLibraries) || [];
+    // Only called from inside the Libraries panel, which renders after
+    // allLibraries has settled.
+    const libraries = this.props.data.allLibraries;
     return libraries.filter((library) => {
       for (const stateLibrary of this.state.libraries) {
         if (stateLibrary.short_name === library.short_name) {

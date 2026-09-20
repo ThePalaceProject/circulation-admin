@@ -87,6 +87,24 @@ describe("LibraryRegistration", () => {
       expect(libraries(container)).toHaveLength(0);
     });
 
+    it("explains instead of vanishing when the library list failed to load", () => {
+      const { container } = renderReg({
+        item: serviceData,
+        data: makeData({
+          allLibraries: [],
+          allLibrariesError: {
+            status: 500,
+            response: "nope",
+            url: "/admin/libraries",
+          },
+        }),
+      });
+      expect(libraries(container)).toHaveLength(0);
+      expect(container.querySelector(".alert-warning")).toHaveTextContent(
+        "Libraries cannot be registered: the library list is unavailable."
+      );
+    });
+
     it("doesn't render libraries in edit form if protocol doesn't support registration", () => {
       const { container } = renderReg({
         item: serviceData,
