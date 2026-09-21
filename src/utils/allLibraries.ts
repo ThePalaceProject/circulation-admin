@@ -24,7 +24,9 @@ import { LibrariesState } from "../reducers/libraries";
  * Merge the result into the `data` prop built by a config page's
  * mapStateToProps.
  */
-export function settledAllLibraries(state): AllLibrariesData {
+export function settledAllLibraries(state: {
+  editor: { libraries?: LibrariesState };
+}): AllLibrariesData {
   const libraries = state.editor.libraries;
   const current = currentLibraries(libraries);
   const loaded = retainedLibraries(libraries);
@@ -46,15 +48,20 @@ export function settledAllLibraries(state): AllLibrariesData {
  * the catch only avoids an unhandled rejection.
  */
 export function fetchLibrariesIfNeeded(dispatch, actions: ActionCreator): void {
-  dispatch((thunkDispatch, getState) => {
-    const libraries = getState().editor.libraries;
-    const inFlight = libraries?.isFetching;
-    const settledCleanly =
-      !!retainedLibraries(libraries) && !retainedError(libraries);
-    if (!inFlight && !settledCleanly) {
-      thunkDispatch(actions.fetchLibraries()).catch(() => {});
+  dispatch(
+    (
+      thunkDispatch,
+      getState: () => { editor: { libraries?: LibrariesState } }
+    ) => {
+      const libraries = getState().editor.libraries;
+      const inFlight = libraries?.isFetching;
+      const settledCleanly =
+        !!retainedLibraries(libraries) && !retainedError(libraries);
+      if (!inFlight && !settledCleanly) {
+        thunkDispatch(actions.fetchLibraries()).catch(() => {});
+      }
     }
-  });
+  );
 }
 
 // The predicates settled-ness is derived from, feeding both functions

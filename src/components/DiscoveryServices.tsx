@@ -87,6 +87,12 @@ export class DiscoveryServices extends GenericEditableConfigList<
     return (serviceReg?.libraries ?? []).filter((l) => l.status === "success");
   }
 
+  // This tab's disclosure lists registered libraries, whose names and links
+  // fall back to the registration records themselves.
+  protected librariesUnavailableMessage(): string {
+    return "The library list failed to load. Registered libraries are shown using registration data, which may be out of date.";
+  }
+
   protected formatAssociatedCount(count: number): string {
     return count === 0
       ? "no registered libraries"

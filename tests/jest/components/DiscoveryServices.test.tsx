@@ -52,6 +52,26 @@ describe("DiscoveryServices - registered library disclosure", () => {
 
   // ── Toggle visibility ─────────────────────────────────────────────────────
 
+  it("names registration data in the failed-library-list alert", () => {
+    // This tab's entries fall back to registration records, so the generic
+    // "shown by short name only" message would be wrong here.
+    const { container } = renderServices({
+      discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],
+      allLibraries: [],
+      allLibrariesError: {
+        status: 500,
+        response: "nope",
+        url: "/admin/libraries",
+      },
+      libraryRegistrations: [
+        { id: 1, libraries: [{ short_name: "alpha", status: "success" }] },
+      ] as any,
+    });
+    expect(container.querySelector(".alert-danger")).toHaveTextContent(
+      "Registered libraries are shown using registration data"
+    );
+  });
+
   it("shows no toggle while allLibraries has not settled", () => {
     // Labels must render once, in final linked form, not flash bare short
     // names that get rewritten when the sitewide list arrives.
