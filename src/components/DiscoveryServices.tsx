@@ -9,6 +9,10 @@ import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
+import {
   DiscoveryServicesData,
   DiscoveryServiceData,
   LibraryData,
@@ -45,6 +49,7 @@ export class DiscoveryServices extends GenericEditableConfigList<
 > {
   EditForm = DiscoveryServiceEditForm;
   listDataKey = "discovery_services";
+  usesLibraryList = true;
   itemTypeName = "discovery service";
   urlBase = "/admin/web/config/discovery/";
   identifierKey = "id";
@@ -76,10 +81,16 @@ export class DiscoveryServices extends GenericEditableConfigList<
   private registeredLibraries(
     item: DiscoveryServiceData
   ): LibraryDataWithStatus[] | undefined {
-    const registrations = this.props.data?.libraryRegistrations;
+    const registrations = this.props.data.libraryRegistrations;
     if (!registrations) return undefined;
     const serviceReg = registrations.find((r) => r.id === item.id);
     return (serviceReg?.libraries ?? []).filter((l) => l.status === "success");
+  }
+
+  // This tab's disclosure lists registered libraries, whose names and links
+  // fall back to the registration records themselves.
+  protected librariesUnavailableMessage(): string {
+    return "The library list failed to load. Registered libraries are shown using registration data, which may be out of date.";
   }
 
   protected formatAssociatedCount(count: number): string {
@@ -95,7 +106,10 @@ export class DiscoveryServices extends GenericEditableConfigList<
   ): Array<{ label: string; suffix?: string; href?: string }> | undefined {
     const registered = this.registeredLibraries(item);
     if (registered === undefined) return undefined;
-    const allLibraries = this.props.data?.allLibraries ?? [];
+    const allLibraries = this.getAllLibraries();
+    // Hold the panel until the sitewide list settles, so labels render
+    // once, in their final linked form.
+    if (!allLibraries) return undefined;
     return registered.map((lib) => {
       const meta = allLibraries.find((l) => l.short_name === lib.short_name);
       return {
@@ -120,9 +134,7 @@ function mapStateToProps(state) {
     (state.editor.discoveryServices && state.editor.discoveryServices.data) ||
       {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   if (
     state.editor.discoveryServiceLibraryRegistrations &&
     state.editor.discoveryServiceLibraryRegistrations.data
@@ -156,7 +168,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchDiscoveryServices()),
+    fetchData: () => {
+      fetchLibrariesIfNeeded(dispatch, actions);
+      return dispatch(actions.fetchDiscoveryServices());
+    },
     editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteDiscoveryService(identifier)),

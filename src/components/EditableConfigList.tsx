@@ -15,6 +15,8 @@ import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
 import { navigateTo } from "../utils/navigate";
 import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
+import LibrariesRefreshWarning from "./LibrariesRefreshWarning";
+import LibrariesLoadStatus from "./LibrariesLoadStatus";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -111,6 +113,9 @@ export abstract class GenericEditableConfigList<
   abstract labelKey: string;
   adminLevel?: number;
   limitOne = false;
+  /** True on lists whose data merges settledAllLibraries; gates the
+   *  library-list status line in list mode. */
+  usesLibraryList = false;
   links?: { [key: string]: JSX.Element };
   AdditionalContent?: new (
     props: AdditionalContentProps<T, U>
@@ -176,6 +181,30 @@ export abstract class GenericEditableConfigList<
         )}
         {this.props.fetchError && !this.props.editOrCreate && (
           <ErrorMessage error={this.props.fetchError} />
+        )}
+        {/* In list mode only; the edit and create forms raise their own
+            library-list status line and failure alerts. The status line is
+            additionally gated on usesLibraryList, since lists that never
+            merge settledAllLibraries would read as loading forever. */}
+        {!this.props.editOrCreate && this.usesLibraryList && (
+          <LibrariesLoadStatus
+            allLibraries={(this.props.data as any).allLibraries}
+            allLibrariesError={(this.props.data as any).allLibrariesError}
+            allLibrariesRefreshError={
+              (this.props.data as any).allLibrariesRefreshError
+            }
+          />
+        )}
+        {(this.props.data as any)?.allLibrariesError &&
+          !this.props.editOrCreate && (
+            <Alert bsStyle="danger">{this.librariesUnavailableMessage()}</Alert>
+          )}
+        {!this.props.editOrCreate && (
+          <LibrariesRefreshWarning
+            allLibrariesRefreshError={
+              (this.props.data as any)?.allLibrariesRefreshError
+            }
+          />
         )}
         {this.props.formError && this.props.editOrCreate && (
           <ErrorMessage error={this.props.formError} />
@@ -267,7 +296,8 @@ export abstract class GenericEditableConfigList<
 
   /**
    * Returns the full list of libraries known to the server, used to resolve
-   * short names to display names and UUIDs for the associated-items panel.
+   * short names to display names and UUIDs for the associated-items panel,
+   * or undefined while that list has not settled yet.
    *
    * The base implementation accesses `data.allLibraries` via an `any` cast
    * because the generic `T` is not constrained to include that field (e.g.
@@ -275,8 +305,8 @@ export abstract class GenericEditableConfigList<
    * `allLibraries` (e.g. `Collections`, `IndividualAdmins`) should override
    * this method with a type-safe accessor to avoid the cast.
    */
-  protected getAllLibraries(): LibraryData[] {
-    return (this.props.data as any)?.allLibraries ?? [];
+  protected getAllLibraries(): LibraryData[] | undefined {
+    return (this.props.data as any).allLibraries;
   }
 
   /**
@@ -285,6 +315,15 @@ export abstract class GenericEditableConfigList<
    * subclasses that use different terminology (e.g. "registered libraries",
    * "roles").
    */
+  /**
+   * Message for the list-mode alert shown when the sitewide library list
+   * failed to load. Override where the disclosure panel lists something
+   * other than libraries (see IndividualAdmins).
+   */
+  protected librariesUnavailableMessage(): string {
+    return "The library list failed to load. Associated libraries are shown by short name only.";
+  }
+
   protected formatAssociatedCount(count: number): string {
     return count === 0
       ? "no libraries"
@@ -298,7 +337,9 @@ export abstract class GenericEditableConfigList<
    * for a given item, or `undefined` if the panel does not apply to this item.
    *
    * Return semantics (used by `renderLi` to drive toggle visibility):
-   * - `undefined`  → the feature does not apply; no toggle is rendered.
+   * - `undefined`  → the feature does not apply to this item, or the
+   *                  sitewide library list has not settled yet; no toggle
+   *                  or count is rendered.
    * - `[]`         → the feature applies but there are no associations;
    *                  a disabled toggle is rendered.
    * - `[…entries]` → associations exist; an enabled toggle is rendered.
@@ -318,6 +359,10 @@ export abstract class GenericEditableConfigList<
       ?.libraries;
     if (libraries === undefined) return undefined;
     const allLibraries = this.getAllLibraries();
+    // Hold the panel until the sitewide list settles, so labels render
+    // once, in their final linked form, instead of flashing bare short
+    // names that get rewritten when the list arrives.
+    if (!allLibraries) return undefined;
     return libraries.map((lib) => {
       const libraryData = allLibraries.find(
         (l) => l.short_name === lib.short_name

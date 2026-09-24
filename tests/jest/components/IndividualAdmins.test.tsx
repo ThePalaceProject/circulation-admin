@@ -46,6 +46,84 @@ describe("IndividualAdmins - role association disclosure", () => {
 
   // ── Toggle visibility ─────────────────────────────────────────────────────
 
+  it("shows no toggle while allLibraries has not settled", () => {
+    // Labels must render once, in final linked form, not flash bare short
+    // names that get rewritten when the sitewide list arrives.
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            {
+              email: "admin@example.org",
+              roles: [{ role: "manager", library: "alpha" }],
+            },
+          ],
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    expect(container.querySelector(".association-toggle")).toBeNull();
+  });
+
+  it("shows the sysadmin entry before allLibraries settles", () => {
+    // The synthetic sysadmin entry never consults the library list and can
+    // never be rewritten by it, so it is not held back.
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            { email: "root@example.org", roles: [{ role: "system" }] },
+          ],
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    fireEvent.click(container.querySelector(".association-toggle"));
+    expect(container.querySelector(".associated-items li").textContent).toBe(
+      "sysadmin"
+    );
+  });
+
+  it("names roles, not libraries, when the library list failed to load", () => {
+    const { container } = renderWithContext(
+      <IndividualAdmins
+        data={{
+          individualAdmins: [
+            {
+              email: "admin@example.org",
+              roles: [{ role: "manager", library: "alpha" }],
+            },
+          ],
+          allLibraries: [],
+          allLibrariesError: {
+            status: 500,
+            response: "nope",
+            url: "/admin/libraries",
+          },
+        }}
+        fetchData={jest.fn()}
+        editItem={jest.fn().mockResolvedValue(undefined)}
+        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      sysAdminConfig
+    );
+    expect(container.querySelector(".alert-danger")).toHaveTextContent(
+      "Roles are shown by library short name only."
+    );
+  });
+
   it("shows no toggle for an admin with no roles field", () => {
     const { container } = renderAdmins([{ email: "noroles@example.com" }]);
     expect(container.querySelector(".association-toggle")).toBeNull();
@@ -498,10 +576,13 @@ describe("IndividualAdmins - connect wiring", () => {
   afterEach(() => jest.restoreAllMocks());
 
   it("renders the connected default export, fetching on mount", async () => {
-    jest.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ individualAdmins: [] }), {
-        headers: { "Content-Type": "application/json" },
-      })
+    // A Response body can only be read once, so build one per fetch call.
+    const fetchSpy = jest.spyOn(globalThis, "fetch").mockImplementation(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ individualAdmins: [] }), {
+          headers: { "Content-Type": "application/json" },
+        })
+      )
     );
 
     renderWithProviders(
@@ -517,5 +598,12 @@ describe("IndividualAdmins - connect wiring", () => {
     expect(
       await screen.findByText("Create new individual admin")
     ).toBeInTheDocument();
+
+    // Outside setup mode, fetchData also requests the libraries list (the
+    // settingUp half of that guard is pinned in SetupPage.test.tsx).
+    const urls = fetchSpy.mock.calls.map((call) => String(call[0]));
+    expect(urls).toEqual(
+      expect.arrayContaining([expect.stringContaining("/admin/libraries")])
+    );
   });
 });

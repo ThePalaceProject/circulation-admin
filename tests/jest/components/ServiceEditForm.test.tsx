@@ -484,6 +484,91 @@ describe("ServiceEditForm", () => {
       expect(container.querySelector(".with-edit-button a")).toBeNull();
     });
 
+    it("shows a loading indicator in the Libraries panel until allLibraries arrives", () => {
+      // Undefined allLibraries means the library list is still loading.
+      const dataStillLoading = Object.assign({}, servicesData, {
+        allLibraries: undefined,
+      });
+      const { container, rerender } = renderForm({
+        data: dataStillLoading,
+        item: serviceData,
+      });
+      expect(container.querySelector(".update-libraries")).toBeNull();
+      expect(container.querySelector('[role="status"]')).toHaveTextContent(
+        "Loading libraries..."
+      );
+
+      rerenderForm(rerender, { item: serviceData });
+      // The status line stays mounted and announces completion; the
+      // completion text is visually hidden.
+      const status = container.querySelector('[role="status"]');
+      expect(status).toHaveTextContent("Libraries loaded.");
+      expect(status).toHaveClass("visuallyHidden");
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+    });
+
+    it("explains a failed library list load in the Libraries panel", () => {
+      // On failure allLibraries settles to [] and allLibrariesError is set.
+      const dataWithError = Object.assign({}, servicesData, {
+        allLibraries: [],
+        allLibrariesError: {
+          status: 500,
+          response: "nope",
+          url: "/admin/libraries",
+        },
+      });
+      const { container } = renderForm({
+        data: dataWithError,
+        item: serviceData,
+      });
+      expect(container.querySelector(".alert-danger")).toHaveTextContent(
+        "The library list failed to load"
+      );
+      // The role="alert" danger Alert announces the failure itself, so the
+      // status region empties rather than duplicating the announcement.
+      expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+      // The associated library still renders, by short name.
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("nypl");
+      // A removal could not be undone in-session, so it is disabled too.
+      expect(container.querySelector("button.remove-btn")).toBeDisabled();
+    });
+
+    it("warns when the library list could not be refreshed", () => {
+      const staleData = Object.assign({}, servicesData, {
+        allLibrariesRefreshError: {
+          status: 500,
+          response: "nope",
+          url: "/admin/libraries",
+        },
+      });
+      const { container } = renderForm({ data: staleData, item: serviceData });
+      expect(container.querySelector(".alert-warning")).toHaveTextContent(
+        "The library list could not be refreshed"
+      );
+      // The role="alert" warning announces the refresh failure itself, so
+      // the status region empties rather than duplicating the announcement.
+      expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+      // The stale list still renders in full, links included, and the
+      // panel stays editable; only the blocking error disables removal.
+      const editable = container.querySelectorAll(".with-edit-button");
+      expect(editable).toHaveLength(1);
+      expect(editable[0]).toHaveTextContent("New York Public Library - nypl");
+      expect(container.querySelector(".alert-danger")).toBeNull();
+      expect(container.querySelector("button.remove-btn")).toBeEnabled();
+    });
+
+    it("says when no libraries are configured", () => {
+      const emptyData = Object.assign({}, servicesData, { allLibraries: [] });
+      const { container } = renderForm({ data: emptyData });
+      expect(container.querySelector(".update-libraries")).toHaveTextContent(
+        "No libraries are configured."
+      );
+    });
+
     it("renders removable and editable libraries", () => {
       const { container, unmount } = renderForm();
       expect(container.querySelectorAll(".with-remove-button")).toHaveLength(0);

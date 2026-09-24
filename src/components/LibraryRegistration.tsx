@@ -9,6 +9,7 @@ import {
   LibraryData,
 } from "../interfaces";
 import LibraryConfigLink from "./LibraryConfigLink";
+import { Alert } from "react-bootstrap";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
@@ -56,6 +57,19 @@ export default class LibraryRegistration extends React.Component<
   }
 
   render(): JSX.Element {
+    // The Libraries panel above this section explains a failed list load;
+    // say why registration is unavailable too rather than vanishing.
+    if (
+      this.props.item &&
+      this.protocolSupportsType("supports_registration") &&
+      this.props.data.allLibrariesError
+    ) {
+      return (
+        <Alert bsStyle="warning">
+          Libraries cannot be registered: the library list is unavailable.
+        </Alert>
+      );
+    }
     if (
       this.props.item &&
       this.protocolSupportsType("supports_registration") &&

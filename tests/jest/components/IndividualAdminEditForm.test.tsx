@@ -202,6 +202,104 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
   const roleCheckbox = (role: string) =>
     screen.getByRole("checkbox", { name: roleNames[role] });
 
+  const failureData = {
+    individualAdmins: [adminData],
+    allLibraries: [],
+    allLibrariesError: {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    },
+  };
+
+  it("waits for the library list before showing per-library roles", () => {
+    const { container } = renderForm({
+      item: adminData,
+      data: { individualAdmins: [adminData] },
+    });
+    expect(container.querySelector("table.library-admin-roles")).toBeNull();
+    expect(container.querySelector('[role="status"]')).toHaveTextContent(
+      "Loading libraries..."
+    );
+    // Sitewide toggles rewrite an existing admin's hidden per-library roles
+    // wholesale, so role edits are disabled until the list is available.
+    expect(roleCheckbox("system")).toBeDisabled();
+  });
+
+  it("explains a failed library list load when editing an existing admin", () => {
+    // On failure allLibraries settles to [] and allLibrariesError is set.
+    const { container } = renderForm({ item: adminData, data: failureData });
+    expect(
+      screen.getByText(
+        /library roles cannot be shown, and no roles can be changed/
+      )
+    ).toBeInTheDocument();
+    // The role="alert" danger Alert announces the failure itself, so the
+    // status region empties rather than duplicating the announcement.
+    expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+    expect(roleCheckbox("system")).toBeDisabled();
+    // All role edits are disabled, so the empty table shell is dropped.
+    expect(container.querySelector("table.library-admin-roles")).toBeNull();
+  });
+
+  it("still allows sitewide roles for a new admin when the library list failed", () => {
+    // A new admin has no hidden per-library roles to clobber.
+    const { container } = renderForm({ data: failureData });
+    expect(
+      screen.getByText(/Sitewide roles can still be assigned/)
+    ).toBeInTheDocument();
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    // No misleading "no libraries" row under a failure.
+    expect(container.querySelector("tbody")).toBeEmptyDOMElement();
+  });
+
+  const staleData = {
+    individualAdmins: [adminData],
+    allLibraries,
+    allLibrariesRefreshError: {
+      status: 500,
+      response: "nope",
+      url: "/admin/libraries",
+    },
+  };
+
+  it("locks only per-library roles for an existing admin while the list is stale", () => {
+    const { container } = renderForm({ item: adminData, data: staleData });
+    expect(container.querySelector(".alert-warning")).toHaveTextContent(
+      "Per-library roles cannot be changed until the list can be refreshed."
+    );
+    // The role="alert" warning announces the refresh failure itself, so
+    // the status region empties rather than duplicating the announcement.
+    expect(container.querySelector('[role="status"]')).toBeEmptyDOMElement();
+    // Only the per-library un-check branches expand sitewide roles from
+    // the (stale) list; sitewide toggles are list-independent and stay
+    // assignable, so submitting cannot be forced into a roleless admin.
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    expect(roleCheckbox("manager-nypl")).toBeDisabled();
+    expect(roleCheckbox("librarian-nypl")).toBeDisabled();
+  });
+
+  it("locks only per-library roles for a new admin while the list is stale", () => {
+    const { container } = renderForm({ data: staleData });
+    expect(container.querySelector(".alert-warning")).toHaveTextContent(
+      "Per-library roles cannot be changed"
+    );
+    expect(roleCheckbox("system")).toBeEnabled();
+    expect(roleCheckbox("manager-all")).toBeEnabled();
+    expect(roleCheckbox("manager-nypl")).toBeDisabled();
+  });
+
+  it("says when no libraries are configured", () => {
+    renderForm({
+      data: { individualAdmins: [adminData], allLibraries: [] },
+    });
+    expect(
+      screen.getByText("No libraries are configured.")
+    ).toBeInTheDocument();
+  });
+
   const expectRoles = (expected: string[]) => {
     for (const role of allRoles) {
       if (expected.includes(role)) {

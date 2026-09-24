@@ -7,9 +7,14 @@ import EditableConfigList, {
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import {
+  fetchLibrariesIfNeeded,
+  settledAllLibraries,
+} from "../utils/allLibraries";
+import {
   IndividualAdminsData,
   IndividualAdminData,
   AdminRoleData,
+  LibraryData,
 } from "../interfaces";
 import Admin from "../models/Admin";
 import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
@@ -24,6 +29,7 @@ export class IndividualAdmins extends EditableConfigList<
 > {
   EditForm = IndividualAdminEditForm;
   listDataKey = "individualAdmins";
+  usesLibraryList = true;
   itemTypeName = "individual admin";
   urlBase = "/admin/web/config/individualAdmins/";
   identifierKey = "email";
@@ -34,14 +40,16 @@ export class IndividualAdmins extends EditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
-  private getRolesSummary(item: IndividualAdminData): Array<{
+  private getRolesSummary(
+    item: IndividualAdminData,
+    allLibraries: LibraryData[]
+  ): Array<{
     label: string;
     suffix?: string;
     href?: string;
     pinned?: boolean;
   }> {
     const roles: AdminRoleData[] = item.roles || [];
-    const allLibraries = this.getAllLibraries();
 
     const getLibraryLabel = (shortName: string) =>
       libraryLabel(
@@ -101,7 +109,12 @@ export class IndividualAdmins extends EditableConfigList<
   }
 
   protected getAllLibraries() {
-    return this.props.data?.allLibraries ?? [];
+    return this.props.data.allLibraries;
+  }
+
+  // This tab's disclosure lists roles, not libraries.
+  protected librariesUnavailableMessage(): string {
+    return "The library list failed to load. Roles are shown by library short name only.";
   }
 
   protected formatAssociatedCount(count: number): string {
@@ -114,12 +127,16 @@ export class IndividualAdmins extends EditableConfigList<
     | Array<{ label: string; suffix?: string; href?: string; pinned?: boolean }>
     | undefined {
     if (!item.roles) return undefined;
-    // System admins have a single implicit role that isn't library-scoped;
-    // show a synthetic "sysadmin" entry rather than the library-role summary.
+    // System admins have a single implicit role that isn't library-scoped
+    // and can never be rewritten by the list; render it immediately.
     if (item.roles.some((r) => r.role === "system")) {
       return [{ label: "sysadmin" }];
     }
-    return this.getRolesSummary(item);
+    // Hold library-scoped rows until the sitewide list settles, so labels
+    // render once, in their final linked form.
+    const allLibraries = this.getAllLibraries();
+    if (!allLibraries) return undefined;
+    return this.getRolesSummary(item, allLibraries);
   }
 
   canCreate() {
@@ -176,9 +193,7 @@ function mapStateToProps(state) {
     {},
     (state.editor.individualAdmins && state.editor.individualAdmins.data) || {}
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
-  }
+  Object.assign(data, settledAllLibraries(state));
   // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the
   // create/edit form.
   return {
@@ -197,7 +212,14 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    fetchData: () => dispatch(actions.fetchIndividualAdmins()),
+    fetchData: () => {
+      // The pre-auth setup page has no admin yet, so a libraries request
+      // could only fail; skip it there.
+      if (!ownProps.settingUp) {
+        fetchLibrariesIfNeeded(dispatch, actions);
+      }
+      return dispatch(actions.fetchIndividualAdmins());
+    },
     editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteIndividualAdmin(identifier)),
