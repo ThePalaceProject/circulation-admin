@@ -1,4 +1,5 @@
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import {
   validatePatronBlockingRuleExpression,
   ValidationResult,
@@ -13,12 +14,15 @@ const sampleRule: PatronBlockingRule = {
 };
 
 describe("validatePatronBlockingRuleExpression", () => {
-  afterEach(() => {
-    fetchMock.mockReset();
-  });
+  const { server, requests } = setupMswServer();
 
   it("returns null on a 200 response", async () => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    server.use(
+      http.post(
+        `*${VALIDATE_URL}`,
+        () => new HttpResponse(null, { status: 200 })
+      )
+    );
     const result = await validatePatronBlockingRuleExpression(
       42,
       sampleRule,
@@ -28,10 +32,13 @@ describe("validatePatronBlockingRuleExpression", () => {
   });
 
   it("returns available_fields from a 200 response with a body", async () => {
-    fetchMock.post(VALIDATE_URL, {
-      status: 200,
-      body: { available_fields: { fines: 0, patron_identifier: "X123" } },
-    });
+    server.use(
+      http.post(`*${VALIDATE_URL}`, () =>
+        HttpResponse.json({
+          available_fields: { fines: 0, patron_identifier: "X123" },
+        })
+      )
+    );
     const result: ValidationResult = await validatePatronBlockingRuleExpression(
       42,
       sampleRule,
@@ -45,10 +52,14 @@ describe("validatePatronBlockingRuleExpression", () => {
   });
 
   it("returns the detail string from a 400 response", async () => {
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Unknown placeholder: {unknown_field}" },
-    });
+    server.use(
+      http.post(`*${VALIDATE_URL}`, () =>
+        HttpResponse.json(
+          { detail: "Unknown placeholder: {unknown_field}" },
+          { status: 400 }
+        )
+      )
+    );
     const result = await validatePatronBlockingRuleExpression(
       42,
       sampleRule,
@@ -59,7 +70,11 @@ describe("validatePatronBlockingRuleExpression", () => {
   });
 
   it("returns a fallback string when a 400 response body has no detail", async () => {
-    fetchMock.post(VALIDATE_URL, { status: 400, body: {} });
+    server.use(
+      http.post(`*${VALIDATE_URL}`, () =>
+        HttpResponse.json({}, { status: 400 })
+      )
+    );
     const result = await validatePatronBlockingRuleExpression(
       42,
       sampleRule,
@@ -71,29 +86,38 @@ describe("validatePatronBlockingRuleExpression", () => {
   });
 
   it("sends the correct URL, method, and CSRF header", async () => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
-    await validatePatronBlockingRuleExpression(42, sampleRule, "my-csrf-token");
-    expect(fetchMock).toHaveBeenCalledWith(
-      VALIDATE_URL,
-      expect.objectContaining({
-        method: "POST",
-        headers: expect.objectContaining({ "X-CSRF-Token": "my-csrf-token" }),
-      })
+    server.use(
+      http.post(
+        `*${VALIDATE_URL}`,
+        () => new HttpResponse(null, { status: 200 })
+      )
     );
+    await validatePatronBlockingRuleExpression(42, sampleRule, "my-csrf-token");
+    expect(requests).toHaveLength(1);
+    expect(new URL(requests[0].url).pathname).toBe(VALIDATE_URL);
+    expect(requests[0].method).toBe("POST");
+    expect(requests[0].headers.get("X-CSRF-Token")).toBe("my-csrf-token");
   });
 
   it("omits service_id from the form body when serviceId is undefined", async () => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    server.use(
+      http.post(
+        `*${VALIDATE_URL}`,
+        () => new HttpResponse(null, { status: 200 })
+      )
+    );
     // Should not throw and should still make the request (server returns "save first" error)
     const result = await validatePatronBlockingRuleExpression(
       undefined,
       sampleRule,
       "tok"
     );
-    expect(fetchMock).toHaveBeenCalledWith(
-      VALIDATE_URL,
-      expect.objectContaining({ method: "POST" })
-    );
+    expect(requests).toHaveLength(1);
+    expect(new URL(requests[0].url).pathname).toBe(VALIDATE_URL);
+    expect(requests[0].method).toBe("POST");
+    const formData = await requests[0].formData();
+    expect(formData.has("service_id")).toBe(false);
+    expect(formData.get("rule")).toBe(sampleRule.rule);
     // Server would return an error detail in a real call; here it returns 200 (mocked)
     expect(result.error).toBeNull();
   });

@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // CustomListsForBook renders a react-router v3 <Link> for which
 // renderWithProviders supplies no router context. Mock it to a marker that
@@ -42,28 +44,6 @@ const listsForBook = [
   { id: "2", name: "list 2", is_owner: true, is_shared: false },
 ];
 
-const jsonResponse = (body: unknown) =>
-  new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-
-// Serves the "all custom lists" endpoint and the per-book "/lists" endpoint from
-// the supplied fixtures; answers POSTs (edit) with success.
-const stubFetch = (allLists: unknown[], forBook: unknown[]) =>
-  jest
-    .spyOn(globalThis, "fetch")
-    .mockImplementation(async (url, opts?: RequestInit) => {
-      if (opts?.method === "POST") {
-        return new Response("success", { status: 200 });
-      }
-      const u = String(url);
-      if (u.includes("custom_lists")) {
-        return jsonResponse({ custom_lists: allLists });
-      }
-      return jsonResponse({ custom_lists: forBook });
-    });
-
 const renderConnected = () => {
   const store = buildStore();
   const refreshCatalog = jest.fn().mockResolvedValue(undefined);
@@ -81,12 +61,24 @@ const renderConnected = () => {
 };
 
 describe("CustomListsForBook", () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  const bookListsPath = "/admin/works/book%20url/lists";
+  const { server, requests } = setupMswServer();
+
+  // Serves the "all custom lists" endpoint and the per-book "/lists" endpoint from
+  // the supplied fixtures; answers POSTs (edit) with success.
+  const stubLists = (allLists: unknown[], forBook: unknown[]) =>
+    server.use(
+      http.get("*/library/admin/custom_lists", () =>
+        HttpResponse.json({ custom_lists: allLists })
+      ),
+      http.get(`*${bookListsPath}`, () =>
+        HttpResponse.json({ custom_lists: forBook })
+      ),
+      http.post(`*${bookListsPath}`, () => HttpResponse.text("success"))
+    );
 
   it("shows the book title and the book's current lists", async () => {
-    stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     const { container } = renderConnected();
 
     expect(
@@ -105,7 +97,7 @@ describe("CustomListsForBook", () => {
   it("builds the current-list URL from the list's id, not its name", async () => {
     // A list named "new" whose id is "42" proves the URL uses the id.
     const newList = { id: "42", name: "new", is_owner: true, is_shared: false };
-    stubFetch([...allCustomLists, newList], [newList]);
+    stubLists([...allCustomLists, newList], [newList]);
     renderConnected();
 
     const link = await screen.findByRole("link", { name: "new" });
@@ -113,7 +105,7 @@ describe("CustomListsForBook", () => {
   });
 
   it("shows a menu of the lists the book is not yet on", async () => {
-    stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     const { container } = renderConnected();
 
     await screen.findByRole("link", { name: "list 2" });
@@ -130,7 +122,7 @@ describe("CustomListsForBook", () => {
   });
 
   it("shows placeholder text when the book is not on any list", async () => {
-    stubFetch(allCustomLists, []);
+    stubLists(allCustomLists, []);
     const { container } = renderConnected();
 
     expect(
@@ -144,7 +136,7 @@ describe("CustomListsForBook", () => {
   });
 
   it("hides the menu once the book is on every available list", async () => {
-    stubFetch(allCustomLists, allCustomLists);
+    stubLists(allCustomLists, allCustomLists);
     const { container } = renderConnected();
 
     expect(
@@ -156,7 +148,7 @@ describe("CustomListsForBook", () => {
   });
 
   it("shows a message instead of the input list when no lists exist", async () => {
-    stubFetch([], []);
+    stubLists([], []);
     renderConnected();
 
     expect(
@@ -165,7 +157,7 @@ describe("CustomListsForBook", () => {
   });
 
   it("shows a link to the list creator that carries the book title", async () => {
-    stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     renderConnected();
 
     await screen.findByRole("link", { name: "list 2" });
@@ -185,14 +177,14 @@ describe("CustomListsForBook", () => {
   });
 
   it("fetches the book's lists and all custom lists on mount, without refreshing the catalog", async () => {
-    const fetchSpy = stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     const { refreshCatalog } = renderConnected();
 
     await screen.findByRole("link", { name: "list 2" });
 
-    const urls = fetchSpy.mock.calls.map(([u]) => String(u));
-    expect(urls).toContain("admin/works/book url/lists");
-    expect(urls.some((u) => u.includes("custom_lists"))).toBe(true);
+    const paths = requests.map((r) => new URL(r.url).pathname);
+    expect(paths).toContain(bookListsPath);
+    expect(paths.some((p) => p.includes("custom_lists"))).toBe(true);
     expect(refreshCatalog).not.toHaveBeenCalled();
   });
 
@@ -224,7 +216,7 @@ describe("CustomListsForBook", () => {
 
   it("adds a list and posts the updated set of lists", async () => {
     const user = userEvent.setup();
-    const fetchSpy = stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     const { container, refreshCatalog } = renderConnected();
 
     await screen.findByRole("link", { name: "list 2" });
@@ -237,12 +229,10 @@ describe("CustomListsForBook", () => {
 
     await waitFor(() => expect(refreshCatalog).toHaveBeenCalled());
 
-    const postCall = fetchSpy.mock.calls.find(
-      ([, opts]) => (opts as RequestInit)?.method === "POST"
-    );
-    expect(String(postCall[0])).toBe("admin/works/book url/lists");
+    const postRequest = requests.find((r) => r.method === "POST");
+    expect(new URL(postRequest.url).pathname).toBe(bookListsPath);
     const lists = JSON.parse(
-      ((postCall[1] as RequestInit).body as FormData).get("lists") as string
+      (await postRequest.formData()).get("lists") as string
     );
     expect(lists).toStrictEqual([
       { id: "2", name: "list 2", is_owner: true, is_shared: false },
@@ -252,7 +242,7 @@ describe("CustomListsForBook", () => {
 
   it("removes a list and posts the emptied set of lists", async () => {
     const user = userEvent.setup();
-    const fetchSpy = stubFetch(allCustomLists, listsForBook);
+    stubLists(allCustomLists, listsForBook);
     const { refreshCatalog } = renderConnected();
 
     await screen.findByRole("link", { name: "list 2" });
@@ -261,12 +251,10 @@ describe("CustomListsForBook", () => {
 
     await waitFor(() => expect(refreshCatalog).toHaveBeenCalled());
 
-    const postCall = fetchSpy.mock.calls.find(
-      ([, opts]) => (opts as RequestInit)?.method === "POST"
-    );
-    expect(String(postCall[0])).toBe("admin/works/book url/lists");
+    const postRequest = requests.find((r) => r.method === "POST");
+    expect(new URL(postRequest.url).pathname).toBe(bookListsPath);
     const lists = JSON.parse(
-      ((postCall[1] as RequestInit).body as FormData).get("lists") as string
+      (await postRequest.formData()).get("lists") as string
     );
     expect(lists).toStrictEqual([]);
   });

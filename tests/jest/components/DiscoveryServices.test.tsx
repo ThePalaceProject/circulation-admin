@@ -12,6 +12,8 @@ import {
   DiscoveryServicesData,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("DiscoveryServices - registered library disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -639,24 +641,9 @@ describe("DiscoveryServices - connected wiring and registration", () => {
     successMessage: null,
   };
 
-  /**
-   * Stub `fetch` so the panel's on-mount fetches resolve with `body`. A fresh
-   * Response per call avoids "body already used" when several fetches run.
-   */
-  const stubFetch = (body: unknown) =>
-    jest.spyOn(globalThis, "fetch").mockImplementation(
-      async () =>
-        new Response(JSON.stringify(body), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-    );
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   describe("connected default export", () => {
+    const { server } = setupMswServer();
+
     it("wires mapStateToProps/mapDispatchToProps: fetches on mount and renders the list", async () => {
       const listData = {
         discovery_services: [
@@ -664,7 +651,14 @@ describe("DiscoveryServices - connected wiring and registration", () => {
         ],
         protocols: [{ name: "test protocol", label: "TP", settings: [] }],
       };
-      stubFetch(listData);
+      server.use(
+        http.get("*/admin/discovery_services", () =>
+          HttpResponse.json(listData)
+        ),
+        http.get("*/admin/discovery_service_library_registrations", () =>
+          HttpResponse.json({ library_registrations: [] })
+        )
+      );
       // A fresh store, preloaded with a loaded libraries slice, isolates this
       // test and exercises mapStateToProps' allLibraries branch.
       const store = buildStore({
@@ -676,10 +670,14 @@ describe("DiscoveryServices - connected wiring and registration", () => {
         { reduxProviderProps: { store } }
       );
 
-      // The list appears once the connected component's on-mount fetch resolves
-      // and mapStateToProps feeds the fetched data back in as props.
+      // The list appears once the connected component's on-mount fetches resolve
+      // and mapStateToProps feeds the fetched services and (empty) registrations
+      // back in as props.
       expect(
-        await screen.findByRole("heading", { level: 3, name: "Test Discovery" })
+        await screen.findByRole("heading", {
+          level: 3,
+          name: "Test Discovery (no registered libraries)",
+        })
       ).toBeInTheDocument();
 
       const editLink = container.querySelector("a.edit-item");

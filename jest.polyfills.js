@@ -1,11 +1,20 @@
 // jest.polyfills.js
 
-const globalThis = window;
+// `jest-fixed-jsdom` gives tests Node's `fetch` classes. Node's `Request`
+// rejects a relative URL such as "/admin/stats", but a browser resolves it
+// against the page URL. RTK Query builds a `Request` from a relative URL, so
+// resolve string URLs here the way a browser does.
+const NodeRequest = window.Request;
 
-const { fetch, Headers, Request, Response } = require("fetch-ponyfill")();
-Object.defineProperties(globalThis, {
-  fetch: { value: fetch, writable: true },
-  Headers: { value: Headers },
-  Request: { value: Request },
-  Response: { value: Response, writable: true },
-});
+class Request extends NodeRequest {
+  constructor(input, init) {
+    super(
+      typeof input === "string"
+        ? new URL(input, window.location.href).href
+        : input,
+      init
+    );
+  }
+}
+
+window.Request = Request;

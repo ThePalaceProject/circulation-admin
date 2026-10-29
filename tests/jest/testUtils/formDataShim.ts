@@ -8,94 +8,57 @@
 // excluded, and every selected option of a multi-select included. A naive shim
 // that records *every* named control can make a payload assertion pass while the
 // real browser omits a disabled or unchecked field.
-export class FormDataShim {
-  private items: Array<[string, string]> = [];
+//
+// The shim returns a real `FormData` (Node's, from the test environment), so
+// `fetch` sends it as form data and a mock server can read its fields. It is a
+// function, not a class, because tests compile to ES5, and ES5 code cannot
+// extend a built-in class. `new FormDataShim(form)` still works.
+const BaseFormData = globalThis.FormData;
 
-  constructor(form?: HTMLFormElement) {
-    if (!form) {
-      return;
-    }
-    // Serializes the form's own descendant controls; the forms under test don't
-    // associate external controls via `form="id"`, so those are not collected.
-    form
-      .querySelectorAll<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >("input, select, textarea")
-      .forEach((el) => {
-        // `:disabled` (not the `.disabled` property) so controls disabled via an
-        // ancestor `<fieldset disabled>` are omitted too, as the browser does.
-        if (!el.name || el.matches(":disabled")) {
+export type FormDataShim = FormData;
+
+export const FormDataShim = function FormDataShim(form?: HTMLFormElement) {
+  const data = new BaseFormData();
+  if (form) {
+    appendSuccessfulControls(data, form);
+  }
+  return data;
+} as unknown as { new (form?: HTMLFormElement): FormData };
+// So `instanceof FormDataShim` is true for the FormData it returns.
+FormDataShim.prototype = BaseFormData.prototype;
+
+function appendSuccessfulControls(data: FormData, form: HTMLFormElement) {
+  // Serializes the form's own descendant controls; the forms under test don't
+  // associate external controls via `form="id"`, so those are not collected.
+  form
+    .querySelectorAll<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >("input, select, textarea")
+    .forEach((el) => {
+      // `:disabled` (not the `.disabled` property) so controls disabled via an
+      // ancestor `<fieldset disabled>` are omitted too, as the browser does.
+      if (!el.name || el.matches(":disabled")) {
+        return;
+      }
+      if (el instanceof HTMLInputElement) {
+        // Buttons never contribute a value. File inputs are omitted
+        // deliberately: the browser submits them as File objects, which a
+        // value-reading shim can't reproduce, so tests treat them as absent.
+        if (["submit", "reset", "button", "image", "file"].includes(el.type)) {
           return;
         }
-        if (el instanceof HTMLInputElement) {
-          // Buttons never contribute a value. File inputs are omitted
-          // deliberately: the browser submits them as File objects, which a
-          // value-reading shim can't reproduce, so tests treat them as absent.
-          if (
-            ["submit", "reset", "button", "image", "file"].includes(el.type)
-          ) {
-            return;
-          }
-          if ((el.type === "checkbox" || el.type === "radio") && !el.checked) {
-            return;
-          }
-        }
-        if (el instanceof HTMLSelectElement && el.multiple) {
-          Array.from(el.selectedOptions).forEach((option) =>
-            this.items.push([el.name, option.value])
-          );
+        if ((el.type === "checkbox" || el.type === "radio") && !el.checked) {
           return;
         }
-        this.items.push([el.name, el.value]);
-      });
-  }
-
-  get(key: string) {
-    const found = this.items.find(([k]) => k === key);
-    return found ? found[1] : null;
-  }
-  getAll(key: string) {
-    return this.items.filter(([k]) => k === key).map(([, v]) => v);
-  }
-  has(key: string) {
-    return this.items.some(([k]) => k === key);
-  }
-  append(key: string, value: string) {
-    this.items.push([key, value]);
-  }
-  set(key: string, value: string) {
-    // Replace the first matching entry in place and drop any later duplicates,
-    // preserving position as FormData.set does.
-    const firstIndex = this.items.findIndex(([k]) => k === key);
-    this.items = this.items.filter(([k]) => k !== key);
-    if (firstIndex === -1) {
-      this.items.push([key, value]);
-    } else {
-      this.items.splice(firstIndex, 0, [key, value]);
-    }
-  }
-  delete(key: string) {
-    this.items = this.items.filter(([k]) => k !== key);
-  }
-  forEach(
-    callback: (value: string, key: string, parent: FormDataShim) => void
-  ) {
-    this.items.forEach(([k, v]) => callback(v, k, this));
-  }
-  keys() {
-    return this.items.map(([k]) => k)[Symbol.iterator]();
-  }
-  values() {
-    return this.items.map(([, v]) => v)[Symbol.iterator]();
-  }
-  entries() {
-    return this.items
-      .map(([k, v]) => [k, v] as [string, string])
-      [Symbol.iterator]();
-  }
-  [Symbol.iterator]() {
-    return this.entries();
-  }
+      }
+      if (el instanceof HTMLSelectElement && el.multiple) {
+        Array.from(el.selectedOptions).forEach((option) =>
+          data.append(el.name, option.value)
+        );
+        return;
+      }
+      data.append(el.name, el.value);
+    });
 }
 
 // Swaps `window.FormData` for the shim around a suite, restoring it afterward.

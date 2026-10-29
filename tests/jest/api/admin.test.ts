@@ -3,7 +3,8 @@ import {
   getInventoryReportInfo,
   requestInventoryReport,
 } from "../../../src/api/admin";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 const sampleInfoResponseData = { collections: [] };
 const sampleGenerateResponseData = { message: "some message" };
@@ -17,23 +18,24 @@ const testEndpoints = ({
   expectedUrl = DEFAULT_BASE_ENDPOINT_URL,
 }) => {
   describe(title, () => {
-    beforeEach(() => {
-      fetchMock
-        .get("*", { body: sampleInfoResponseData, status: 200 })
-        .post("*", { body: sampleGenerateResponseData, status: 202 });
-    });
-
-    afterEach(() => {
-      fetchMock.mockReset();
-    });
+    const { requests } = setupMswServer(
+      http.get("*", () => HttpResponse.json(sampleInfoResponseData)),
+      http.post("*", () =>
+        HttpResponse.json(sampleGenerateResponseData, { status: 202 })
+      )
+    );
 
     it("requests inventory report information", async () => {
       const response = await getInventoryReportInfo({
         library: libraryKey,
         baseEndpointUrl,
       });
-      expect(response).toStrictEqual(sampleInfoResponseData);
-      expect(fetchMock).toHaveBeenCalledWith(expectedUrl);
+      // `toEqual`, not `toStrictEqual`: the parsed body comes from Node's
+      // fetch, in a different realm, so its prototype is not the test's.
+      expect(response).toEqual(sampleInfoResponseData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(expectedUrl);
+      expect(requests[0].method).toBe("GET");
     });
 
     it("requests report generation via a post to the endpoint", async () => {
@@ -41,8 +43,10 @@ const testEndpoints = ({
         library: libraryKey,
         baseEndpointUrl,
       });
-      expect(response).toStrictEqual(sampleGenerateResponseData);
-      expect(fetchMock).toHaveBeenCalledWith(expectedUrl, { method: "POST" });
+      expect(response).toEqual(sampleGenerateResponseData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(expectedUrl);
+      expect(requests[0].method).toBe("POST");
     });
   });
 };

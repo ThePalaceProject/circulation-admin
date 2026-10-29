@@ -1,11 +1,13 @@
 import * as React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { delay, http, HttpResponse } from "msw";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import genreData from "../fixtures/genreData";
 import classificationsData from "../fixtures/classificationsData";
+import { setupMswServer } from "../testUtils/mswServer";
 // Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
 // are exercised. The genre tree and classifications are fetched on mount and fed
 // back in through the Redux store; `book` and `refreshCatalog` are own props.
@@ -23,31 +25,6 @@ const bookData = {
 };
 const bookUrl = "works/1234";
 const classificationsUrl = "admin/works/1234/classifications";
-
-const jsonResponse = (body: unknown) =>
-  new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-
-// Resolves each fetch with the appropriate body based on the request URL/method.
-const stubFetch = () =>
-  jest
-    .spyOn(globalThis, "fetch")
-    .mockImplementation(async (url, opts?: RequestInit) => {
-      const u = String(url);
-      if (opts?.method === "POST") {
-        return new Response("success", { status: 200 });
-      }
-      if (u === "/admin/genres") {
-        return jsonResponse(genreData);
-      }
-      if (u.endsWith("/classifications")) {
-        return jsonResponse({ classifications: classificationsData });
-      }
-      // getBookData (OPDS) on refresh — non-OPDS body so it settles quietly.
-      return new Response("{}", { status: 200 });
-    });
 
 const renderConnected = (
   overrides: Partial<{ refreshCatalog: () => Promise<any> }> = {}
@@ -69,12 +46,17 @@ const renderConnected = (
 };
 
 describe("Classifications", () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  const { server, requests } = setupMswServer(
+    http.get("*/admin/genres", () => HttpResponse.json(genreData)),
+    http.get(`*/${classificationsUrl}`, () =>
+      HttpResponse.json({ classifications: classificationsData })
+    ),
+    http.post("*/admin/works/1234/edit_classifications", () =>
+      HttpResponse.text("success")
+    )
+  );
 
   it("shows the book title", async () => {
-    stubFetch();
     renderConnected();
     expect(
       await screen.findByRole("heading", { level: 2, name: "title" })
@@ -82,16 +64,17 @@ describe("Classifications", () => {
   });
 
   it("shows the updating indicator while fetching", () => {
-    // A never-resolving fetch keeps the panel in its fetching state.
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(() => new Promise(() => {}));
+    // A never-resolving response keeps the panel in its fetching state.
+    server.use(
+      http.get("*", async () => {
+        await delay("infinite");
+      })
+    );
     const { container } = renderConnected();
     expect(container.querySelector(".updating-loader")).toBeInTheDocument();
   });
 
   it("shows the classifications form and table once the data loads, and hides the updating indicator", async () => {
-    stubFetch();
     const { container } = renderConnected();
 
     // The form renders once the genre tree loads.
@@ -133,18 +116,16 @@ describe("Classifications", () => {
   });
 
   it("fetches the genre tree and classifications on mount", async () => {
-    const fetchSpy = stubFetch();
     renderConnected();
     await screen.findByRole("button", { name: "Save" });
 
-    const urls = fetchSpy.mock.calls.map(([u]) => String(u));
-    expect(urls).toContain("/admin/genres");
-    expect(urls).toContain(classificationsUrl);
+    const paths = requests.map((r) => new URL(r.url).pathname);
+    expect(paths).toContain("/admin/genres");
+    expect(paths).toContain(`/${classificationsUrl}`);
   });
 
   it("refreshes the book, classifications, and catalog after editing classifications", async () => {
     const user = userEvent.setup();
-    const fetchSpy = stubFetch();
     const { container, refreshCatalog } = renderConnected();
 
     await screen.findByRole("button", { name: "Save" });
@@ -158,9 +139,9 @@ describe("Classifications", () => {
 
     // Editing POSTs the edit_classifications URL, then refreshes the catalog.
     await waitFor(() => expect(refreshCatalog).toHaveBeenCalledTimes(1));
-    const postCall = fetchSpy.mock.calls.find(
-      ([, opts]) => (opts as RequestInit)?.method === "POST"
+    const postRequest = requests.find((r) => r.method === "POST");
+    expect(new URL(postRequest.url).pathname).toBe(
+      "/admin/works/1234/edit_classifications"
     );
-    expect(String(postCall[0])).toBe("admin/works/1234/edit_classifications");
   });
 });

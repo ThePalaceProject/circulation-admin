@@ -13,6 +13,8 @@ import buildStore from "../../../src/store";
 // unconnected `SelfTests` class) exercises `mapStateToProps` /
 // `mapDispatchToProps`, whose wiring nothing else covers.
 import SelfTests from "../../../src/components/SelfTests";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // SelfTests can take more than just a collection (an integration can have self
 // tests), but we only exercise collection data here.
@@ -138,33 +140,19 @@ const getExpectedTime = (date: Date): string => {
 // seeded collection/patron-auth id, so the shared `hasSelfTests` load reducer
 // leaves the seeded data intact (and `mapStateToProps` keeps passing
 // `ownProps.item` through, since the body carries no matching `goal`).
-const getSelfTestsResponse = () =>
-  new Response(JSON.stringify({ self_test_results: { id: 0 } }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+const getSelfTestsBody = { self_test_results: { id: 0 } };
+
+// Every `item` here is a collection, so both requests go to this URL.
+const SELF_TESTS_URL = "*/admin/collection_self_tests/:id";
 
 describe("SelfTests", () => {
-  let fetchSpy: jest.SpyInstance;
-
   // The connected component fetches self-test results on mount and posts to run
-  // them. Stub `fetch` so nothing hits the network and no promise rejects after
+  // them. Answer both so nothing hits the network and no promise rejects after
   // teardown (which would crash the worker).
-  beforeEach(() => {
-    fetchSpy = jest.spyOn(globalThis, "fetch").mockImplementation(((
-      _url: string,
-      options: any
-    ) => {
-      if (options && options.method === "POST") {
-        return Promise.resolve(new Response("", { status: 200 }));
-      }
-      return Promise.resolve(getSelfTestsResponse());
-    }) as any);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  const { server, requests } = setupMswServer(
+    http.get(SELF_TESTS_URL, () => HttpResponse.json(getSelfTestsBody)),
+    http.post(SELF_TESTS_URL, () => new HttpResponse("", { status: 200 }))
+  );
 
   // Each test gets a fresh store so the on-mount fetch does not leak state.
   const renderSelfTests = (
@@ -289,35 +277,29 @@ describe("SelfTests", () => {
         ],
       },
     };
-    fetchSpy.mockImplementation(((_url: string, options: any) => {
-      if (options && options.method === "POST") {
-        return Promise.resolve(new Response("", { status: 200 }));
-      }
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
+    server.use(
+      http.get(SELF_TESTS_URL, () =>
+        HttpResponse.json({
+          self_test_results: {
+            goal: "collection",
+            id: 42,
             self_test_results: {
-              goal: "collection",
-              id: 42,
-              self_test_results: {
-                duration: 2.5,
-                start: "2018-08-07T23:00:00Z",
-                end: "2018-08-07T23:00:01Z",
-                results: [
-                  {
-                    name: "new result",
-                    success: true,
-                    result: null,
-                    exception: null,
-                  },
-                ],
-              },
+              duration: 2.5,
+              start: "2018-08-07T23:00:00Z",
+              end: "2018-08-07T23:00:01Z",
+              results: [
+                {
+                  name: "new result",
+                  success: true,
+                  result: null,
+                  exception: null,
+                },
+              ],
             },
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        )
-      );
-    }) as any);
+          },
+        })
+      )
+    );
 
     const { container } = renderSelfTests({ item });
 
@@ -471,15 +453,17 @@ describe("SelfTests", () => {
 
   describe("Get new results", () => {
     it("runs the self tests and shows the running indicator while in flight", async () => {
+      // The run request stays in flight until the test resolves it.
       let resolveRun: () => void;
-      fetchSpy.mockImplementation(((_url: string, options: any) => {
-        if (options && options.method === "POST") {
-          return new Promise((resolve) => {
-            resolveRun = () => resolve(new Response("", { status: 200 }));
-          });
-        }
-        return Promise.resolve(getSelfTestsResponse());
-      }) as any);
+      const runFinished = new Promise<void>((resolve) => {
+        resolveRun = resolve;
+      });
+      server.use(
+        http.post(SELF_TESTS_URL, async () => {
+          await runFinished;
+          return new HttpResponse("", { status: 200 });
+        })
+      );
 
       const { store } = renderSelfTests({ item: collections[0] });
       await settle(store);
@@ -492,10 +476,9 @@ describe("SelfTests", () => {
       expect(
         await screen.findByText("Running new self tests")
       ).toBeInTheDocument();
-      expect(fetchSpy).toHaveBeenCalledWith(
-        "/admin/collection_self_tests/1",
-        expect.objectContaining({ method: "POST" })
-      );
+      expect(
+        requests.map((r) => `${r.method} ${new URL(r.url).pathname}`)
+      ).toContain("POST /admin/collection_self_tests/1");
 
       // Resolving the request clears the indicator.
       resolveRun();
@@ -505,20 +488,14 @@ describe("SelfTests", () => {
     });
 
     it("shows an error alert when running the self tests fails", async () => {
-      fetchSpy.mockImplementation(((_url: string, options: any) => {
-        if (options && options.method === "POST") {
-          return Promise.resolve(
-            new Response(
-              JSON.stringify({ detail: "Failed to run new tests." }),
-              {
-                status: 400,
-                headers: { "Content-Type": "application/json" },
-              }
-            )
-          );
-        }
-        return Promise.resolve(getSelfTestsResponse());
-      }) as any);
+      server.use(
+        http.post(SELF_TESTS_URL, () =>
+          HttpResponse.json(
+            { detail: "Failed to run new tests." },
+            { status: 400 }
+          )
+        )
+      );
 
       const { store, container } = renderSelfTests({ item: collections[0] });
       await settle(store);
