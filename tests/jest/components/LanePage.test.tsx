@@ -27,10 +27,12 @@ jest.mock("react-router", () => ({
 import LanePage from "../../../src/components/LanePage";
 
 describe("LanePage", () => {
-  // Lanes fetches lanes and custom lists on mount; stub the network so no real
-  // request is made.
+  // Lanes fetches lanes and custom lists on mount.
   setupMswServer(
-    http.all("*", () => HttpResponse.json({ lanes: [], custom_lists: [] }))
+    http.get("*/:library/admin/lanes", () => HttpResponse.json({ lanes: [] })),
+    http.get("*/:library/admin/custom_lists", () =>
+      HttpResponse.json({ custom_lists: [] })
+    )
   );
 
   it("shows lanes with info from params", async () => {

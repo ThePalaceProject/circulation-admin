@@ -33,7 +33,19 @@ describe("CustomLists", () => {
 
   const { server } = setupMswServer(
     http.get("*/search", () => HttpResponse.xml("<feed />")),
-    http.get("*", () => HttpResponse.json({}))
+    http.get("*/:library/admin/custom_lists", () =>
+      HttpResponse.json({ custom_lists: [] })
+    ),
+    http.get("*/admin/collections", () =>
+      HttpResponse.json({ collections: [] })
+    ),
+    // The list editor reads the settings of the current library.
+    http.get("*/admin/libraries", () =>
+      HttpResponse.json({
+        libraries: [{ short_name: "testlib", settings: {} }],
+      })
+    ),
+    http.get("*/admin/languages", () => HttpResponse.json({}))
   );
 
   afterEach(() => {

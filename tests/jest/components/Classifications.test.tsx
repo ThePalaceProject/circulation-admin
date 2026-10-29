@@ -5,6 +5,7 @@ import { delay, http, HttpResponse } from "msw";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
+import { initialState as bookEditorInitialState } from "../../../src/features/book/bookEditorSlice";
 import genreData from "../fixtures/genreData";
 import classificationsData from "../fixtures/classificationsData";
 import { setupMswServer } from "../testUtils/mswServer";
@@ -25,11 +26,16 @@ const bookData = {
 };
 const bookUrl = "works/1234";
 const classificationsUrl = "admin/works/1234/classifications";
+// The admin URL of the book being edited. The component reads it from the
+// store to fetch the book again after an edit.
+const bookAdminUrl = "/library/admin/works/1234";
 
 const renderConnected = (
   overrides: Partial<{ refreshCatalog: () => Promise<any> }> = {}
 ) => {
-  const store = buildStore();
+  const store = buildStore({
+    bookEditor: { ...bookEditorInitialState, url: bookAdminUrl },
+  } as any);
   const refreshCatalog =
     overrides.refreshCatalog ?? jest.fn().mockResolvedValue(undefined);
   const result = renderWithProviders(
@@ -53,6 +59,11 @@ describe("Classifications", () => {
     ),
     http.post("*/admin/works/1234/edit_classifications", () =>
       HttpResponse.text("success")
+    ),
+    http.get(`*${bookAdminUrl}`, () =>
+      HttpResponse.xml(
+        '<entry xmlns="http://www.w3.org/2005/Atom"><id>id</id><title>title</title></entry>'
+      )
     )
   );
 
@@ -137,11 +148,19 @@ describe("Classifications", () => {
     );
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    // Editing POSTs the edit_classifications URL, then refreshes the catalog.
+    // Editing POSTs the edit_classifications URL, then fetches the book again
+    // and refreshes the catalog.
     await waitFor(() => expect(refreshCatalog).toHaveBeenCalledTimes(1));
     const postRequest = requests.find((r) => r.method === "POST");
     expect(new URL(postRequest.url).pathname).toBe(
       "/admin/works/1234/edit_classifications"
+    );
+    await waitFor(() =>
+      expect(
+        requests.some(
+          (r) => r.method === "GET" && new URL(r.url).pathname === bookAdminUrl
+        )
+      ).toBe(true)
     );
   });
 });
