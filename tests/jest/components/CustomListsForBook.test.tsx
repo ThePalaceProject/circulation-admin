@@ -93,7 +93,7 @@ describe("CustomListsForBook", () => {
       await screen.findByRole("heading", { level: 2, name: "test title" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Current Lists" })
+      await screen.findByRole("heading", { name: "Current Lists" })
     ).toBeInTheDocument();
 
     const link = await screen.findByRole("link", { name: "list 2" });

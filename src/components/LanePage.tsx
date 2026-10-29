@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import Lanes from "./Lanes";
 import { RootState } from "../store";
 
-export interface LanePageProps extends React.Props<LanePageProps> {
+export interface LanePageProps {
   params: {
     library?: string;
     editOrCreate?: string;

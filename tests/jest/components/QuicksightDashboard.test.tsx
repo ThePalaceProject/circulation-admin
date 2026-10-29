@@ -24,7 +24,11 @@ describe("QuicksightDashboard", () => {
       if (libraryUuids === libraries["libraries"][0]["uuid"]) {
         return HttpResponse.json(dashboardUrlData);
       }
-    })
+    }),
+    // QuicksightDashboardPage always requests the "library" dashboard.
+    http.get("/admin/quicksight_embed/library", () =>
+      HttpResponse.json(dashboardUrlData)
+    )
   );
 
   beforeAll(() => {
@@ -48,7 +52,7 @@ describe("QuicksightDashboard", () => {
     });
   });
 
-  it("header renders without navigation links ", () => {
+  it("header renders without navigation links ", async () => {
     renderWithProviders(<QuicksightDashboardPage params={{ library: null }} />);
 
     // Make sure we see the QuicksSight iFrame.
@@ -61,6 +65,14 @@ describe("QuicksightDashboard", () => {
     // Make sure we do not see other navigation links.
     ["Dashboard", "System Configuration"].forEach((name) => {
       expect(screen.queryByText(name)).not.toBeInTheDocument();
+    });
+
+    // Let the on-mount embed URL fetch settle before the test ends.
+    await waitFor(() => {
+      expect(screen.getByTitle("Library Dashboard")).toHaveAttribute(
+        "src",
+        embedUrl
+      );
     });
   });
 });

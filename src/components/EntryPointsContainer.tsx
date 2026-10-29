@@ -6,7 +6,7 @@ import Collection from "@thepalaceproject/web-opds-client/lib/components/Collect
 /** Wrapper for `EntryPointsTabs`. This component is passed into the
     OPDSCatalog from web-opds-client. */
 export default class EntryPointsContainer extends React.Component<
-  CollectionContainerProps,
+  React.PropsWithChildren<CollectionContainerProps>,
   {}
 > {
   render(): JSX.Element {

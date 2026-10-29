@@ -9,7 +9,7 @@ import VisibleIcon from "./icons/VisibleIcon";
 import HiddenIcon from "./icons/HiddenIcon";
 import { navigateTo } from "../utils/navigate";
 
-export interface LaneEditorProps extends React.Props<LaneEditor> {
+export interface LaneEditorProps {
   editOrCreate?: string;
   library: string;
   lane?: LaneData;
@@ -38,6 +38,8 @@ export default class LaneEditor extends React.Component<
 > {
   private laneNameRef = React.createRef<TextWithEditMode>();
   private laneCustomListsRef = React.createRef<LaneCustomListsEditor>();
+  // True while this editor waits for a new lane's id. See componentDidUpdate.
+  private savingNewLane = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -221,6 +223,22 @@ export default class LaneEditor extends React.Component<
     });
   }
 
+  componentDidUpdate(prevProps: LaneEditorProps) {
+    // Every lane save returns the lane's id, and the id stays in the store. A
+    // "create" link can reuse this editor and pass it an old id, so go to the
+    // edit page only after this editor saves a new lane. Check here, not when
+    // `editLane` resolves, because the props may not have the new id yet.
+    const { library, responseBody } = this.props;
+    if (
+      this.savingNewLane &&
+      responseBody &&
+      responseBody !== prevProps.responseBody
+    ) {
+      this.savingNewLane = false;
+      navigateTo(`/admin/web/lanes/${library}/edit/${responseBody}`);
+    }
+  }
+
   hasChanges(): boolean {
     const nameChanged =
       this.props.lane && this.props.lane.display_name !== this.state.name;
@@ -319,14 +337,9 @@ export default class LaneEditor extends React.Component<
       "inherit_parent_restrictions",
       this.state.inheritParentRestrictions
     );
-    this.props.editLane(data).then(() => {
-      // If a new lane was created, go to its edit page.
-      if (!this.props.lane && this.props.responseBody) {
-        navigateTo(
-          `/admin/web/lanes/${this.props.library}/edit/${this.props.responseBody}`
-        );
-      }
-    });
+    // If this creates a new lane, componentDidUpdate goes to its edit page.
+    this.savingNewLane = !this.props.lane;
+    this.props.editLane(data);
   }
 
   reset() {

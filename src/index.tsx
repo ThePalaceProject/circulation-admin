@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import buildStore from "./store";
 import { Provider } from "react-redux";
 import { Router, Route, browserHistory } from "react-router";
@@ -93,10 +94,10 @@ class CirculationAdmin {
     if (process.env.TEST_AXE === "true") {
       import("react-axe").then((axe) => {
         axe(React, ReactDOM, 1000);
-        ReactDOM.render(app, document.getElementById(appElement));
+        createRoot(document.getElementById(appElement)).render(app);
       });
     } else {
-      ReactDOM.render(app, document.getElementById(appElement));
+      createRoot(document.getElementById(appElement)).render(app);
     }
   }
 }

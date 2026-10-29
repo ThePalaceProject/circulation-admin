@@ -15,8 +15,8 @@ import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../utils/title";
 
-const palaceLogoUrl = require("../images/PalaceCollectionManagerLogo.svg")
-  .default;
+const palaceLogoUrl =
+  require("../images/PalaceCollectionManagerLogo.svg").default;
 
 export interface HeaderStateProps {
   isFetchingLibraries?: boolean;
@@ -33,10 +33,7 @@ export interface HeaderOwnProps {
 }
 
 export interface HeaderProps
-  extends React.Props<Header>,
-    HeaderStateProps,
-    HeaderDispatchProps,
-    HeaderOwnProps {}
+  extends HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
 
 export interface HeaderState {
   showAccountDropdown: boolean;
@@ -86,8 +83,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let permissions = isSystemAdmin
       ? "a system admin"
       : isLibraryManager
-      ? "an administrator"
-      : "a user";
+        ? "an administrator"
+        : "a user";
     return <li className="permissions">Logged in as {permissions}</li>;
   }
 
@@ -101,7 +98,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
     let isSiteWide = !this.context.library || !currentLibrary;
-    let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
+    let isSomeLibraryManager =
+      this.context.admin.isLibraryManagerOfSomeLibrary();
 
     // Dashboard link that will be rendered in a Link router component.
     const dashboardLinkItem = { label: "Dashboard", href: "dashboard/" };
@@ -349,9 +347,7 @@ type HeaderWithStoreProps = {
   logoOnly?: boolean;
 };
 
-export default class HeaderWithStore extends React.Component<
-  HeaderWithStoreProps
-> {
+export default class HeaderWithStore extends React.Component<HeaderWithStoreProps> {
   context: { editorStore: Store<RootState> };
 
   static contextTypes = {

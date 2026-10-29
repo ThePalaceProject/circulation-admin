@@ -49,7 +49,9 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 - Mix of class components (legacy) and functional components (newer)
 - React Router v3 (`react-router@^3.2.0`) — uses older API style
-- React 16.8 — hooks are available but many components predate hooks
+- React 18.3 (mounted with `createRoot`)
+  - Hooks are available but many components predate hooks.
+  - Updates are batched, so don't read Redux-derived props right after an awaited dispatch; use the thunk's resolved value or `componentDidUpdate`.
 - Bootstrap 3 via react-bootstrap for UI primitives
 - SCSS stylesheets in `src/stylesheets/`
 

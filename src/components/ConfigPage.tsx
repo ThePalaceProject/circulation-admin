@@ -7,7 +7,7 @@ import ConfigTabContainer from "./ConfigTabContainer";
 import { RootState } from "../store";
 import title from "../utils/title";
 
-export interface ConfigPageProps extends React.Props<ConfigPageProps> {
+export interface ConfigPageProps {
   params: {
     tab: string;
     editOrCreate: string;

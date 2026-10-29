@@ -26,7 +26,10 @@ jest.mock("react-router", () => ({
 // the OPDS web client supplies in production. Supply them via a small legacy
 // context provider (also carrying the `editorStore`/`csrfToken` the connected
 // default export needs).
-class LegacyContextProvider extends React.Component<{ context: any }> {
+class LegacyContextProvider extends React.Component<{
+  context: any;
+  children: React.ReactNode;
+}> {
   static childContextTypes = {
     library: PropTypes.func,
     router: PropTypes.object,

@@ -3,6 +3,7 @@ import { Button } from "library-simplified-reusable-components";
 import { PencilIcon } from "@nypl/dgx-svg-icons";
 
 export interface WithEditButtonProps {
+  children?: React.ReactNode;
   disabled: boolean;
   onEdit: () => void;
 }
