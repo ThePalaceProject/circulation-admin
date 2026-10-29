@@ -7,6 +7,8 @@ import renderWithContext from "../testUtils/renderWithContext";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("MetadataServices", () => {
   const data = {
@@ -63,22 +65,19 @@ describe("MetadataServices", () => {
 });
 
 describe("MetadataServices - connected wiring", () => {
-  afterEach(() => jest.restoreAllMocks());
+  setupMswServer(
+    http.get("*/admin/metadata_services", () =>
+      HttpResponse.json({
+        metadata_services: [
+          { id: 2, protocol: "test protocol", name: "Test Metadata" },
+        ],
+        protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+      })
+    ),
+    http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+  );
 
   it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
-    jest.spyOn(globalThis, "fetch").mockImplementation(
-      async () =>
-        new Response(
-          JSON.stringify({
-            metadata_services: [
-              { id: 2, protocol: "test protocol", name: "Test Metadata" },
-            ],
-            protocols: [{ name: "test protocol", label: "TP", settings: [] }],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        )
-    );
-
     renderWithProviders(<MetadataServicesConnected csrfToken="token" />, {
       reduxProviderProps: { store: buildStore() },
       appConfigSettings: { roles: [{ role: "system" }] },

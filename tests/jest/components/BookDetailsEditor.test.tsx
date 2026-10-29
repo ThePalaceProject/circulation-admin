@@ -7,6 +7,8 @@ import {
   PER_LIBRARY_SUPPRESS_REL,
   PER_LIBRARY_UNSUPPRESS_REL,
 } from "../../../src/features/book/bookEditorSlice";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // BookEditForm is a heavy child; the legacy enzyme tests only shallow-rendered
 // it and asserted the props it received. Mock it to a marker that surfaces those
@@ -60,9 +62,16 @@ const renderEditor = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("BookDetailsEditor", () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // Serve the endpoints the connected panel fetches on mount, so mounting it
+  // does not hit the network. The roles/media/languages endpoints return JSON;
+  // the book endpoint returns a non-OPDS body so getBookData rejects (handled)
+  // and surfaces a fetch error.
+  setupMswServer(
+    http.get("*/admin/roles", () => HttpResponse.json({})),
+    http.get("*/admin/media", () => HttpResponse.json({})),
+    http.get("*/admin/languages", () => HttpResponse.json({})),
+    http.get("*/admin/works/1234", () => HttpResponse.text("{}"))
+  );
 
   it("loads admin book url, roles, languages, and media on mount", () => {
     const { props } = renderEditor({ bookUrl: "works/1234" });
@@ -247,13 +256,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("wires up the connected default export (mapStateToProps / mapDispatchToProps)", async () => {
-    // Stub fetch so mounting the connected panel does not hit the network. The
-    // roles/media/languages endpoints return JSON; the book endpoint returns a
-    // non-OPDS body so getBookData rejects (handled) and surfaces a fetch error.
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () => new Response("{}", { status: 200 }));
-
     const store = buildStore();
     renderWithProviders(
       <BookDetailsEditor

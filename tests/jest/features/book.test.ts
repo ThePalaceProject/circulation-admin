@@ -3,7 +3,8 @@ import reducer, {
   getBookData,
   submitBookData,
 } from "../../../src/features/book/bookEditorSlice";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "@thepalaceproject/web-opds-client/lib/actions";
@@ -176,21 +177,21 @@ describe("Redux bookEditorSlice...", () => {
         bookEditor: initialState,
       });
 
-      beforeAll(() => {
-        fetchMock
-          .get(goodBookUrl, { body: SAMPLE_BOOK_ADMIN_DETAIL, status: 200 })
-          .get(brokenBookUrl, {
-            body: SAMPLE_BOOK_DATA_BROKEN_XML,
-            status: 200,
-          })
-          .get(errorBookUrl, { body: "Internal server error", status: 400 });
-      });
+      setupMswServer(
+        http.get(goodBookUrl, () =>
+          HttpResponse.text(SAMPLE_BOOK_ADMIN_DETAIL)
+        ),
+        http.get(brokenBookUrl, () =>
+          HttpResponse.text(SAMPLE_BOOK_DATA_BROKEN_XML)
+        ),
+        http.get(errorBookUrl, () =>
+          HttpResponse.text("Internal server error", { status: 400 })
+        )
+      );
 
       afterEach(() => {
-        fetchMock.resetHistory();
         dispatch.mockClear();
       });
-      afterAll(() => fetchMock.restore());
 
       it("should return the book data on the happy path", async () => {
         const action = getBookData({ url: goodBookUrl });
@@ -285,30 +286,23 @@ describe("Redux bookEditorSlice...", () => {
         bookEditor: initialState,
       });
 
-      beforeAll(() => {
-        fetchMock
-          .post(
-            {
-              name: "valid-csrf-token-post",
-              url: editBookUrl,
-              headers: { [csrfTokenHeader]: validCsrfToken },
-            },
-            { body: "Success!", status: 201 }
-          )
-          .post(
-            { name: "invalid-csrf-token-post", url: editBookUrl },
-            { body: badCsrfTokenResponseBody, status: 400 }
-          )
-          .get(goodBookUrl, { body: SAMPLE_BOOK_ADMIN_DETAIL, status: 200 });
-      });
+      const { requests } = setupMswServer(
+        // Only a request with the valid CSRF token succeeds. Any other request
+        // falls through to the next handler, which rejects it.
+        http.post(editBookUrl, ({ request }) => {
+          if (request.headers.get(csrfTokenHeader) === validCsrfToken) {
+            return HttpResponse.text("Success!", { status: 201 });
+          }
+        }),
+        http.post(editBookUrl, () =>
+          HttpResponse.json(badCsrfTokenResponseBody, { status: 400 })
+        ),
+        http.get(goodBookUrl, () => HttpResponse.text(SAMPLE_BOOK_ADMIN_DETAIL))
+      );
 
       afterEach(() => {
-        fetchMock.resetHistory();
         dispatch.mockClear();
       });
-
-      afterEach(fetchMock.resetHistory);
-      afterAll(() => fetchMock.restore());
 
       it("should post the book data on the happy path", async () => {
         const csrfToken = validCsrfToken;
@@ -324,17 +318,15 @@ describe("Redux bookEditorSlice...", () => {
 
         await action(dispatch, getState, undefined);
         const dispatchCalls = dispatch.mock.calls;
-        const fetchCalls = fetchMock.calls();
 
-        expect(fetchCalls.length).toBe(1);
-        expect(fetchCalls[0].identifier).toBe("valid-csrf-token-post");
-        expect((fetchCalls[0][1].headers as Headers).get(csrfTokenHeader)).toBe(
-          validCsrfToken
-        );
+        expect(requests.length).toBe(1);
+        expect(requests[0].headers.get(csrfTokenHeader)).toBe(validCsrfToken);
 
-        expect(fetchCalls[0][0]).toBe(editBookUrl);
-        expect(fetchCalls[0][1].method).toBe("POST");
-        expect(fetchCalls[0][1].body).toBe(formData);
+        expect(requests[0].url).toBe(editBookUrl);
+        expect(requests[0].method).toBe("POST");
+        const sentData = await requests[0].formData();
+        expect(sentData.get("id")).toBe("urn:something:something");
+        expect(sentData.get("title")).toBe("title");
 
         expect(dispatchCalls.length).toBe(3);
         expect(dispatchCalls[0][0].type).toBe(submitBookData.pending.type);
@@ -342,7 +334,10 @@ describe("Redux bookEditorSlice...", () => {
         // On a successful update, the second dispatch is to re-fetch the updated book data.
         // The third dispatch is for the fulfilled action.
         expect(dispatchCalls[2][0].type).toBe(submitBookData.fulfilled.type);
-        expect(dispatchCalls[2][0].payload.body.toString()).toBe("Success!");
+        // The payload is the native `Response`, whose body `submitForm` has
+        // already read, so check its status. Only the "Success!" handler
+        // above returns 201.
+        expect(dispatchCalls[2][0].payload.status).toBe(201);
       });
       it("should fail, if the user is unauthorized", async () => {
         const csrfToken = "invalid-token";
@@ -358,17 +353,17 @@ describe("Redux bookEditorSlice...", () => {
 
         await action(dispatch, getState, undefined);
         const dispatchCalls = dispatch.mock.calls;
-        const fetchCalls = fetchMock.calls();
 
-        expect(fetchCalls.length).toBe(1);
-        expect(fetchCalls[0].identifier).toBe("invalid-csrf-token-post");
-        expect(
-          (fetchCalls[0][1].headers as Headers).get(csrfTokenHeader)
-        ).not.toBe(validCsrfToken);
+        expect(requests.length).toBe(1);
+        expect(requests[0].headers.get(csrfTokenHeader)).not.toBe(
+          validCsrfToken
+        );
 
-        expect(fetchCalls[0][0]).toBe(editBookUrl);
-        expect(fetchCalls[0][1].method).toBe("POST");
-        expect(fetchCalls[0][1].body).toBe(formData);
+        expect(requests[0].url).toBe(editBookUrl);
+        expect(requests[0].method).toBe("POST");
+        const sentData = await requests[0].formData();
+        expect(sentData.get("id")).toBe("urn:something:something");
+        expect(sentData.get("title")).toBe("title");
 
         expect(dispatchCalls.length).toBe(2);
         expect(dispatchCalls[0][0].type).toBe(submitBookData.pending.type);

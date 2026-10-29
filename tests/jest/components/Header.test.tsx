@@ -9,6 +9,8 @@ import HeaderWithStore from "../../../src/components/Header";
 import Admin from "../../../src/models/Admin";
 import title from "../../../src/utils/title";
 import buildStore from "../../../src/store";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // Render react-router's Link as a marker `<div>` so we can read its target
 // (`data-to`) and text without a real Router in context. (A bare `<a>` without an
@@ -382,20 +384,15 @@ describe("Header", () => {
   });
 
   describe("connected (default export)", () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
+    const { requests } = setupMswServer(
+      http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+    );
 
     it("wires libraries from the store and fetches them on mount", async () => {
       // The connected default export reads `libraries`/`isFetchingLibraries` from
       // the redux store and dispatches `fetchLibraries` on mount, which hits the
-      // network — stub fetch so mounting settles without a real request.
-      const fetchSpy = jest.spyOn(globalThis, "fetch").mockResolvedValue(
-        new Response(JSON.stringify({ libraries: [] }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-      );
+      // network. The mock server answers it so mounting settles without a real
+      // request.
       const store = buildStore();
 
       render(
@@ -417,8 +414,8 @@ describe("Header", () => {
       expect(
         await screen.findByRole("heading", { level: 1 })
       ).toHaveTextContent(title());
-      await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
-      expect(fetchSpy.mock.calls[0][0]).toContain("/admin/libraries");
+      await waitFor(() => expect(requests).toHaveLength(1));
+      expect(new URL(requests[0].url).pathname).toBe("/admin/libraries");
     });
   });
 });

@@ -4,8 +4,8 @@ import { screen, waitFor } from "@testing-library/react";
 import QuicksightDashboard from "../../../src/components/QuicksightDashboard";
 import { LibrariesData } from "../../../src/interfaces";
 import buildStore from "../../../src/store";
-import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import { renderWithProviders } from "../testUtils/withProviders";
 import QuicksightDashboardPage from "../../../src/components/QuicksightDashboardPage";
 
@@ -15,7 +15,7 @@ const embedUrl = "http://embedUrl";
 const dashboardUrlData = { embedUrl: embedUrl };
 
 describe("QuicksightDashboard", () => {
-  const server = setupServer(
+  setupMswServer(
     http.get("/admin/libraries", () => HttpResponse.json(libraries)),
     http.get(`/admin/quicksight_embed/${dashboardId}`, ({ request }) => {
       const url = new URL(request.url);
@@ -30,14 +30,6 @@ describe("QuicksightDashboard", () => {
       HttpResponse.json(dashboardUrlData)
     )
   );
-
-  beforeAll(() => {
-    server.listen();
-  });
-
-  afterAll(() => {
-    server.close();
-  });
 
   it("embed url is retrieved and set in iframe", async () => {
     renderWithProviders(

@@ -5,8 +5,8 @@ import {
   renderWithProviders,
 } from "../testUtils/withProviders";
 import { QueryClient } from "@tanstack/react-query";
-import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import {
   ACK_RESPONSE_BUTTON_CONTENT,
   ACK_RESPONSE_HEADING,
@@ -43,7 +43,7 @@ const API_ENDPOINT_PARAMS: AdminAPI.InventoryReportRequestParams = {
 };
 
 const setupMockServer = () => {
-  return setupServer(
+  return setupMswServer(
     http.get(MOCK_SERVER_API_ENDPOINT_PATH, () =>
       HttpResponse.json(INFO_SUCCESS_SOME_COLLECTIONS, { status: 200 })
     ),
@@ -237,13 +237,7 @@ describe("InventoryReportRequestModal", () => {
   });
 
   describe("mock server functionality", () => {
-    const server = setupMockServer();
-    beforeAll(() => server.listen());
-    afterAll(() => server.close());
-    afterEach(() => {
-      server.resetHandlers();
-      server.restoreHandlers();
-    });
+    const { server } = setupMockServer();
 
     it("returns the success value for successful report info (get) requests", async () => {
       const result = await AdminAPI.getInventoryReportInfo(API_ENDPOINT_PARAMS);
@@ -288,13 +282,9 @@ describe("InventoryReportRequestModal", () => {
 
   describe("component rendering", () => {
     const onHide = jest.fn();
-    const server = setupMockServer();
+    const { server } = setupMockServer();
 
-    beforeAll(() => server.listen());
-    afterAll(() => server.close());
     afterEach(() => {
-      server.resetHandlers();
-      server.restoreHandlers();
       onHide.mockReset();
       queryClient.clear();
     });

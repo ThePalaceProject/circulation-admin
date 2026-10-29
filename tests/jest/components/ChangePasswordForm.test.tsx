@@ -7,13 +7,12 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import ConnectedChangePasswordForm, {
   ChangePasswordForm,
 } from "../../../src/components/ChangePasswordForm";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 // The reusable-components `Form` builds `new FormData(formElement)` on
 // submit, which the unit jsdom env's undici FormData rejects; install the
 // shared shim that reads the form's successful controls.
 installFormDataShim();
-afterEach(() => {
-  jest.restoreAllMocks();
-});
 
 // Render the unconnected class so tests can pass a `changePassword` spy and
 // drive props directly. A separate test below renders the connected default
@@ -36,6 +35,10 @@ const confirmInput = (container: HTMLElement) =>
   container.querySelector('input[name="confirm_password"]') as HTMLInputElement;
 
 describe("ChangePasswordForm", () => {
+  const { requests } = setupMswServer(
+    http.post("*/admin/change_password", () => HttpResponse.text("ok"))
+  );
+
   it("shows an error message when there is a fetch error", () => {
     const { container, rerender } = renderUnconnected();
     expect(container.querySelector(".alert-danger")).not.toBeInTheDocument();
@@ -140,9 +143,6 @@ describe("ChangePasswordForm", () => {
 
   it("dispatches the password change through the connected store", async () => {
     const user = userEvent.setup();
-    const fetchSpy = jest
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(new Response("ok", { status: 200 }));
 
     const { container } = renderWithProviders(
       <ConnectedChangePasswordForm csrfToken="token" />
@@ -155,9 +155,8 @@ describe("ChangePasswordForm", () => {
     expect(
       await screen.findByText("Password changed successfully")
     ).toBeInTheDocument();
-    expect(fetchSpy).toHaveBeenCalledWith(
-      "/admin/change_password",
-      expect.objectContaining({ method: "POST" })
-    );
+    expect(requests).toHaveLength(1);
+    expect(new URL(requests[0].url).pathname).toBe("/admin/change_password");
+    expect(requests[0].method).toBe("POST");
   });
 });

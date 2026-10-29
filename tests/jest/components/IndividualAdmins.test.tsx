@@ -11,6 +11,8 @@ import {
   IndividualAdminsData,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("IndividualAdmins - role association disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -573,18 +575,14 @@ describe("IndividualAdmins - access control", () => {
 // Exercises the connected default export so mapStateToProps/mapDispatchToProps
 // are covered.
 describe("IndividualAdmins - connect wiring", () => {
-  afterEach(() => jest.restoreAllMocks());
+  const { requests } = setupMswServer(
+    http.get("*/admin/individual_admins", () =>
+      HttpResponse.json({ individualAdmins: [] })
+    ),
+    http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+  );
 
   it("renders the connected default export, fetching on mount", async () => {
-    // A Response body can only be read once, so build one per fetch call.
-    const fetchSpy = jest.spyOn(globalThis, "fetch").mockImplementation(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({ individualAdmins: [] }), {
-          headers: { "Content-Type": "application/json" },
-        })
-      )
-    );
-
     renderWithProviders(
       <ConnectedIndividualAdmins
         csrfToken="token"
@@ -601,9 +599,7 @@ describe("IndividualAdmins - connect wiring", () => {
 
     // Outside setup mode, fetchData also requests the libraries list (the
     // settingUp half of that guard is pinned in SetupPage.test.tsx).
-    const urls = fetchSpy.mock.calls.map((call) => String(call[0]));
-    expect(urls).toEqual(
-      expect.arrayContaining([expect.stringContaining("/admin/libraries")])
-    );
+    const paths = requests.map((r) => new URL(r.url).pathname);
+    expect(paths).toContain("/admin/libraries");
   });
 });

@@ -14,6 +14,8 @@ import * as navigate from "../../../src/utils/navigate";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import { LaneData, CustomListData } from "../../../src/interfaces";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // Render react-router's Link as a marker so the lane tree and editor links
 // render without a Router in context (see Lane.test.tsx / CustomListsSidebar.test.tsx).
@@ -449,22 +451,19 @@ describe("Lanes - reorder flow", () => {
 
 // These use the real store, to test how store updates reach the editor.
 describe("Lanes - connected", () => {
+  const { server } = setupMswServer();
+
   // The server answers every lane save with the lane's id.
-  const stubFetch = (savedLaneId: string, lanes: LaneData[] = []) =>
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async (url, opts?: RequestInit) => {
-        if (opts?.method === "POST") {
-          return new Response(savedLaneId, { status: 201 });
-        }
-        const body = String(url).includes("custom_lists")
-          ? { custom_lists: [] }
-          : { lanes };
-        return new Response(JSON.stringify(body), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
-      });
+  const stubServer = (savedLaneId: string, lanes: LaneData[] = []) =>
+    server.use(
+      http.get("*/:library/admin/lanes", () => HttpResponse.json({ lanes })),
+      http.get("*/:library/admin/custom_lists", () =>
+        HttpResponse.json({ custom_lists: [] })
+      ),
+      http.post("*/:library/admin/lanes", () =>
+        HttpResponse.text(savedLaneId, { status: 201 })
+      )
+    );
 
   let navigateSpy: jest.SpyInstance;
 
@@ -479,7 +478,7 @@ describe("Lanes - connected", () => {
   });
 
   it("goes to the new lane's edit page after creating a lane", async () => {
-    stubFetch("77");
+    stubServer("77");
     const user = userEvent.setup();
 
     renderWithProviders(
@@ -508,7 +507,7 @@ describe("Lanes - connected", () => {
       custom_list_ids: [],
       inherit_parent_restrictions: false,
     };
-    stubFetch("5", [lane]);
+    stubServer("5", [lane]);
     const store = buildStore();
     const user = userEvent.setup();
 

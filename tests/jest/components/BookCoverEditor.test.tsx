@@ -11,6 +11,8 @@ import buildStore from "../../../src/store";
 // `csrfToken`, and `refreshCatalog` are own props.
 import BookCoverEditor from "../../../src/components/BookCoverEditor";
 import { BookData, RightsStatusData } from "../../../src/interfaces";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 // The reusable-components `Form` builds `new FormData(formElement)` on
 // submit, which the unit jsdom env's undici FormData rejects; install the
 // shared shim that reads the form's successful controls.
@@ -44,32 +46,13 @@ const bookData: BookData = {
 };
 
 describe("BookCoverEditor", () => {
-  let fetchSpy: jest.SpyInstance;
-
   // The connected component fetches the rights statuses on mount and posts the
-  // cover preview / edited cover. Serve those endpoints and answer anything else
-  // (e.g. the OPDS book re-fetch) benignly so nothing rejects after teardown.
-  beforeEach(() => {
-    fetchSpy = jest.spyOn(globalThis, "fetch").mockImplementation((async (
-      url: string
-    ) => {
-      const u = String(url);
-      if (u.includes("rights_status")) {
-        return new Response(JSON.stringify(rightsStatuses), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-      if (u.includes("preview_book_cover")) {
-        return new Response("image data", { status: 200 });
-      }
-      return new Response("", { status: 200 });
-    }) as any);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // cover preview / edited cover.
+  const { requests } = setupMswServer(
+    http.get("*/admin/rights_status", () => HttpResponse.json(rightsStatuses)),
+    http.post("*/preview_book_cover", () => HttpResponse.text("image data")),
+    http.post("*/change_cover", () => HttpResponse.text(""))
+  );
 
   // Each test gets a fresh store so state does not leak. `preSeed` runs before
   // mount; note the component clears the preview on mount, so preview-slice state
@@ -272,10 +255,9 @@ describe("BookCoverEditor", () => {
       renderEditor();
       // The rights inputs only render after the statuses are fetched.
       expect(await screen.findByText("License")).toBeInTheDocument();
-      expect(fetchSpy).toHaveBeenCalledWith(
-        "/admin/rights_status",
-        expect.anything()
-      );
+      expect(
+        requests.some((r) => new URL(r.url).pathname === "/admin/rights_status")
+      ).toBe(true);
     });
 
     it("clears any stale preview on mount", async () => {
@@ -307,13 +289,14 @@ describe("BookCoverEditor", () => {
       expect(preview).toHaveAttribute("src", "image data");
 
       // The preview was posted with the entered cover URL and title position.
-      const previewCall = fetchSpy.mock.calls.find(([u]) =>
-        String(u).includes("preview_book_cover")
+      const previewRequest = requests.find((r) =>
+        r.url.includes("preview_book_cover")
       );
-      expect(previewCall).toBeTruthy();
-      expect(previewCall[1].method).toBe("POST");
-      expect(previewCall[1].body.get("cover_url")).toBe("http://example.com");
-      expect(previewCall[1].body.get("title_position")).toBe("none");
+      expect(previewRequest).toBeTruthy();
+      expect(previewRequest.method).toBe("POST");
+      const previewBody = await previewRequest.formData();
+      expect(previewBody.get("cover_url")).toBe("http://example.com");
+      expect(previewBody.get("title_position")).toBe("none");
     });
 
     it("clears the preview when the inputs are emptied", async () => {
@@ -335,11 +318,9 @@ describe("BookCoverEditor", () => {
         ).not.toBeInTheDocument()
       );
       // No preview request was posted, since there was nothing to preview.
-      expect(
-        fetchSpy.mock.calls.some(([u]) =>
-          String(u).includes("preview_book_cover")
-        )
-      ).toBe(false);
+      expect(requests.some((r) => r.url.includes("preview_book_cover"))).toBe(
+        false
+      );
     });
 
     it("saves the cover with the entered values", async () => {
@@ -375,19 +356,20 @@ describe("BookCoverEditor", () => {
 
       // The edited cover is posted to the exact change-cover link with the form
       // values, and on success the catalog is refreshed.
-      const editCall = fetchSpy.mock.calls.find(
-        ([u]) => String(u) === bookData.changeCoverLink.href
+      await waitFor(() => expect(refreshCatalog).toHaveBeenCalledTimes(1));
+
+      const editRequest = requests.find(
+        (r) => new URL(r.url).pathname === bookData.changeCoverLink.href
       );
-      expect(editCall).toBeTruthy();
-      expect(editCall[1].method).toBe("POST");
-      expect(editCall[1].body.get("cover_url")).toBe("http://example.com");
-      expect(editCall[1].body.get("title_position")).toBe("center");
-      expect(editCall[1].body.get("rights_status")).toBe(
+      expect(editRequest).toBeTruthy();
+      expect(editRequest.method).toBe("POST");
+      const editBody = await editRequest.formData();
+      expect(editBody.get("cover_url")).toBe("http://example.com");
+      expect(editBody.get("title_position")).toBe("center");
+      expect(editBody.get("rights_status")).toBe(
         "http://creativecommons.org/licenses/by/4.0/"
       );
-      expect(editCall[1].body.get("rights_explanation")).toBe("explanation");
-
-      await waitFor(() => expect(refreshCatalog).toHaveBeenCalledTimes(1));
+      expect(editBody.get("rights_explanation")).toBe("explanation");
     });
   });
 });

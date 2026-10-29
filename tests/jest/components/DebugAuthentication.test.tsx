@@ -1,6 +1,6 @@
 import * as React from "react";
-import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import { QueryClient } from "@tanstack/react-query";
 import { renderWithProviders } from "../testUtils/withProviders";
 import DebugAuthentication from "../../../src/components/DebugAuthentication";
@@ -69,7 +69,7 @@ describe("DebugAuthentication", () => {
     },
   });
 
-  const server = setupServer(
+  const { server } = setupMswServer(
     http.get(AUTH_METHODS_PATH, () =>
       HttpResponse.json(MOCK_AUTH_METHODS, { status: 200 })
     ),
@@ -78,12 +78,9 @@ describe("DebugAuthentication", () => {
     )
   );
 
-  beforeAll(() => server.listen());
   afterEach(() => {
-    server.resetHandlers();
     queryClient.clear();
   });
-  afterAll(() => server.close());
 
   const renderComponent = () => {
     return renderWithProviders(

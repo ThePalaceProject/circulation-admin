@@ -1,8 +1,8 @@
 import * as React from "react";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import CustomLists, {
   CustomLists as UnconnectedCustomLists,
 } from "../../../src/components/CustomLists";
@@ -31,22 +31,13 @@ describe("CustomLists", () => {
   // provided by JSDOM.
   Element.prototype.scrollTo = () => {};
 
-  const server = setupServer(
+  const { server } = setupMswServer(
     http.get("*/search", () => HttpResponse.xml("<feed />")),
     http.get("*", () => HttpResponse.json({}))
   );
 
-  beforeAll(() => {
-    server.listen();
-  });
-
   afterEach(() => {
-    server.resetHandlers();
     jest.restoreAllMocks();
-  });
-
-  afterAll(() => {
-    server.close();
   });
 
   it("adds filters when new filter values are entered", async () => {
