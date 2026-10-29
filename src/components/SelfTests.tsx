@@ -30,10 +30,7 @@ export interface SelfTestsOwnProps {
 }
 
 export interface SelfTestsProps
-  extends React.Props<SelfTestsProps>,
-    SelfTestsStateProps,
-    SelfTestsDispatchProps,
-    SelfTestsOwnProps {}
+  extends SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
 
 export interface SelfTestsState {
   runTests: boolean;

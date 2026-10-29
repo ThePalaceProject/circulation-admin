@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react";
 import { componentWithProviders } from "../testUtils/withProviders";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import {

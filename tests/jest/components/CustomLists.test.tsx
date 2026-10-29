@@ -40,6 +40,11 @@ describe("CustomLists", () => {
     server.listen();
   });
 
+  afterEach(() => {
+    server.resetHandlers();
+    jest.restoreAllMocks();
+  });
+
   afterAll(() => {
     server.close();
   });
@@ -216,6 +221,59 @@ describe("CustomLists", () => {
         },
       });
     });
+  });
+
+  it("warns which lanes will be deleted, using lanes fetched from the server", async () => {
+    // Lanes are fetched only when a delete starts. The warning must use them
+    // even before the `lanes` prop is updated.
+    server.use(
+      http.get("*/testlib/admin/custom_lists", () =>
+        HttpResponse.json({
+          custom_lists: [
+            { id: 1, name: "a list", entry_count: 0, is_owner: true },
+            { id: 2, name: "z list", entry_count: 1, is_owner: true },
+          ],
+        })
+      ),
+      http.get("*/testlib/admin/lanes", () =>
+        HttpResponse.json({
+          lanes: [
+            {
+              id: 1,
+              display_name: "lane 1",
+              visible: true,
+              count: 1,
+              sublanes: [],
+              custom_list_ids: [2],
+              inherit_parent_restrictions: false,
+            },
+          ],
+        })
+      )
+    );
+    const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+    // On load, the component navigates to the first list's edit page.
+    jest.spyOn(navigate, "navigateTo").mockImplementation(() => undefined);
+    const user = userEvent.setup();
+
+    renderWithContext(
+      <CustomLists csrfToken="" library="testlib" store={buildStore()} />,
+      {
+        csrfToken: "",
+        featureFlags: defaultFeatureFlags,
+        roles: [{ role: "manager", library: "testlib" }],
+      }
+    );
+
+    const listItem = (await screen.findByText("z list")).closest("li");
+    await user.click(within(listItem).getByRole("button", { name: /Delete/ }));
+
+    await waitFor(() => expect(confirmSpy).toHaveBeenCalledTimes(1));
+    expect(confirmSpy).toHaveBeenCalledWith(
+      'Delete list "z list"? ' +
+        "Deleting this list will delete the following lanes:\n" +
+        "\nLane name: lane 1"
+    );
   });
 
   // These render the unconnected component with explicit props, drive the real
@@ -444,7 +502,7 @@ describe("CustomLists", () => {
       loadMoreEntries = jest.fn();
       fetchCollections = jest.fn();
       fetchLibraries = jest.fn();
-      fetchLanes = jest.fn().mockResolvedValue(undefined);
+      fetchLanes = jest.fn().mockResolvedValue({ lanes: [] });
       fetchLanguages = jest.fn();
 
       navigateSpy = jest

@@ -1,6 +1,5 @@
 import * as React from "react";
-import { act, renderHook } from "@testing-library/react-hooks";
-import { within } from "@testing-library/react";
+import { act, renderHook, waitFor, within } from "@testing-library/react";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -84,11 +83,11 @@ describe("InventoryReportRequestModal", () => {
         const show = true;
 
         mock_info_api.mockResolvedValue(INFO_SUCCESS_SOME_COLLECTIONS);
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus === "idle");
+        await waitFor(() => expect(result.current.fetchStatus).toBe("idle"));
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).toHaveBeenCalledWith(API_ENDPOINT_PARAMS);
@@ -103,11 +102,11 @@ describe("InventoryReportRequestModal", () => {
         const show = false;
 
         mock_info_api.mockResolvedValue(INFO_SUCCESS_SOME_COLLECTIONS);
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus === "idle");
+        await waitFor(() => expect(result.current.fetchStatus).toBe("idle"));
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).not.toHaveBeenCalled();
@@ -123,11 +122,11 @@ describe("InventoryReportRequestModal", () => {
         mock_info_api.mockImplementation(() => {
           throw new Error("an error occurred");
         });
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus === "idle");
+        await waitFor(() => expect(result.current.fetchStatus).toBe("idle"));
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).toHaveBeenCalledWith(API_ENDPOINT_PARAMS);
@@ -153,7 +152,7 @@ describe("InventoryReportRequestModal", () => {
 
       it("handles api success", async () => {
         mock_generate_api.mockResolvedValue(GENERATE_REPORT_SUCCESS);
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => {
             const reportGenerator = useGenerateReport({
               ...API_ENDPOINT_PARAMS,
@@ -173,10 +172,11 @@ describe("InventoryReportRequestModal", () => {
         expect(setShowConfirmationModal).not.toHaveBeenCalled();
 
         act(() => result.current.reportGenerator.mutate());
-        await waitFor(
-          () =>
+        await waitFor(() =>
+          expect(
             result.current.reportGenerator.isSuccess ||
-            result.current.reportGenerator.isError
+              result.current.reportGenerator.isError
+          ).toBe(true)
         );
         const { isSuccess, isError, error } = result.current.reportGenerator;
 
@@ -196,7 +196,7 @@ describe("InventoryReportRequestModal", () => {
         mock_generate_api.mockImplementation(() => {
           throw new Error("an error occurred");
         });
-        const { result, waitFor } = renderHook(
+        const { result } = renderHook(
           () => {
             const reportGenerator = useGenerateReport({
               ...API_ENDPOINT_PARAMS,
@@ -216,10 +216,11 @@ describe("InventoryReportRequestModal", () => {
         expect(setShowConfirmationModal).not.toHaveBeenCalled();
 
         act(() => result.current.reportGenerator.mutate());
-        await waitFor(
-          () =>
+        await waitFor(() =>
+          expect(
             result.current.reportGenerator.isSuccess ||
-            result.current.reportGenerator.isError
+              result.current.reportGenerator.isError
+          ).toBe(true)
         );
         const { isSuccess, isError, error } = result.current.reportGenerator;
 

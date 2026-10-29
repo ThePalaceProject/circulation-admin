@@ -3,6 +3,7 @@ import { Button } from "library-simplified-reusable-components";
 import TrashIcon from "./icons/TrashIcon";
 
 export interface WithRemoveButtonProps {
+  children?: React.ReactNode;
   disabled: boolean;
   onRemove: () => void;
   confirmRemoval?: () => boolean;

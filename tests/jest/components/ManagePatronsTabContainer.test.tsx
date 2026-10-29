@@ -25,7 +25,10 @@ import ManagePatronsTabContainer from "../../../src/components/ManagePatronsTabC
 // ManagePatronsTabContainer reads `admin`, `router`, and `pathFor` from the legacy
 // React context the app supplies in production. Wrap it in a small provider that
 // hands it those.
-class LegacyContextProvider extends React.Component<{ context: any }> {
+class LegacyContextProvider extends React.Component<{
+  context: any;
+  children: React.ReactNode;
+}> {
   static childContextTypes = {
     router: PropTypes.object,
     pathFor: PropTypes.func,

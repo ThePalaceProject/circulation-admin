@@ -7,8 +7,7 @@ import Footer from "./Footer";
 import title from "../utils/title";
 import QuicksightDashboard from "./QuicksightDashboard";
 
-export interface QuicksightDashboardPageProps
-  extends React.Props<QuicksightDashboardPageProps> {
+export interface QuicksightDashboardPageProps {
   params: {
     library?: string;
   };
@@ -19,9 +18,7 @@ export interface QuicksightDashboardPageContext {
 }
 
 /** Page holds quicksight dashboards. */
-export default class QuicksightDashboardPage extends React.Component<
-  QuicksightDashboardPageProps
-> {
+export default class QuicksightDashboardPage extends React.Component<QuicksightDashboardPageProps> {
   context: QuicksightDashboardPageContext;
 
   static contextTypes: React.ValidationMap<QuicksightDashboardPageContext> = {

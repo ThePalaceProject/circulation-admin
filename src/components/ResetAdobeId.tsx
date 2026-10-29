@@ -27,7 +27,7 @@ export interface ResetAdobeIdOwnProps {
 }
 
 export interface ResetAdobeIdProps
-  extends React.Props<ResetAdobeIdProps>,
+  extends
     ResetAdobeIdStateProps,
     ResetAdobeIdDispatchProps,
     ResetAdobeIdOwnProps {}

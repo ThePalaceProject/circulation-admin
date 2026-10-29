@@ -6,7 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
 
-export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {
+export interface ManagePatronsProps {
   params: {
     library?: string;
     tab: string;

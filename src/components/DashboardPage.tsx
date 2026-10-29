@@ -8,7 +8,7 @@ import Stats from "./Stats";
 import title from "../utils/title";
 import CirculationEventsDownload from "./CirculationEventsDownload";
 
-export interface DashboardPageProps extends React.Props<DashboardPageProps> {
+export interface DashboardPageProps {
   params: {
     library?: string;
   };

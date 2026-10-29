@@ -201,6 +201,10 @@ describe("LaneEditor — name, list editing, and actions", () => {
 
   const resolved = () => jest.fn().mockResolvedValue(undefined);
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it("shows the lane name, id, and visible status", () => {
     const lane = createLaneData("Custom Lane", false);
     render(
@@ -448,27 +452,70 @@ describe("LaneEditor — name, list editing, and actions", () => {
     const navSpy = jest
       .spyOn(navigate, "navigateTo")
       .mockImplementation(() => undefined);
-    render(
-      <LaneEditor
-        library="library"
-        customLists={twoLists}
-        responseBody="5"
-        editLane={editLane}
-        deleteLane={resolved()}
-        findParentOfLane={() => null}
-        toggleLaneVisibility={resolved()}
-      />
-    );
+    const editorProps = {
+      library: "library",
+      customLists: twoLists,
+      editLane,
+      deleteLane: resolved(),
+      findParentOfLane: () => null,
+      toggleLaneVisibility: resolved(),
+    };
+    const { rerender } = render(<LaneEditor {...editorProps} />);
 
     // A new lane's name field starts in edit mode.
     await user.type(screen.getByRole("textbox"), "new lane name");
     await user.click(screen.getByRole("button", { name: /save lane/i }));
+    await waitFor(() => expect(editLane).toHaveBeenCalledTimes(1));
+    expect(navSpy).not.toHaveBeenCalled();
+
+    // The new lane's id arrives as the response body after the save.
+    rerender(<LaneEditor {...editorProps} responseBody="5" />);
 
     await waitFor(() =>
       expect(navSpy).toHaveBeenCalledWith("/admin/web/lanes/library/edit/5")
     );
+  });
 
-    navSpy.mockRestore();
+  it("navigates only after this editor saves a new lane", async () => {
+    const user = userEvent.setup();
+    const editLane = resolved();
+    const navSpy = jest
+      .spyOn(navigate, "navigateTo")
+      .mockImplementation(() => undefined);
+    const editorProps = {
+      library: "library",
+      customLists: twoLists,
+      editLane,
+      deleteLane: resolved(),
+      findParentOfLane: () => null,
+      toggleLaneVisibility: resolved(),
+    };
+    const lane = createLaneData("Custom Lane", false);
+    const { rerender } = render(
+      <LaneEditor {...editorProps} editOrCreate="edit" lane={lane} />
+    );
+
+    // Save an existing lane. In the app, the server answers with its id ("1").
+    await user.click(screen.getByRole("button", { name: /save lane/i }));
+    await waitFor(() => expect(editLane).toHaveBeenCalledTimes(1));
+
+    // A "create" link reuses this editor and passes it the stored id.
+    rerender(
+      <LaneEditor {...editorProps} editOrCreate="create" responseBody="1" />
+    );
+    expect(navSpy).not.toHaveBeenCalled();
+
+    // Saving a new lane from the reused editor still goes to its edit page.
+    await user.click(screen.getByRole("button", { name: /save lane/i }));
+    await waitFor(() => expect(editLane).toHaveBeenCalledTimes(2));
+    rerender(
+      <LaneEditor {...editorProps} editOrCreate="create" responseBody="6" />
+    );
+
+    await waitFor(() =>
+      expect(navSpy).toHaveBeenCalledWith("/admin/web/lanes/library/edit/6")
+    );
+    expect(navSpy).toHaveBeenCalledTimes(1);
   });
 
   it("cancels changes, resetting the form", async () => {
