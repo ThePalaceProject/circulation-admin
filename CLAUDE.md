@@ -65,7 +65,7 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`.
+Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`. The `tests/jest/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
 
 Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
 
@@ -73,7 +73,7 @@ Helpers in `tests/jest/testUtils/`:
 
 - `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store.
 - `renderWithContext.tsx` — lighter: app Context only.
-- `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled.
+- `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Jest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
 - `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements. The shim returns a real `FormData`, so MSW can read the submitted fields.
 
 **Writing tests — the traps that actually bite:**

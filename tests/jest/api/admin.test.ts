@@ -19,8 +19,8 @@ const testEndpoints = ({
 }) => {
   describe(title, () => {
     const { requests } = setupMswServer(
-      http.get("*", () => HttpResponse.json(sampleInfoResponseData)),
-      http.post("*", () =>
+      http.get(expectedUrl, () => HttpResponse.json(sampleInfoResponseData)),
+      http.post(expectedUrl, () =>
         HttpResponse.json(sampleGenerateResponseData, { status: 202 })
       )
     );

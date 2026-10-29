@@ -27,20 +27,36 @@ export function setupMswServer(...handlers: RequestHandler[]): MswServer {
   server.events.on("request:start", ({ request }) => {
     requests.push(request.clone());
   });
-  beforeAll(() =>
+  let mswFetch: typeof fetch;
+  beforeAll(() => {
     server.listen({
       onUnhandledRequest(request, print) {
         unhandled.push(`${request.method} ${request.url}`);
         print.error();
       },
-    })
-  );
+    });
+    // A browser resolves `fetch(null)` against the page URL, like the relative
+    // path "null" (in tests, `GET http://localhost/null`), and it treats a null
+    // init as no init. MSW 2.7 throws a TypeError on either null before it
+    // looks for a handler (it reads `.headers` on each), so the check above
+    // would never see the request. Convert both, as a browser does. The
+    // `Request` polyfill in jest.polyfills.js converts any other input that is
+    // not a `Request`.
+    mswFetch = globalThis.fetch;
+    globalThis.fetch = (input, init) =>
+      mswFetch(
+        input === null ? "null" : input,
+        init === null ? undefined : init
+      );
+  });
   const failOnUnhandled = () => {
     const missed = unhandled.splice(0);
     if (missed.length) {
-      // A request that an earlier test sent late (after its own `afterEach`)
-      // also lands here, so check the test before this one too.
-      throw new Error(`Unhandled requests: ${missed.join(", ")}`);
+      // Jest reports this against the current test, so say that the request
+      // may have come from an earlier one.
+      throw new Error(
+        `Unhandled requests (from this test, or sent late by an earlier one): ${missed.join(", ")}`
+      );
     }
   };
   afterEach(() => {
@@ -49,6 +65,7 @@ export function setupMswServer(...handlers: RequestHandler[]): MswServer {
     failOnUnhandled();
   });
   afterAll(() => {
+    globalThis.fetch = mswFetch;
     server.close();
     failOnUnhandled();
   });

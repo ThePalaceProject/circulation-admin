@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
+import { initialState as bookEditorInitialState } from "../../../src/features/book/bookEditorSlice";
 // Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
 // are exercised: `preview`, `rightsStatuses`, `isFetching`, the fetch errors, and
 // `bookAdminUrl` are all fed in through the Redux store, while `book`, `bookUrl`,
@@ -45,11 +46,20 @@ const bookData: BookData = {
   },
 };
 
+// The admin URL of the book being edited. The component reads it from the
+// store to build the preview URL and to fetch the book again after a save.
+const bookAdminUrl = "/library/admin/works/1234";
+
 describe("BookCoverEditor", () => {
-  // The connected component fetches the rights statuses on mount and posts the
-  // cover preview / edited cover.
+  // The connected component fetches the rights statuses on mount, posts the
+  // cover preview / edited cover, and fetches the book again after a save.
   const { requests } = setupMswServer(
     http.get("*/admin/rights_status", () => HttpResponse.json(rightsStatuses)),
+    http.get(`*${bookAdminUrl}`, () =>
+      HttpResponse.xml(
+        '<entry xmlns="http://www.w3.org/2005/Atom"><id>id</id><title>title</title></entry>'
+      )
+    ),
     http.post("*/preview_book_cover", () => HttpResponse.text("image data")),
     http.post("*/change_cover", () => HttpResponse.text(""))
   );
@@ -60,7 +70,9 @@ describe("BookCoverEditor", () => {
   const renderEditor = (
     preSeed?: (store: ReturnType<typeof buildStore>) => void
   ) => {
-    const store = buildStore();
+    const store = buildStore({
+      bookEditor: { ...bookEditorInitialState, url: bookAdminUrl },
+    } as any);
     preSeed?.(store);
     const refreshCatalog = jest.fn().mockResolvedValue(undefined);
     const utils = renderWithProviders(
@@ -288,9 +300,10 @@ describe("BookCoverEditor", () => {
       const preview = await screen.findByAltText("Preview of new cover");
       expect(preview).toHaveAttribute("src", "image data");
 
-      // The preview was posted with the entered cover URL and title position.
-      const previewRequest = requests.find((r) =>
-        r.url.includes("preview_book_cover")
+      // The preview was posted to the book's preview URL with the entered
+      // cover URL and title position.
+      const previewRequest = requests.find(
+        (r) => new URL(r.url).pathname === `${bookAdminUrl}/preview_book_cover`
       );
       expect(previewRequest).toBeTruthy();
       expect(previewRequest.method).toBe("POST");
@@ -355,8 +368,17 @@ describe("BookCoverEditor", () => {
       await user.click(screen.getByRole("button", { name: "Save this cover" }));
 
       // The edited cover is posted to the exact change-cover link with the form
-      // values, and on success the catalog is refreshed.
+      // values. On success, the book is fetched again and the catalog is
+      // refreshed.
       await waitFor(() => expect(refreshCatalog).toHaveBeenCalledTimes(1));
+      await waitFor(() =>
+        expect(
+          requests.some(
+            (r) =>
+              r.method === "GET" && new URL(r.url).pathname === bookAdminUrl
+          )
+        ).toBe(true)
+      );
 
       const editRequest = requests.find(
         (r) => new URL(r.url).pathname === bookData.changeCoverLink.href
