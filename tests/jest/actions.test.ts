@@ -1,6 +1,7 @@
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
 
 import ActionCreator from "../../src/actions";
+import { setupMswServer } from "./testUtils/mswServer";
 
 class MockDataFetcher {
   resolve: boolean = true;
@@ -37,9 +38,9 @@ const fetcher = new MockDataFetcher() as any;
 const actions = new ActionCreator(fetcher, "token");
 
 describe("actions", () => {
-  afterEach(() => {
-    fetchMock.restore();
-  });
+  // Tests check each header the action sets, not the whole header set, because
+  // `fetch` adds headers of its own (such as `Content-Type` for form data).
+  const { server, requests } = setupMswServer();
 
   describe("postForm", () => {
     const type = "TEST";
@@ -50,10 +51,9 @@ describe("actions", () => {
     it("dispatches request, success, and load", async () => {
       const dispatch = jest.fn();
       const responseText = "response";
-      fetchMock.post(url, responseText);
+      server.use(http.post(url, () => HttpResponse.text(responseText)));
 
       await actions.postForm(type, url, formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -66,23 +66,20 @@ describe("actions", () => {
         `${type}_${ActionCreator.LOAD}`
       );
       expect(dispatch.mock.calls[2][0].data).toBe(responseText);
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(url);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      const expectedHeaders = new Headers();
-      expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchArgs[0][1].headers).toStrictEqual(expectedHeaders);
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(url);
+      expect(requests[0].method).toBe("POST");
+      expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+      expect((await requests[0].formData()).get("test")).toBe("test");
     });
 
     it("postForm with JSON response dispatches request, success, and load", async () => {
       const dispatch = jest.fn();
       // prettier-ignore
       const responseText = "{\"id\": \"test\", \"name\": \"test\"}";
-      fetchMock.mock(url, responseText);
+      server.use(http.post(url, () => HttpResponse.text(responseText)));
 
       await actions.postForm(type, url, formData, "POST", "", "JSON")(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -94,39 +91,38 @@ describe("actions", () => {
       expect(dispatch.mock.calls[2][0].type).toBe(
         `${type}_${ActionCreator.LOAD}`
       );
-      expect(dispatch.mock.calls[2][0].data).toStrictEqual(
-        JSON.parse(responseText)
-      );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(url);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      const expectedHeaders = new Headers();
-      expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchArgs[0][1].headers).toStrictEqual(expectedHeaders);
-      expect(fetchArgs[0][1].body).toBe(formData);
+      // Node's fetch parses the body into an object from another realm, so
+      // toStrictEqual would fail on the prototype.
+      expect(dispatch.mock.calls[2][0].data).toEqual(JSON.parse(responseText));
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(url);
+      expect(requests[0].method).toBe("POST");
+      expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+      expect((await requests[0].formData()).get("test")).toBe("test");
     });
 
     it("dispatches a DELETE request", async () => {
       const dispatch = jest.fn();
       const responseText = "response";
-      fetchMock.mock(url, responseText);
+      server.use(http.delete(url, () => HttpResponse.text(responseText)));
 
       await actions.postForm(type, url, formData, "DELETE")(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(url);
-      expect(fetchArgs[0][1].method).toBe("DELETE");
-      const expectedHeaders = new Headers();
-      expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchArgs[0][1].headers).toStrictEqual(expectedHeaders);
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(url);
+      expect(requests[0].method).toBe("DELETE");
+      expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+      expect((await requests[0].formData()).get("test")).toBe("test");
     });
 
     it("dispatches failure on bad response", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, { status: 500, body: { detail: "problem detail" } });
+      server.use(
+        http.post(url, () =>
+          HttpResponse.json({ detail: "problem detail" }, { status: 500 })
+        )
+      );
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -140,7 +136,7 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(
           `${type}_${ActionCreator.FAILURE}`
         );
-        expect(fetchMock.called()).toBe(true);
+        expect(requests).toHaveLength(1);
         expect(err).toStrictEqual({
           status: 500,
           response: "problem detail",
@@ -151,7 +147,9 @@ describe("actions", () => {
 
     it("dispatches failure on non-JSON response", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, { status: 500, body: "Not JSON" });
+      server.use(
+        http.post(url, () => HttpResponse.text("Not JSON", { status: 500 }))
+      );
 
       try {
         await actions.postForm(
@@ -171,7 +169,7 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(
           `${type}_${ActionCreator.FAILURE}`
         );
-        expect(fetchMock.called()).toBe(true);
+        expect(requests).toHaveLength(1);
         expect(err).toStrictEqual({
           status: 500,
           response: "Default error",
@@ -182,9 +180,8 @@ describe("actions", () => {
 
     it("dispatches failure on no response", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, () => {
-        throw { message: "test error" };
-      });
+      // fetch rejects a network error with a "Failed to fetch" TypeError.
+      server.use(http.post(url, () => HttpResponse.error()));
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -198,10 +195,10 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(
           `${type}_${ActionCreator.FAILURE}`
         );
-        expect(fetchMock.called()).toBe(true);
+        expect(requests).toHaveLength(1);
         expect(err).toStrictEqual({
           status: null,
-          response: "test error",
+          response: "Failed to fetch",
           url: url,
         });
       }
@@ -215,10 +212,9 @@ describe("actions", () => {
 
     it("dispatches request and success", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, 200);
+      server.use(http.post(url, () => new HttpResponse(null, { status: 200 })));
 
       await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(2);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -227,20 +223,22 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${type}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(url);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      const expectedHeaders = new Headers();
-      expectedHeaders.append("Accept", "application/json");
-      expectedHeaders.append("Content-Type", "application/json");
-      expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchArgs[0][1].headers).toStrictEqual(expectedHeaders);
-      expect(fetchArgs[0][1].body).toBe(JSON.stringify(jsonData));
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(url);
+      expect(requests[0].method).toBe("POST");
+      expect(requests[0].headers.get("Accept")).toBe("application/json");
+      expect(requests[0].headers.get("Content-Type")).toBe("application/json");
+      expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+      expect(await requests[0].text()).toBe(JSON.stringify(jsonData));
     });
 
     it("dispatches failure on bad response", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, { status: 500, body: { detail: "problem detail" } });
+      server.use(
+        http.post(url, () =>
+          HttpResponse.json({ detail: "problem detail" }, { status: 500 })
+        )
+      );
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -254,7 +252,7 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(
           `${type}_${ActionCreator.FAILURE}`
         );
-        expect(fetchMock.called()).toBe(true);
+        expect(requests).toHaveLength(1);
         expect(err).toStrictEqual({
           status: 500,
           response: "problem detail",
@@ -265,9 +263,8 @@ describe("actions", () => {
 
     it("dispatches failure on no response", async () => {
       const dispatch = jest.fn();
-      fetchMock.mock(url, () => {
-        throw { message: "test error" };
-      });
+      // fetch rejects a network error with a "Failed to fetch" TypeError.
+      server.use(http.post(url, () => HttpResponse.error()));
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -281,10 +278,10 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(
           `${type}_${ActionCreator.FAILURE}`
         );
-        expect(fetchMock.called()).toBe(true);
+        expect(requests).toHaveLength(1);
         expect(err).toStrictEqual({
           status: null,
-          response: "test error",
+          response: "Failed to fetch",
           url: url,
         });
       }
@@ -333,10 +330,14 @@ describe("actions", () => {
         type: "test type",
       };
 
-      fetchMock.mock(postComplaintUrl, 201);
+      server.use(
+        http.post(
+          postComplaintUrl,
+          () => new HttpResponse(null, { status: 201 })
+        )
+      );
 
       await actions.postComplaint(postComplaintUrl, data)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(2);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -345,10 +346,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         ActionCreator.POST_COMPLAINT_SUCCESS
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(postComplaintUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(JSON.stringify(data));
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(postComplaintUrl);
+      expect(requests[0].method).toBe("POST");
+      expect(await requests[0].text()).toBe(JSON.stringify(data));
     });
   });
 
@@ -359,10 +360,13 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("type", "test type");
 
-      fetchMock.mock(resolveComplaintsUrl, "server response");
+      server.use(
+        http.post(resolveComplaintsUrl, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -371,10 +375,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         ActionCreator.RESOLVE_COMPLAINTS_SUCCESS
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(resolveComplaintsUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(resolveComplaintsUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("type")).toBe("test type");
     });
   });
 
@@ -417,13 +421,16 @@ describe("actions", () => {
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
       newGenreTree.forEach((genre) => formData.append("genres", genre));
 
-      fetchMock.mock(editClassificationsUrl, "server response");
+      server.use(
+        http.post(editClassificationsUrl, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.editClassifications(
         editClassificationsUrl,
         formData
       )(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -432,10 +439,12 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(editClassificationsUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe(editClassificationsUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).getAll("genres")).toEqual(
+        newGenreTree
+      );
     });
   });
 
@@ -539,10 +548,11 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
-      fetchMock.mock(editLibraryUrl, "server response");
+      server.use(
+        http.post(editLibraryUrl, () => HttpResponse.text("server response"))
+      );
 
       await actions.editLibrary(formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -551,10 +561,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(editLibraryUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(editLibraryUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("name")).toBe("new name");
     });
   });
 
@@ -594,10 +604,11 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
-      fetchMock.mock(editCollectionUrl, "server response");
+      server.use(
+        http.post(editCollectionUrl, () => HttpResponse.text("server response"))
+      );
 
       await actions.editCollection(formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -606,10 +617,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(editCollectionUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(editCollectionUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("name")).toBe("new name");
     });
   });
 
@@ -618,10 +629,13 @@ describe("actions", () => {
       const importCollectionUrl = "/admin/collection/123/import";
       const dispatch = jest.fn();
 
-      fetchMock.mock(importCollectionUrl, "server response");
+      server.use(
+        http.post(importCollectionUrl, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.importCollection("123", false)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -633,11 +647,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[2][0].type).toBe(
         `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.LOAD}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(importCollectionUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      // `body` is typed as `BodyInit`; this request sends a FormData.
-      expect((fetchArgs[0][1].body as FormData).get("force")).toBe("false");
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(importCollectionUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("force")).toBe("false");
     });
   });
 
@@ -677,10 +690,13 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("email", "email");
 
-      fetchMock.mock(editIndividualAdminUrl, "server response");
+      server.use(
+        http.post(editIndividualAdminUrl, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.editIndividualAdmin(formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -689,10 +705,10 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(editIndividualAdminUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(editIndividualAdminUrl);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("email")).toBe("email");
     });
   });
 
@@ -734,10 +750,13 @@ describe("actions", () => {
       const collectionSelfTestURL = `${collectionUrl}/1`;
       const dispatch = jest.fn();
 
-      fetchMock.mock(collectionSelfTestURL, "server response");
+      server.use(
+        http.post(collectionSelfTestURL, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.runSelfTests(collectionSelfTestURL)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -746,9 +765,9 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(collectionSelfTestURL);
-      expect(fetchArgs[0][1].method).toBe("POST");
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(collectionSelfTestURL);
+      expect(requests[0].method).toBe("POST");
     });
   });
 
@@ -760,10 +779,13 @@ describe("actions", () => {
       // prettier-ignore
       const response = "{\"id\": \"test\", \"name\": \"test\"}";
 
-      fetchMock.mock("/nypl/admin/manage_patrons", response);
+      server.use(
+        http.post("/nypl/admin/manage_patrons", () =>
+          HttpResponse.text(response)
+        )
+      );
 
       await actions.patronLookup(formData, "nypl")(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -775,13 +797,15 @@ describe("actions", () => {
       expect(dispatch.mock.calls[2][0].type).toBe(
         `${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`
       );
-      expect(dispatch.mock.calls[2][0].data).toStrictEqual(
-        JSON.parse(response)
+      // Node's fetch parses the body into an object from another realm, so
+      // toStrictEqual would fail on the prototype.
+      expect(dispatch.mock.calls[2][0].data).toEqual(JSON.parse(response));
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(
+        "/nypl/admin/manage_patrons"
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe("/nypl/admin/manage_patrons");
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("test")).toBe("test");
     });
   });
 
@@ -790,13 +814,13 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       const dispatch = jest.fn();
 
-      fetchMock.mock(
-        "/nypl/admin/manage_patrons/reset_adobe_id",
-        "server response"
+      server.use(
+        http.post("/nypl/admin/manage_patrons/reset_adobe_id", () =>
+          HttpResponse.text("server response")
+        )
       );
 
       const data = await actions.resetAdobeId(formData, "nypl")(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -805,10 +829,15 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe("/nypl/admin/manage_patrons/reset_adobe_id");
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(
+        "/nypl/admin/manage_patrons/reset_adobe_id"
+      );
+      expect(requests[0].method).toBe("POST");
+      // The form has no fields, so check that the body was sent as a form.
+      expect(requests[0].headers.get("Content-Type")).toMatch(
+        /^multipart\/form-data;/
+      );
       expect(data.status).toBe(200);
     });
   });
@@ -909,10 +938,13 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("announcements", "[]");
 
-      fetchMock.mock(editSitewideAnnouncementsUrl, "server response");
+      server.use(
+        http.post(editSitewideAnnouncementsUrl, () =>
+          HttpResponse.text("server response")
+        )
+      );
 
       await actions.editSitewideAnnouncements(formData)(dispatch);
-      const fetchArgs = fetchMock.calls();
 
       expect(dispatch.mock.calls.length).toBe(3);
       expect(dispatch.mock.calls[0][0].type).toBe(
@@ -921,10 +953,12 @@ describe("actions", () => {
       expect(dispatch.mock.calls[1][0].type).toBe(
         `${ActionCreator.EDIT_SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.SUCCESS}`
       );
-      expect(fetchMock.called()).toBe(true);
-      expect(fetchArgs[0][0]).toBe(editSitewideAnnouncementsUrl);
-      expect(fetchArgs[0][1].method).toBe("POST");
-      expect(fetchArgs[0][1].body).toBe(formData);
+      expect(requests).toHaveLength(1);
+      expect(new URL(requests[0].url).pathname).toBe(
+        editSitewideAnnouncementsUrl
+      );
+      expect(requests[0].method).toBe("POST");
+      expect((await requests[0].formData()).get("announcements")).toBe("[]");
     });
   });
 

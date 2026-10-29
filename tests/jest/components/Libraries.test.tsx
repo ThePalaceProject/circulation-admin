@@ -4,29 +4,32 @@ import { screen } from "@testing-library/react";
 import Libraries from "../../../src/components/Libraries";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // The connected default export is what the app mounts, so render that rather
 // than the bare component: it is the only thing that exercises Libraries'
 // mapStateToProps/mapDispatchToProps.
 describe("Libraries - connected wiring", () => {
-  afterEach(() => jest.restoreAllMocks());
+  // The panel also fetches the language list on mount.
+  const { server } = setupMswServer(
+    http.get("*/admin/languages", () => HttpResponse.json({}))
+  );
 
   it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
-    jest.spyOn(globalThis, "fetch").mockImplementation(
-      async () =>
-        new Response(
-          JSON.stringify({
-            libraries: [
-              {
-                uuid: "uuid-nypl",
-                short_name: "nypl",
-                name: "New York Public Library",
-                settings: {},
-              },
-            ],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        )
+    server.use(
+      http.get("*/admin/libraries", () =>
+        HttpResponse.json({
+          libraries: [
+            {
+              uuid: "uuid-nypl",
+              short_name: "nypl",
+              name: "New York Public Library",
+              settings: {},
+            },
+          ],
+        })
+      )
     );
 
     renderWithProviders(<Libraries csrfToken="token" />, {
@@ -47,14 +50,12 @@ describe("Libraries - connected wiring", () => {
   });
 
   it("falls back to the uuid as the label for a library with no name and no short name", async () => {
-    jest.spyOn(globalThis, "fetch").mockImplementation(
-      async () =>
-        new Response(
-          JSON.stringify({
-            libraries: [{ uuid: "uuid-anon", settings: {} }],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        )
+    server.use(
+      http.get("*/admin/libraries", () =>
+        HttpResponse.json({
+          libraries: [{ uuid: "uuid-anon", settings: {} }],
+        })
+      )
     );
 
     renderWithProviders(<Libraries csrfToken="token" />, {

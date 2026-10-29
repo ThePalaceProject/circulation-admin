@@ -1,13 +1,14 @@
 import * as React from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PatronBlockingRulesEditor, {
   PatronBlockingRulesEditorHandle,
 } from "../../../src/components/PatronBlockingRulesEditor";
 import { PatronBlockingRule } from "../../../src/interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { setupMswServer } from "../testUtils/mswServer";
 
 /** Renders with a fresh QueryClient so useQuery hooks work in tests. */
 function renderEditor(element: React.ReactElement) {
@@ -28,24 +29,45 @@ const SAMPLE_FIELDS = {
   patron_name: "John Doe",
 };
 
-const SUCCESS_RESPONSE = {
-  status: 200,
-  body: { available_fields: SAMPLE_FIELDS },
-};
+const SUCCESS_HANDLER = http.post(`*${VALIDATE_URL}`, () =>
+  HttpResponse.json({ available_fields: SAMPLE_FIELDS })
+);
+
+/** A validation handler that rejects the rule with the given detail. */
+function failureHandler(detail: string) {
+  return http.post(`*${VALIDATE_URL}`, () =>
+    HttpResponse.json({ detail }, { status: 400 })
+  );
+}
 
 const existingRules: PatronBlockingRule[] = [
   { name: "Rule A", rule: "expr_a", message: "msg a" },
   { name: "Rule B", rule: "expr_b" },
 ];
 
+const { server, requests } = setupMswServer();
+
 /**
- * Both describe blocks share a beforeEach/afterEach that provides a default
- * successful validation response.  This ensures that any incidental blur events
- * fired by user interactions in non-blur-focused tests don't throw
- * "only absolute URLs are supported" errors from the fetch polyfill.
+ * The names of the rules sent to the validation endpoint so far. The mount
+ * prefetch sends a rule named "__prefetch__"; a blur sends the edited rule.
+ */
+function validatedRuleNames(): Promise<string[]> {
+  return Promise.all(
+    requests
+      .filter(
+        (r) => r.method === "POST" && new URL(r.url).pathname === VALIDATE_URL
+      )
+      .map(async (r) => (await r.clone().formData()).get("name") as string)
+  );
+}
+
+/**
+ * Most describe blocks share a beforeEach that provides a default successful
+ * validation response.  This ensures that any incidental blur events fired by
+ * user interactions in non-blur-focused tests get a response.
  *
- * Blur-specific tests that need a non-200 response call fetchMock.mockReset()
- * at the start and then set up their own route.
+ * Blur-specific tests that need a non-200 response add their own handler with
+ * server.use(), which takes precedence over the default.
  *
  * Note: in userEvent.type, curly braces are special key sequences.  Use {{
  * and }} to type literal { and } characters.
@@ -53,11 +75,7 @@ const existingRules: PatronBlockingRule[] = [
 
 describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-  });
-
-  afterEach(() => {
-    fetchMock.mockReset();
+    server.use(SUCCESS_HANDLER);
   });
 
   it("calls onValidationStateChange(true) when a rule is added because it is incomplete", async () => {
@@ -103,11 +121,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Bad expression" },
-    });
+    server.use(failureHandler("Bad expression"));
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -313,11 +327,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
 describe("PatronBlockingRulesEditor — on-blur server validation", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-  });
-
-  afterEach(() => {
-    fetchMock.mockReset();
+    server.use(SUCCESS_HANDLER);
   });
 
   it("calls the validation API when the user leaves the Rule Expression field", async () => {
@@ -335,21 +345,14 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     );
     await user.tab();
 
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        VALIDATE_URL,
-        expect.objectContaining({ method: "POST" })
-      )
+    await waitFor(async () =>
+      expect(await validatedRuleNames()).toContain("My Rule")
     );
   });
 
   it("shows a server error message inline after a failed validation", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Unknown placeholder: {x}" },
-    });
+    server.use(failureHandler("Unknown placeholder: {x}"));
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
@@ -365,11 +368,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 
   it("clears the server error immediately when the user edits the rule field", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Bad expression" },
-    });
+    server.use(failureHandler("Bad expression"));
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
@@ -391,7 +390,6 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 
   it("does not call the validation API when the rule field is empty on blur", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
@@ -403,19 +401,18 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     await user.click(screen.getByLabelText(/Rule Expression/i));
     await user.tab();
 
-    expect(fetchMock).not.toHaveBeenCalled();
+    // Only the mount prefetch reaches the server; the blur sends nothing.
+    const sentNames = await validatedRuleNames();
+    expect(sentNames.filter((name) => name !== "__prefetch__")).toEqual([]);
   });
 
   it("still calls the validation API when serviceId is undefined and shows the server error", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: {
-        detail:
-          "Patron auth service not found. Save the service before validating rules.",
-      },
-    });
+    server.use(
+      failureHandler(
+        "Patron auth service not found. Save the service before validating rules."
+      )
+    );
 
     // No serviceId — simulates a new service that has not yet been saved
     renderEditor(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
@@ -425,11 +422,8 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
     await user.tab();
 
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        VALIDATE_URL,
-        expect.objectContaining({ method: "POST" })
-      )
+    await waitFor(async () =>
+      expect(await validatedRuleNames()).toContain("My Rule")
     );
     expect(
       await screen.findByText(/Save the service before validating rules/i)
@@ -438,11 +432,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 
   it("preserves the server error on the second rule after the first rule is deleted", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Bad expression syntax" },
-    });
+    server.use(failureHandler("Bad expression syntax"));
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -484,11 +474,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 
   it("shows no error after a successful re-validation that follows a failure", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Syntax error in rule" },
-    });
+    server.use(failureHandler("Syntax error in rule"));
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
@@ -502,8 +488,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     await screen.findByText(/Syntax error in rule/i);
 
     // Switch mock to success, correct the rule, and blur again
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
 
     await user.clear(screen.getByLabelText(/Rule Expression/i));
     await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
@@ -518,13 +503,9 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 describe("PatronBlockingRulesEditor", () => {
   // Provide a default successful validation response so that tests which
   // incidentally trigger blur on the Rule Expression field (e.g. by typing in
-  // the Message textarea) don't produce "only absolute URLs" fetch errors.
+  // the Message textarea) get a response.
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-  });
-
-  afterEach(() => {
-    fetchMock.mockReset();
+    server.use(SUCCESS_HANDLER);
   });
 
   it("renders with no rules when no value provided", () => {
@@ -737,11 +718,7 @@ describe("PatronBlockingRulesEditor", () => {
 
 describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-  });
-
-  afterEach(() => {
-    fetchMock.mockReset();
+    server.use(SUCCESS_HANDLER);
   });
 
   it("returns all rules (stripped of _id) when every rule has name and expression", () => {
@@ -863,12 +840,8 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
 });
 
 describe("PatronBlockingRulesEditor — help modal and available fields prefetch", () => {
-  afterEach(() => {
-    fetchMock.mockReset();
-  });
-
   it("renders a Help button in the header", () => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
@@ -878,22 +851,19 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   });
 
   it("prefetches available fields on mount when serviceId is provided", async () => {
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
     // The prefetch call is fired on mount.
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        VALIDATE_URL,
-        expect.objectContaining({ method: "POST" })
-      )
+    await waitFor(async () =>
+      expect(await validatedRuleNames()).toContain("__prefetch__")
     );
   });
 
   it("opens the help modal when the Help button is clicked", async () => {
     const user = userEvent.setup();
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
@@ -907,17 +877,14 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
 
   it("shows available fields in the help modal after a successful prefetch", async () => {
     const user = userEvent.setup();
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
     // Wait for the prefetch to settle
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        VALIDATE_URL,
-        expect.objectContaining({ method: "POST" })
-      )
+    await waitFor(async () =>
+      expect(await validatedRuleNames()).toContain("__prefetch__")
     );
 
     await user.click(
@@ -951,10 +918,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
 
   it("shows an error message when the prefetch fails with a 400", async () => {
     const user = userEvent.setup();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Patron auth service not found." },
-    });
+    server.use(failureHandler("Patron auth service not found."));
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={99} csrfToken="tok" />
@@ -972,7 +936,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   it("updates available fields after a successful blur validation", async () => {
     const user = userEvent.setup();
     const updatedFields = { fines: "5.00", new_field: "hello" };
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
 
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
@@ -982,11 +946,11 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     await user.type(screen.getByLabelText(/Rule Name/i), "Test Rule");
 
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 200,
-      body: { available_fields: updatedFields },
-    });
+    server.use(
+      http.post(`*${VALIDATE_URL}`, () =>
+        HttpResponse.json({ available_fields: updatedFields })
+      )
+    );
 
     await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
     await user.tab();
@@ -1004,7 +968,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
 
   it("closes the help modal when the close button is clicked", async () => {
     const user = userEvent.setup();
-    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    server.use(SUCCESS_HANDLER);
     renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );

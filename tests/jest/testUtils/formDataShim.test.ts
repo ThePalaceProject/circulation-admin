@@ -107,29 +107,17 @@ describe("FormDataShim", () => {
     expect(new FormDataShim(form).getAll("langs")).toStrictEqual(["en", "de"]);
   });
 
-  it("supports the standard read/write surface", () => {
-    const data = new FormDataShim();
-    data.append("k", "1");
-    data.append("k", "2");
-    expect(data.getAll("k")).toStrictEqual(["1", "2"]);
-    expect(data.has("k")).toBe(true);
-    data.set("k", "3");
-    expect(data.getAll("k")).toStrictEqual(["3"]);
-    data.delete("k");
-    expect(data.has("k")).toBe(false);
-  });
-
-  it("set() replaces the first entry in place and drops later duplicates", () => {
-    const data = new FormDataShim();
-    data.append("a", "1");
-    data.append("b", "2");
-    data.append("a", "3");
-
-    data.set("a", "9");
-
-    expect(Array.from(data.entries())).toStrictEqual([
-      ["a", "9"],
-      ["b", "2"],
-    ]);
+  it("returns a real FormData that fetch sends as form data", () => {
+    const data = new FormDataShim(
+      formWith(`<input name="title" value="Dune" />`)
+    );
+    expect(data).toBeInstanceOf(FormData);
+    const request = new Request("http://localhost/", {
+      method: "POST",
+      body: data,
+    });
+    expect(request.headers.get("content-type")).toMatch(
+      /^multipart\/form-data/
+    );
   });
 });

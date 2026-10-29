@@ -7,6 +7,8 @@ import renderWithContext from "../testUtils/renderWithContext";
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("CatalogServices", () => {
   const data = {
@@ -67,21 +69,19 @@ describe("CatalogServices", () => {
 });
 
 describe("CatalogServices - connected wiring", () => {
-  afterEach(() => jest.restoreAllMocks());
+  setupMswServer(
+    http.get("*/admin/catalog_services", () =>
+      HttpResponse.json({
+        catalog_services: [
+          { id: 2, protocol: "test protocol", name: "Test Catalog" },
+        ],
+        protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+      })
+    ),
+    http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+  );
 
   it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
-    jest.spyOn(globalThis, "fetch").mockImplementation(
-      async () =>
-        new Response(
-          JSON.stringify({
-            catalog_services: [
-              { id: 2, protocol: "test protocol", name: "Test Catalog" },
-            ],
-            protocols: [{ name: "test protocol", label: "TP", settings: [] }],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
-        )
-    );
     const store = buildStore();
 
     renderWithProviders(<CatalogServicesConnected csrfToken="token" />, {

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { screen, waitForElementToBeRemoved } from "@testing-library/react";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
 
 import { renderWithProviders } from "../testUtils/withProviders";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // Header and Footer are page chrome; Header pulls in the react-router v3 context
 // that renderWithProviders does not supply. Mock them to markers.
@@ -26,19 +27,13 @@ jest.mock("react-router", () => ({
 import LanePage from "../../../src/components/LanePage";
 
 describe("LanePage", () => {
-  beforeAll(() => {
-    Object.assign(fetchMock.config, { fetch, Headers, Request, Response });
-  });
-
-  beforeEach(() => {
-    // Lanes fetches lanes and custom lists on mount; stub the network so no real
-    // request is made.
-    fetchMock.mock("*", { lanes: [], custom_lists: [] });
-  });
-
-  afterEach(() => {
-    fetchMock.restore();
-  });
+  // Lanes fetches lanes and custom lists on mount.
+  setupMswServer(
+    http.get("*/:library/admin/lanes", () => HttpResponse.json({ lanes: [] })),
+    http.get("*/:library/admin/custom_lists", () =>
+      HttpResponse.json({ custom_lists: [] })
+    )
+  );
 
   it("shows lanes with info from params", async () => {
     const params = {
