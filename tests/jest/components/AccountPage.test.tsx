@@ -4,8 +4,8 @@ import { screen } from "@testing-library/react";
 import { renderWithProviders } from "../testUtils/withProviders";
 
 // Header and Footer are page chrome with no behavior worth exercising here, and
-// Header pulls in the react-router v3 context that `renderWithProviders` does not
-// supply. Mock them to markers so the test stays about what AccountPage composes.
+// Header reads the legacy `router` context and fetches on mount. Mock them to
+// markers so the test stays about what AccountPage composes.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,
   default: () => <div data-testid="header" />,

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 
-// Header pulls in the react-router v3 context a plain render does not supply, and
-// both Header and Footer are page chrome with no behavior worth exercising here.
+// Header reads the legacy `router` context and fetches on mount, and both
+// Header and Footer are page chrome with no behavior worth exercising here.
 // Mock them to markers so the test stays about what WelcomePage composes.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,

@@ -3,20 +3,13 @@ import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import buildStore from "./store";
 import { Provider } from "react-redux";
-import { Router, Route, browserHistory } from "react-router";
+import { BrowserRouter } from "react-router";
 import ContextProvider from "./components/ContextProvider";
+import AppRoutes, { quicksightPagePath } from "./components/AppRoutes";
+import LegacyRouterBridge from "./components/LegacyRouterBridge";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import CatalogPage from "./components/CatalogPage";
-import CustomListPage from "./components/CustomListPage";
-import LanePage from "./components/LanePage";
-import DashboardPage from "./components/DashboardPage";
-import QuicksightDashboardPage from "./components/QuicksightDashboardPage";
-import ConfigPage from "./components/ConfigPage";
-import AccountPage from "./components/AccountPage";
 import SetupPage from "./components/SetupPage";
-import ManagePatrons from "./components/ManagePatrons";
-import TroubleshootingPage from "./components/TroubleshootingPage";
 import { ConfigurationSettings } from "./interfaces";
 import { defaultFeatureFlags } from "./utils/featureFlags";
 
@@ -29,14 +22,6 @@ class CirculationAdmin {
     div.className = "palace";
     document.getElementsByTagName("body")[0].appendChild(div);
     document.documentElement.lang = "en";
-
-    const catalogEditorPath =
-      "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
-    const customListPagePath =
-      "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
-    const lanePagePath =
-      "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
-    const quicksightPagePath = "/admin/web/quicksight";
 
     const queryClient = new QueryClient();
 
@@ -56,32 +41,14 @@ class CirculationAdmin {
       <Provider store={store}>
         <ContextProvider config={config} store={store}>
           <QueryClientProvider client={queryClient}>
-            <Router history={browserHistory}>
-              <Route path={catalogEditorPath} component={CatalogPage} />
-              <Route path={customListPagePath} component={CustomListPage} />
-              <Route path={lanePagePath} component={LanePage} />
-              <Route
-                path="/admin/web/dashboard(/:library)"
-                component={DashboardPage}
-              />
-              <Route
-                path={quicksightPagePath}
-                component={QuicksightDashboardPage}
-              />
-              <Route
-                path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
-                component={ConfigPage}
-              />
-              <Route path="/admin/web/account" component={AccountPage} />
-              <Route
-                path="/admin/web/patrons/:library(/:tab)"
-                component={ManagePatrons}
-              />
-              <Route
-                path="/admin/web/troubleshooting(/:tab)(/:subtab)"
-                component={TroubleshootingPage}
-              />
-            </Router>
+            {/* Update on navigation at once, as react-router v3 did, instead of
+                in a React transition. Our class components (with their
+                UNSAFE_componentWillReceiveProps) expect that. */}
+            <BrowserRouter useTransitions={false}>
+              <LegacyRouterBridge>
+                <AppRoutes />
+              </LegacyRouterBridge>
+            </BrowserRouter>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </ContextProvider>

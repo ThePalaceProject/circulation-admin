@@ -5,8 +5,8 @@ import { http, HttpResponse } from "msw";
 import { renderWithProviders } from "../testUtils/withProviders";
 import { setupMswServer } from "../testUtils/mswServer";
 
-// Header and Footer are page chrome; Header pulls in the react-router v3 context
-// that renderWithProviders does not supply. Mock them to markers.
+// Header and Footer are page chrome; Header reads the legacy `router` context
+// and fetches on mount. Mock them to markers.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,
   default: () => <div data-testid="header" />,
