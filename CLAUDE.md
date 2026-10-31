@@ -48,7 +48,10 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 ### Component Patterns
 
 - Mix of class components (legacy) and functional components (newer)
-- React Router v3 (`react-router@^3.2.0`) — uses older API style
+- React Router 7 (`react-router@^7`), declarative mode. React Router 8 needs React 19.
+  - `src/components/AppRoutes.tsx` maps each path to a page. It passes each page the `params` and `location` props that react-router v3 gave, so the pages did not change.
+  - `src/components/LegacyRouterBridge.tsx` provides a v3-style `router` object through legacy context. Some class components read it there and use `push` and `getCurrentLocation`. web-opds-client also reads it, because web-opds-client still uses its own copy of react-router v3, whose `Link` also needs `createHref` and `isActive`. Use the React Router hooks in new code.
+  - `<BrowserRouter useTransitions={false}>` updates on navigation at once, as v3 did, instead of in a React transition. Our class components, with their `UNSAFE_componentWillReceiveProps`, expect that.
 - React 18.3 (mounted with `createRoot`)
   - Hooks are available but many components predate hooks.
   - Updates are batched, so don't read Redux-derived props right after an awaited dispatch; use the thunk's resolved value or `componentDidUpdate`.
@@ -71,7 +74,7 @@ Tests are written with React Testing Library (+ `@testing-library/user-event`); 
 
 Helpers in `tests/jest/testUtils/`:
 
-- `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store.
+- `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store. Pass `route` (for example `{ route: "/admin/web" }`) to also render inside a React Router `MemoryRouter` with `LegacyRouterBridge`, so links and navigation work.
 - `renderWithContext.tsx` — lighter: app Context only.
 - `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Jest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
 - `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements. The shim returns a real `FormData`, so MSW can read the submitted fields.
@@ -81,7 +84,11 @@ Helpers in `tests/jest/testUtils/`:
 - Render the **connected default export**, not the unconnected named export, or `mapStateToProps`/`mapDispatchToProps` never run and their coverage is lost. Mocking a connected child in a parent's test drops that child's wiring the same way — cover the child in its own test.
 - Unhandled rejections fail the run: add an MSW handler for each request and `await` a `findBy*` so on-mount fetches settle before the test ends.
 - Query form fields by their accessible label, as a screen reader would: `getByRole("textbox", { name: /Label/i })` or `getByLabelText(/Label/i)`. The role follows what `EditableInput` renders: `elementType="select"` is a `combobox`, and `type="checkbox"` or `"radio"` are those roles. A passing query proves the field is labeled. `EditableInput` nests the input inside its `<label>`, so both work, but use a regex: a required field's label text includes "Required". An `EditableInput` with no `label` prop may still have an accessible name through `aria-label`. If it has no accessible name, treat that as an accessibility bug in the component, not something to work around in the test.
-- Mock react-router's `Link` as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
+- To test links, use a real router, not a mocked `Link`. Then assert the real `href`, click it, and check where it went. A mocked `Link` hides what React Router does with its target: for example, React Router 7 turns `to={null}` into a link to the current page, and a click on it throws. Pick the router this way:
+  - Use the `route` option of `renderWithProviders` for a component that reads the legacy `router` context: web-opds-client's `CatalogLink`, the tab containers, and `Header`. It includes `LegacyRouterBridge`. Without the bridge, `CatalogLink` throws `router.createHref is not a function`.
+  - Use a bare `MemoryRouter` wrapper only for a component that renders just React Router's own `Link`, such as `Lane`.
+  - A mock of `react-router` does not reach `CatalogLink`, because it uses web-opds-client's own react-router v3.
+- If you must mock `Link`, mock it as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
 
 **Environment:** `jest-fixed-jsdom` restores Node's `fetch`, `Request`, `Response`, `Headers`, and `FormData` globals so MSW can intercept them. `jest.polyfills.js` runs first via `setupFiles`. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
 

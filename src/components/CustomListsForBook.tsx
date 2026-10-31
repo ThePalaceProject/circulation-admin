@@ -80,10 +80,8 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps>
     return (
       <div key="list-creator-link">
         <Link
-          to={{
-            pathname: `/admin/web/lists/${this.props.library}/create`,
-            state: { bookTitle: this.props.book && this.props.book.title },
-          }}
+          to={`/admin/web/lists/${this.props.library}/create`}
+          state={{ bookTitle: this.props.book && this.props.book.title }}
         >
           Create a new list
         </Link>

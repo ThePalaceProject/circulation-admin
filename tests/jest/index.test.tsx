@@ -1,8 +1,10 @@
 import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
-import { Router } from "react-router";
+import { BrowserRouter } from "react-router";
 
 import SetupPage from "../../src/components/SetupPage";
+import AppRoutes from "../../src/components/AppRoutes";
+import LegacyRouterBridge from "../../src/components/LegacyRouterBridge";
 
 // index.tsx does `export = CirculationAdmin`.
 const CirculationAdmin = require("../../src/index");
@@ -11,10 +13,21 @@ const CirculationAdmin = require("../../src/index");
  *  analog of enzyme's `wrapper.find(Type)`, used where the tree is the app root
  *  and there is no rendered DOM to query against. */
 function containsType(node: any, type: React.ElementType): boolean {
-  if (!node || typeof node !== "object") return false;
-  if (Array.isArray(node)) return node.some((n) => containsType(n, type));
-  if (node.type === type) return true;
-  return containsType(node.props && node.props.children, type);
+  return findType(node, type) !== undefined;
+}
+
+/** Find the first element of the given type in a React element tree. */
+function findType(node: any, type: React.ElementType): any {
+  if (!node || typeof node !== "object") return undefined;
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const found = findType(child, type);
+      if (found) return found;
+    }
+    return undefined;
+  }
+  if (node.type === type) return node;
+  return findType(node.props && node.props.children, type);
 }
 
 describe("CirculationAdmin", () => {
@@ -49,6 +62,13 @@ describe("CirculationAdmin", () => {
     new CirculationAdmin({ csrfToken: "token" });
 
     expect(renderSpy).toHaveBeenCalledTimes(1);
-    expect(containsType(renderSpy.mock.calls[0][0], Router)).toBe(true);
+    const router = findType(renderSpy.mock.calls[0][0], BrowserRouter);
+    expect(router).toBeDefined();
+    // Navigation updates at once, as react-router v3 did, not in a transition.
+    expect(router.props.useTransitions).toBe(false);
+    // The legacy `router` context and the routes are inside the router.
+    const bridge = findType(router.props.children, LegacyRouterBridge);
+    expect(bridge).toBeDefined();
+    expect(containsType(bridge.props.children, AppRoutes)).toBe(true);
   });
 });
