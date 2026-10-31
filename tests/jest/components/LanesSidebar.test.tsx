@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, within } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LaneData } from "../../../src/interfaces";
@@ -177,34 +177,37 @@ describe("LanesSidebar", () => {
     const { container, rerenderWith } = renderSidebar();
     const header = container.querySelector<HTMLElement>(".lanes-sidebar > div");
 
-    let create = within(header).getAllByTestId("Link")[0];
-    expect(create).toHaveClass("create-lane");
+    let create = header.querySelector(".create-lane");
+    expect(create).toHaveAttribute("data-testid", "Link");
     expect(create).toHaveAttribute(
       "data-to",
       "/admin/web/lanes/library/create"
     );
 
-    // the link is disabled if there are lane order changes
+    // With lane order changes, it is a disabled button instead of a link.
     rerenderWith({ orderChanged: true });
-    create = within(header).getAllByTestId("Link")[0];
-    expect(create).toHaveClass("create-lane");
-    expect(create).not.toHaveAttribute("data-to");
+    create = header.querySelector(".create-lane");
+    expect(create.tagName).toBe("BUTTON");
+    expect(create).toBeDisabled();
     expect(create).toHaveClass("disabled");
+    expect(create).toHaveTextContent("Create Top-Level Lane");
   });
 
   it("renders reset link", () => {
     const { container, rerenderWith } = renderSidebar();
     const header = container.querySelector<HTMLElement>(".lanes-sidebar > div");
 
-    let reset = within(header).getAllByTestId("Link")[1];
-    expect(reset).toHaveClass("reset-lane");
+    let reset = header.querySelector(".reset-lane");
+    expect(reset).toHaveAttribute("data-testid", "Link");
     expect(reset).toHaveAttribute("data-to", "/admin/web/lanes/library/reset");
 
+    // With lane order changes, it is a disabled button instead of a link.
     rerenderWith({ orderChanged: true });
-    reset = within(header).getAllByTestId("Link")[1];
-    expect(reset).toHaveClass("reset-lane");
-    expect(reset).not.toHaveAttribute("data-to");
+    reset = header.querySelector(".reset-lane");
+    expect(reset.tagName).toBe("BUTTON");
+    expect(reset).toBeDisabled();
     expect(reset).toHaveClass("disabled");
+    expect(reset).toHaveTextContent("Reset All Lanes");
   });
 
   it("renders active lane", () => {
