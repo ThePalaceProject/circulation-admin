@@ -4,18 +4,11 @@ import userEvent from "@testing-library/user-event";
 
 import { LaneData } from "../../../src/interfaces";
 import LanesSidebar from "../../../src/components/LanesSidebar";
+import { MemoryRouter } from "react-router";
 
-// react-router's Link is rendered as a marker `<div data-testid="Link">` so we
-// can assert its target (`data-to`) and className without a Router in context.
-// Both LanesSidebar and its Lane children render Links.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  Link: (props: any) => (
-    <div data-testid="Link" data-to={props.to} className={props.className}>
-      {props.children}
-    </div>
-  ),
-}));
+// LanesSidebar and its Lane children render React Router links, so render
+// inside a router. Real links, not a mocked Link, show what React Router does
+// with each target.
 
 // react-beautiful-dnd is mocked so that (a) we can capture the drag handlers
 // LanesSidebar hands to DragDropContext and invoke them the way the library
@@ -116,7 +109,9 @@ const renderSidebar = (extra: any = {}) => {
     findParentOfLane,
     ...extra.props,
   };
-  const result = render(<LanesSidebar {...props} />);
+  const result = render(<LanesSidebar {...props} />, {
+    wrapper: MemoryRouter,
+  });
   const rerenderWith = (next: any = {}) =>
     result.rerender(<LanesSidebar {...props} {...next} />);
   return {
@@ -178,11 +173,8 @@ describe("LanesSidebar", () => {
     const header = container.querySelector<HTMLElement>(".lanes-sidebar > div");
 
     let create = header.querySelector(".create-lane");
-    expect(create).toHaveAttribute("data-testid", "Link");
-    expect(create).toHaveAttribute(
-      "data-to",
-      "/admin/web/lanes/library/create"
-    );
+    expect(create.tagName).toBe("A");
+    expect(create).toHaveAttribute("href", "/admin/web/lanes/library/create");
 
     // With lane order changes, it is a disabled button instead of a link.
     rerenderWith({ orderChanged: true });
@@ -198,8 +190,8 @@ describe("LanesSidebar", () => {
     const header = container.querySelector<HTMLElement>(".lanes-sidebar > div");
 
     let reset = header.querySelector(".reset-lane");
-    expect(reset).toHaveAttribute("data-testid", "Link");
-    expect(reset).toHaveAttribute("data-to", "/admin/web/lanes/library/reset");
+    expect(reset.tagName).toBe("A");
+    expect(reset).toHaveAttribute("href", "/admin/web/lanes/library/reset");
 
     // With lane order changes, it is a disabled button instead of a link.
     rerenderWith({ orderChanged: true });

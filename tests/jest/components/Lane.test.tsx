@@ -3,21 +3,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LaneData } from "../../../src/interfaces";
 import Lane from "../../../src/components/Lane";
+import { MemoryRouter } from "react-router";
 
-// Mock the Link component from React Router, so we can verify that it gets rendered with the
-// expected props. This serves as an example of how to do something analogous to Enzyme's shallow
-// rendering, when we don't want/need to render the whole component tree down to HTML elements to
-// test something. This technique is useful for testing components in isolation (unit testing),
-// instead of the integration testing that RTL focuses on.
-
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  Link: (props) => (
-    <div data-testid="Link" data-to={props.to} className={props.className}>
-      {props.children}
-    </div>
-  ),
-}));
+// Lane renders React Router links, so render it inside a router. Real links,
+// not a mocked Link, show what React Router does with each target.
+const wrapper = MemoryRouter;
 
 const renderLanes = jest.fn();
 const toggleLaneVisibility = jest.fn();
@@ -47,16 +37,16 @@ describe("Lane", () => {
         orderChanged={false}
         renderLanes={renderLanes}
         toggleLaneVisibility={toggleLaneVisibility}
-      />
+      />,
+      { wrapper }
     );
 
-    const editLink = screen.getAllByTestId("Link")[0];
+    const editLink = screen.getByRole("link", { name: /edit lane/i });
 
-    expect(editLink).toHaveTextContent(/edit/i);
-    // The full destination — a regression that dropped the lane id or used the
+    // The full destination: a regression that dropped the lane id or used the
     // wrong library segment would still contain "edit".
     expect(editLink).toHaveAttribute(
-      "data-to",
+      "href",
       "/admin/web/lanes/test_library/edit/1"
     );
   });
@@ -72,12 +62,13 @@ describe("Lane", () => {
         orderChanged={true}
         renderLanes={renderLanes}
         toggleLaneVisibility={toggleLaneVisibility}
-      />
+      />,
+      { wrapper }
     );
 
     // With pending order changes, the edit and create links are disabled
     // buttons, so neither a click nor the keyboard can follow them.
-    expect(screen.queryAllByTestId("Link")).toHaveLength(0);
+    expect(screen.queryAllByRole("link")).toHaveLength(0);
     for (const name of [/edit lane/i, /create sublane/i]) {
       const button = screen.getByRole("button", { name });
       expect(button).toBeDisabled();
@@ -110,7 +101,8 @@ describe("Lane - visibility toggle and expansion", () => {
         renderLanes={jest.fn()}
         toggleLaneVisibility={toggle}
         {...overrides}
-      />
+      />,
+      { wrapper }
     );
     return { ...result, toggle };
   };
@@ -181,22 +173,18 @@ describe("Lane - visibility toggle and expansion", () => {
     const user = userEvent.setup();
     renderLane();
     // A top-level lane starts expanded, so both links show.
-    expect(screen.getAllByTestId("Link").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByRole("link")).toHaveLength(2);
 
     await user.click(
       screen.getByRole("button", { name: /expand or collapse/i })
     );
-    expect(screen.queryAllByTestId("Link")).toHaveLength(0);
+    expect(screen.queryAllByRole("link")).toHaveLength(0);
   });
 
   it("renders a create-sublane link when expanded", () => {
     renderLane();
-    const createLink = screen
-      .getAllByTestId("Link")
-      .find((link) => link.getAttribute("data-to")?.includes("/create/"));
-    expect(createLink).toHaveAttribute(
-      "data-to",
-      "/admin/web/lanes/lib/create/1"
-    );
+    expect(
+      screen.getByRole("link", { name: /create sublane/i })
+    ).toHaveAttribute("href", "/admin/web/lanes/lib/create/1");
   });
 });

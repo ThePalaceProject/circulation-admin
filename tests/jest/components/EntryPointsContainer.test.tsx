@@ -15,18 +15,11 @@ jest.mock(
   })
 );
 
-// EntryPointsTabs renders CatalogLink -> React Router `Link`, which needs router
-// context renderWithProviders does not supply. Mock `Link` to a marker.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  Link: (props) => (
-    <div data-testid="Link" data-to={props.to}>
-      {props.children}
-    </div>
-  ),
-}));
-
 import EntryPointsContainer from "../../../src/components/EntryPointsContainer";
+
+// EntryPointsTabs renders web-opds-client CatalogLinks, which need the legacy
+// `router` context, so render inside a router.
+const route = "/admin/web";
 
 // Stands in for the OPDS Collection child whose `collection` prop the container
 // reads. It is never rendered by the container (only its props are inspected).
@@ -48,7 +41,8 @@ describe("EntryPointsContainer", () => {
     const { container } = renderWithProviders(
       <EntryPointsContainer>
         <CollectionChild collection={collection} />
-      </EntryPointsContainer>
+      </EntryPointsContainer>,
+      { route }
     );
 
     expect(
@@ -85,7 +79,8 @@ describe("EntryPointsContainer", () => {
     const { container } = renderWithProviders(
       <EntryPointsContainer>
         <CollectionChild collection={collection} />
-      </EntryPointsContainer>
+      </EntryPointsContainer>,
+      { route }
     );
 
     const list = container.querySelector("ul.nav-tabs");

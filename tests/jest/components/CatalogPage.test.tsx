@@ -40,8 +40,9 @@ jest.mock("@thepalaceproject/web-opds-client", () => {
 });
 
 // When there is no library, CatalogPage renders WelcomePage, which mounts the real
-// Header — that needs react-router v3 context and fetches on mount. Mock Header to a
-// marker so the WelcomePage path stays self-contained.
+// Header, which reads the legacy `router` context (see LegacyRouterBridge) and
+// fetches on mount. Mock Header to a marker so the WelcomePage path stays
+// self-contained.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,
   default: function Header() {
