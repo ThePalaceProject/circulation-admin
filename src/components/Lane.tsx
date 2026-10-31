@@ -131,9 +131,6 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
   }
 
   renderButton(editOrCreate: string): JSX.Element {
-    const link = this.props.orderChanged
-      ? null
-      : `/admin/web/lanes/${this.props.library}/${editOrCreate}/${this.props.lane.id}`;
     const content =
       editOrCreate === "create" ? (
         <span>
@@ -146,19 +143,25 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           <PencilIcon />
         </span>
       );
+    const className = `btn small right-align ${editOrCreate}-lane`;
 
-    const button = (
+    // While there are unsaved lane order changes, use a disabled button, not a
+    // link, so that neither a click nor the keyboard can follow it.
+    if (this.props.orderChanged) {
+      return (
+        <button type="button" className={`${className} disabled`} disabled>
+          {content}
+        </button>
+      );
+    }
+    return (
       <Link
-        className={
-          `btn small right-align ${editOrCreate}-lane ` +
-          (this.props.orderChanged ? "disabled" : "")
-        }
-        to={link}
+        className={className}
+        to={`/admin/web/lanes/${this.props.library}/${editOrCreate}/${this.props.lane.id}`}
       >
         {content}
       </Link>
     );
-    return button;
   }
 
   toggleExpanded(): void {

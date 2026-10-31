@@ -70,17 +70,26 @@ export default class LanesSidebar extends React.Component<
       reset: ["Reset All Lanes", <ResetIcon />, "inverted"],
     };
     const [text, icon] = content[createOrReset];
-    const disabled = this.props.orderChanged ? "disabled" : "";
     const style =
       createOrReset === "create" ? "left-align" : "right-align inverted";
+    const className = `btn ${style} ${createOrReset}-lane`;
+    const label = (
+      <span>
+        {text} {icon}
+      </span>
+    );
+    // While there are unsaved lane order changes, use a disabled button, not a
+    // link, so that neither a click nor the keyboard can follow it.
+    if (this.props.orderChanged) {
+      return (
+        <button type="button" className={`${className} disabled`} disabled>
+          {label}
+        </button>
+      );
+    }
     return (
-      <Link
-        className={`btn ${style} ${createOrReset}-lane ${disabled}`}
-        to={this.props.orderChanged ? null : linkBase + createOrReset}
-      >
-        <span>
-          {text} {icon}
-        </span>
+      <Link className={className} to={linkBase + createOrReset}>
+        {label}
       </Link>
     );
   }

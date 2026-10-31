@@ -42,7 +42,8 @@
         align-self: flex-end;
         padding-bottom: 10px;
 
-        > a {
+        > .create-lane,
+        > .edit-lane {
           align-self: flex-end;
         }
       }

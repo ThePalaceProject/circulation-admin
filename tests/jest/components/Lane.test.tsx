@@ -61,7 +61,7 @@ describe("Lane", () => {
     );
   });
 
-  it("disables the edit link when lane order has changed", () => {
+  it("disables the edit and create links when lane order has changed", () => {
     const laneData = createLaneData("Custom Lane", false);
 
     render(
@@ -75,12 +75,14 @@ describe("Lane", () => {
       />
     );
 
-    const editLink = screen.getAllByTestId("Link")[0];
-
-    // With pending order changes the link has no destination and is disabled.
-    expect(editLink).toHaveTextContent(/edit/i);
-    expect(editLink).not.toHaveAttribute("data-to");
-    expect(editLink).toHaveClass("disabled");
+    // With pending order changes, the edit and create links are disabled
+    // buttons, so neither a click nor the keyboard can follow them.
+    expect(screen.queryAllByTestId("Link")).toHaveLength(0);
+    for (const name of [/edit lane/i, /create sublane/i]) {
+      const button = screen.getByRole("button", { name });
+      expect(button).toBeDisabled();
+      expect(button).toHaveClass("disabled");
+    }
   });
 });
 
