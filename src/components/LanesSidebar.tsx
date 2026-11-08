@@ -35,7 +35,7 @@ export default class LanesSidebar extends React.Component<
 > {
   constructor(props: LanesSidebarProps) {
     super(props);
-    this.renderLink = this.renderLink.bind(this);
+    this.renderAction = this.renderAction.bind(this);
     this.isDropDisabled = this.isDropDisabled.bind(this);
     this.renderLanes = this.renderLanes.bind(this);
     this.renderLane = this.renderLane.bind(this);
@@ -48,8 +48,8 @@ export default class LanesSidebar extends React.Component<
       <div className="lanes-sidebar">
         <h2>Lane Manager</h2>
         <div>
-          {this.renderLink("create")}
-          {this.renderLink("reset")}
+          {this.renderAction("create")}
+          {this.renderAction("reset")}
         </div>
         {this.props.lanes && (
           <DragDropContext
@@ -63,24 +63,33 @@ export default class LanesSidebar extends React.Component<
     );
   }
 
-  renderLink(createOrReset: string): JSX.Element {
+  renderAction(createOrReset: string): JSX.Element {
     const linkBase = `/admin/web/lanes/${this.props.library}/`;
     const content = {
       create: ["Create Top-Level Lane", <AddIcon />, ""],
       reset: ["Reset All Lanes", <ResetIcon />, "inverted"],
     };
     const [text, icon] = content[createOrReset];
-    const disabled = this.props.orderChanged ? "disabled" : "";
     const style =
       createOrReset === "create" ? "left-align" : "right-align inverted";
+    const className = `btn ${style} ${createOrReset}-lane`;
+    const label = (
+      <span>
+        {text} {icon}
+      </span>
+    );
+    // While there are unsaved lane order changes, use a disabled button, not a
+    // link, so that neither a click nor the keyboard can follow it.
+    if (this.props.orderChanged) {
+      return (
+        <button type="button" className={`${className} disabled`} disabled>
+          {label}
+        </button>
+      );
+    }
     return (
-      <Link
-        className={`btn ${style} ${createOrReset}-lane ${disabled}`}
-        to={this.props.orderChanged ? null : linkBase + createOrReset}
-      >
-        <span>
-          {text} {icon}
-        </span>
+      <Link className={className} to={`${linkBase}${createOrReset}`}>
+        {label}
       </Link>
     );
   }
