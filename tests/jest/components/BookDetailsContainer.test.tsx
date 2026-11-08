@@ -34,7 +34,10 @@ import BookDetails from "../../../src/components/BookDetails";
 // the OPDS web client supplies in production. `renderWithProviders` does not supply
 // the `library` (nor `tab`) keys it reads, so wrap it in a small legacy context
 // provider that hands it everything it needs.
-class LegacyContextProvider extends React.Component<{ context: any }> {
+class LegacyContextProvider extends React.Component<{
+  context: any;
+  children: React.ReactNode;
+}> {
   static childContextTypes = {
     editorStore: PropTypes.object,
     csrfToken: PropTypes.string,

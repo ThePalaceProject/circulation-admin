@@ -50,7 +50,10 @@ import ConfigTabContainer from "../../../src/components/ConfigTabContainer";
 // ConfigTabContainer reads `router`, `pathFor`, and `admin` from the legacy React
 // context the app supplies in production. Wrap it in a small provider that hands
 // it those.
-class LegacyContextProvider extends React.Component<{ context: any }> {
+class LegacyContextProvider extends React.Component<{
+  context: any;
+  children: React.ReactNode;
+}> {
   static childContextTypes = {
     router: PropTypes.object,
     pathFor: PropTypes.func,

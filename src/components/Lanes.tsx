@@ -49,10 +49,7 @@ export interface LanesOwnProps {
 }
 
 export interface LanesProps
-  extends React.Props<LanesProps>,
-    LanesStateProps,
-    LanesDispatchProps,
-    LanesOwnProps {}
+  extends LanesStateProps, LanesDispatchProps, LanesOwnProps {}
 
 export interface LanesState {
   draggableId: string | null;

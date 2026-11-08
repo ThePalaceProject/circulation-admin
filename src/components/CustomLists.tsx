@@ -120,7 +120,6 @@ export interface CustomListsOwnProps {
 
 export interface CustomListsProps
   extends
-    React.Props<CustomListsProps>,
     CustomListsStateProps,
     CustomListsDispatchProps,
     CustomListsOwnProps {}
@@ -399,8 +398,9 @@ export class CustomLists extends React.Component<
     const deletedLanes = [];
     let lanes = this.props.lanes;
     if (!lanes) {
-      await this.props.fetchLanes();
-      lanes = this.props.lanes;
+      // Use the returned data. The `lanes` prop may not be updated yet.
+      const lanesData = await this.props.fetchLanes();
+      lanes = lanesData.lanes;
     }
 
     if (lanes && lanes.length) {

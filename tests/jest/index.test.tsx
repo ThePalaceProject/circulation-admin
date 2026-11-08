@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOMClient from "react-dom/client";
 import { Router } from "react-router";
 
 import SetupPage from "../../src/components/SetupPage";
@@ -18,16 +18,17 @@ function containsType(node: any, type: React.ElementType): boolean {
 }
 
 describe("CirculationAdmin", () => {
-  let renderSpy: jest.SpyInstance;
+  let renderSpy: jest.Mock;
 
   beforeEach(() => {
-    // Capture what the bootstrap hands to ReactDOM.render without letting it
+    // Capture what the bootstrap hands to the root's `render` without letting it
     // paint into the jsdom document. We assert on the captured element tree
     // (the structural analog of the original enzyme `wrapper.find(...)`); what
     // SetupPage and the routed pages render is covered by their own tests.
-    renderSpy = jest
-      .spyOn(ReactDOM, "render")
-      .mockImplementation(() => undefined);
+    renderSpy = jest.fn();
+    jest
+      .spyOn(ReactDOMClient, "createRoot")
+      .mockReturnValue({ render: renderSpy, unmount: jest.fn() });
   });
 
   afterEach(() => {
@@ -37,6 +38,9 @@ describe("CirculationAdmin", () => {
   it("renders the setup page when setting up", () => {
     new CirculationAdmin({ settingUp: true, csrfToken: "token" });
 
+    expect(ReactDOMClient.createRoot).toHaveBeenCalledWith(
+      document.getElementById("opds-catalog")
+    );
     expect(renderSpy).toHaveBeenCalledTimes(1);
     expect(containsType(renderSpy.mock.calls[0][0], SetupPage)).toBe(true);
   });

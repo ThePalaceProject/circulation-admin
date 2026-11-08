@@ -17,8 +17,7 @@ export interface TroubleshootingPageState {
   subtab: string;
 }
 
-export interface TroubleshootingPageProps
-  extends React.Props<TroubleshootingPageProps> {
+export interface TroubleshootingPageProps {
   params: {
     tab?: string;
     subtab?: string;

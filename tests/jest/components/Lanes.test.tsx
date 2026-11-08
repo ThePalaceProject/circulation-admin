@@ -9,7 +9,10 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { Lanes } from "../../../src/components/Lanes";
+import ConnectedLanes, { Lanes } from "../../../src/components/Lanes";
+import * as navigate from "../../../src/utils/navigate";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
 import { LaneData, CustomListData } from "../../../src/interfaces";
 
 // Render react-router's Link as a marker so the lane tree and editor links
@@ -39,10 +42,9 @@ jest.mock("react-router", () => ({
 // behavior they produce are asserted instead (see "renders the draggable lane tree"
 // and "expands and collapses lanes").
 //
-// The connected default export is not rendered here: it mounts with real
-// dispatch props (fetchLanes/fetchCustomLists fire a network request on mount,
-// which would reject and crash the worker) and would override the explicit
-// `lanes`/`customLists`/dispatch stubs these behavior tests assert against.
+// Most tests here render the unconnected `Lanes` with stub props. The connected
+// export fetches data on mount and replaces those props with store data, so the
+// "Lanes - connected" tests at the end use it with a stubbed `fetch`.
 
 const makeLanesData = (): LaneData[] => {
   const subsublane: LaneData = {
@@ -442,5 +444,98 @@ describe("Lanes - reorder flow", () => {
     // lookup recurses one level down.
     const subsublane = { id: 3 } as LaneData;
     expect(ref.current.findParentOfLane(subsublane).id).toBe(2);
+  });
+});
+
+// These use the real store, to test how store updates reach the editor.
+describe("Lanes - connected", () => {
+  // The server answers every lane save with the lane's id.
+  const stubFetch = (savedLaneId: string, lanes: LaneData[] = []) =>
+    jest
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async (url, opts?: RequestInit) => {
+        if (opts?.method === "POST") {
+          return new Response(savedLaneId, { status: 201 });
+        }
+        const body = String(url).includes("custom_lists")
+          ? { custom_lists: [] }
+          : { lanes };
+        return new Response(JSON.stringify(body), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+  let navigateSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    navigateSpy = jest
+      .spyOn(navigate, "navigateTo")
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("goes to the new lane's edit page after creating a lane", async () => {
+    stubFetch("77");
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <ConnectedLanes library="library" editOrCreate="create" csrfToken="t" />,
+      { reduxProviderProps: { store: buildStore() } }
+    );
+
+    await user.type(await screen.findByRole("textbox"), "new lane");
+    await user.click(screen.getByRole("button", { name: /save lane/i }));
+
+    await waitFor(() =>
+      expect(navigateSpy).toHaveBeenCalledWith(
+        "/admin/web/lanes/library/edit/77"
+      )
+    );
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("stays on the create page after an existing lane is saved", async () => {
+    const lane: LaneData = {
+      id: 5,
+      display_name: "lane 5",
+      visible: true,
+      count: 1,
+      sublanes: [],
+      custom_list_ids: [],
+      inherit_parent_restrictions: false,
+    };
+    stubFetch("5", [lane]);
+    const store = buildStore();
+    const user = userEvent.setup();
+
+    const { rerender } = renderWithProviders(
+      <ConnectedLanes
+        library="library"
+        editOrCreate="edit"
+        identifier="5"
+        csrfToken="t"
+      />,
+      { reduxProviderProps: { store } }
+    );
+
+    await screen.findByText("ID-5");
+    await user.click(screen.getByRole("button", { name: /save lane/i }));
+    // The saved lane's id is now in the store.
+    await waitFor(() =>
+      expect(store.getState().editor.lanes.successMessage).toBe("5")
+    );
+
+    // "Create Top-Level Lane" changes only the route, so the same editor gets
+    // the old id.
+    rerender(
+      <ConnectedLanes library="library" editOrCreate="create" csrfToken="t" />
+    );
+
+    expect(await screen.findByText(/New top-level lane/)).toBeInTheDocument();
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });

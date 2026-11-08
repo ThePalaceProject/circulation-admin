@@ -8,8 +8,7 @@ import GrabIcon from "./icons/GrabIcon";
 import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
 
-export interface LaneCustomListsEditorProps
-  extends React.Props<LaneCustomListsEditor> {
+export interface LaneCustomListsEditorProps {
   allCustomLists: CustomListData[];
   customListIds: number[];
   filter?: string;

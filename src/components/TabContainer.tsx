@@ -4,7 +4,8 @@ import * as PropTypes from "prop-types";
 import { PathFor } from "../interfaces";
 import { RootState } from "../store";
 
-export interface TabContainerProps extends React.Props<TabContainerProps> {
+export interface TabContainerProps {
+  children?: React.ReactNode;
   store?: Store<RootState>;
   csrfToken?: string;
   tab: string;
@@ -20,7 +21,7 @@ export interface TabContainerContext {
     Subclasses must define the tabs and the method to call when a new tab
     is clicked. */
 export abstract class TabContainer<
-  T extends TabContainerProps
+  T extends TabContainerProps,
 > extends React.Component<T, any> {
   context: TabContainerContext;
 

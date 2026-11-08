@@ -16,16 +16,15 @@ import AppContextProvider, {
 //  this component wraps).
 // TODO: We should get this interface to the point where we can just extend
 //  the `ConfigurationSettings` interface.
-export interface ContextProviderProps extends React.Props<ContextProvider> {
+export interface ContextProviderProps {
+  children?: React.ReactNode;
   store?: Store<RootState>;
   config: Partial<ConfigurationSettings>;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
     as context to admin interface pages. */
-export default class ContextProvider extends React.Component<
-  ContextProviderProps
-> {
+export default class ContextProvider extends React.Component<ContextProviderProps> {
   store: Store<RootState>;
   admin: Admin;
   appConfig: ConfigurationSettings;

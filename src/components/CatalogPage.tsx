@@ -16,7 +16,7 @@ import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import title from "../utils/title";
 import NoCacheDataFetcher from "../utils/NoCacheDataFetcher";
 
-export interface CatalogPageProps extends React.Props<CatalogPage> {
+export interface CatalogPageProps {
   params: {
     collectionUrl: string;
     bookUrl: string;

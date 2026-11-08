@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render } from "@testing-library/react";
+import { render, renderHook, waitFor } from "@testing-library/react";
 import { ALL_LIBRARIES_HEADING } from "../../../src/components/LibraryStats";
 import { CustomTooltip } from "../../../src/components/StatsCollectionsBarChart";
 import {
@@ -17,7 +17,6 @@ import { useGetStatsQuery } from "../../../src/features/stats/statsSlice";
 import * as fetchMock from "fetch-mock-jest";
 import { STATS_API_ENDPOINT } from "../../../src/features/stats/statsSlice";
 import Stats from "../../../src/components/Stats";
-import { renderHook } from "@testing-library/react-hooks";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { store } from "../../../src/store";
 import { api } from "../../../src/features/api/apiSlice";
@@ -66,7 +65,7 @@ describe("Dashboard Statistics", () => {
         { overwriteRoutes: true }
       );
 
-      const { result, waitFor } = renderHook(() => useGetStatsQuery(), {
+      const { result } = renderHook(() => useGetStatsQuery(), {
         wrapper,
       });
 
@@ -78,7 +77,7 @@ describe("Dashboard Statistics", () => {
       expect(data).toEqual(undefined);
 
       // Once loaded, we should have our data.
-      await waitFor(() => !result.current.isLoading);
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
       ({ isSuccess, isError, error, data } = result.current);
 
       expect(isSuccess).toBe(true);
@@ -110,7 +109,7 @@ describe("Dashboard Statistics", () => {
         }
       );
 
-      const { result, waitFor } = renderHook(() => useGetStatsQuery(), {
+      const { result } = renderHook(() => useGetStatsQuery(), {
         wrapper,
       });
 
@@ -121,7 +120,7 @@ describe("Dashboard Statistics", () => {
       expect(error).toBe(undefined);
       expect(data).toEqual(undefined);
 
-      await waitFor(() => !result.current.isLoading);
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
       ({ isSuccess, isError, error, data } = result.current);
 
       expect(isSuccess).toBe(false);

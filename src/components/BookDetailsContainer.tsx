@@ -17,12 +17,12 @@ export interface BookDetailsContainerContext {
 }
 
 const BookDetailsContainer = (
-  props: BookDetailsContainerProps,
+  props: React.PropsWithChildren<BookDetailsContainerProps>,
   context: BookDetailsContainerContext
 ) => {
-  const child = React.Children.only(props.children) as React.ReactElement<
-    BookDetails
-  >;
+  const child = React.Children.only(
+    props.children
+  ) as React.ReactElement<BookDetails>;
   const book = React.createElement(BookDetails, child.props);
 
   return (

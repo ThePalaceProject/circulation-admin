@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import CustomLists from "./CustomLists";
 import { RootState } from "../store";
 
-export interface CustomListPageProps extends React.Props<CustomListPageProps> {
+export interface CustomListPageProps {
   params: {
     library?: string;
     editOrCreate?: string;

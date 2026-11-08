@@ -315,7 +315,7 @@ describe("LaneCustomListsEditor", () => {
     expect(ref.current.getCustomListIds()).toEqual([2]);
 
     // reset(ids) notifies the parent with the supplied original ids.
-    ref.current.reset([1]);
+    act(() => ref.current.reset([1]));
     expect(onUpdate).toHaveBeenCalledTimes(1);
     expect(onUpdate).toHaveBeenCalledWith([1]);
 
