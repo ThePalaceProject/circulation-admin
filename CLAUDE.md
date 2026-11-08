@@ -65,24 +65,25 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`.
+Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`. The `tests/jest/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
 
-Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. For API mocking the tree uses both MSW and `fetch-mock-jest` — `fetch-mock-jest` is the more common choice, MSW mainly where a request handler is clearer. Follow whichever the neighboring tests use.
+Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
 
 Helpers in `tests/jest/testUtils/`:
 
 - `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store.
 - `renderWithContext.tsx` — lighter: app Context only.
-- `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements.
+- `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Jest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
+- `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements. The shim returns a real `FormData`, so MSW can read the submitted fields.
 
 **Writing tests — the traps that actually bite:**
 
 - Render the **connected default export**, not the unconnected named export, or `mapStateToProps`/`mapDispatchToProps` never run and their coverage is lost. Mocking a connected child in a parent's test drops that child's wiring the same way — cover the child in its own test.
-- Unhandled rejections fail the run: stub `fetch` and `await` a `findBy*` so on-mount fetches settle before the test ends.
+- Unhandled rejections fail the run: add an MSW handler for each request and `await` a `findBy*` so on-mount fetches settle before the test ends.
 - Query form fields by their accessible label, as a screen reader would: `getByRole("textbox", { name: /Label/i })` or `getByLabelText(/Label/i)`. The role follows what `EditableInput` renders: `elementType="select"` is a `combobox`, and `type="checkbox"` or `"radio"` are those roles. A passing query proves the field is labeled. `EditableInput` nests the input inside its `<label>`, so both work, but use a regex: a required field's label text includes "Required". An `EditableInput` with no `label` prop may still have an accessible name through `aria-label`. If it has no accessible name, treat that as an accessibility bug in the component, not something to work around in the test.
 - Mock react-router's `Link` as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
 
-**Environment:** `jest-fixed-jsdom` restores Node's `fetch`/`Response` globals so MSW can intercept them; `jest.polyfills.js` runs first via `setupFiles`. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
+**Environment:** `jest-fixed-jsdom` restores Node's `fetch`, `Request`, `Response`, `Headers`, and `FormData` globals so MSW can intercept them. `jest.polyfills.js` runs first via `setupFiles`. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
 
 **Coverage:** `npm run coverage` writes `coverage/jest/lcov.info`, uploaded to Codecov under the `jest` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. Two config constraints, both of which silently inflate the number if broken:
 

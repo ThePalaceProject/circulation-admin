@@ -8,7 +8,8 @@ import {
 } from "../../../src/features/book/bookEditorSlice";
 import { BookDetailsEditor } from "../../../src/components/BookDetailsEditor";
 import { store } from "../../../src/store";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("BookDetails", () => {
   const suppressPerLibraryLink = {
@@ -43,17 +44,19 @@ describe("BookDetails", () => {
     )
   );
 
-  beforeAll(() => {
-    fetchMock
-      .post("/suppress/href", {
-        status: 200,
-        body: { message: "Successfully suppressed book availability." },
+  const { requests } = setupMswServer(
+    http.post("*/suppress/href", () =>
+      HttpResponse.json({
+        message: "Successfully suppressed book availability.",
       })
-      .delete("/unsuppress/href", {
-        status: 200,
-        body: { message: "Successfully unsuppressed book availability." },
-      });
-  });
+    ),
+    http.delete("*/unsuppress/href", () =>
+      HttpResponse.json({
+        message: "Successfully unsuppressed book availability.",
+      })
+    )
+  );
+
   beforeEach(() => {
     fetchBookData = jest.fn();
     fetchRoles = jest.fn();
@@ -72,11 +75,9 @@ describe("BookDetails", () => {
   });
   afterEach(() => {
     jest.clearAllMocks();
-    fetchMock.resetHistory();
   });
   afterAll(() => {
     jest.restoreAllMocks();
-    fetchMock.restore();
   });
 
   it("don't show hide button if not a library's admin", () => {
@@ -114,14 +115,6 @@ describe("BookDetails", () => {
   });
 
   it("uses modal for suppress book confirmation", async () => {
-    // Configure standard constructors so that RTK Query works in tests with FetchMockJest
-    Object.assign(fetchMock.config, {
-      fetch,
-      Headers,
-      Request,
-      Response,
-    });
-
     const user = userEvent.setup();
 
     const { getByRole, getByText, queryByRole } = renderWithProviders(
@@ -164,23 +157,12 @@ describe("BookDetails", () => {
     // Check that the API was invoked.
     expect(suppressBook.mock.calls.length).toBe(1);
     expect(suppressBook.mock.calls[0][0]).toBe("/suppress/href");
-    const fetchCalls = fetchMock.calls();
-    expect(fetchCalls.length).toBe(1);
-    const fetchCall = fetchCalls[0];
-    const fetchOptions = fetchCalls[0][1];
-    expect(fetchCall[0]).toBe("/suppress/href");
-    expect(fetchOptions["headers"]["X-CSRF-Token"]).toContain("token");
-    expect(fetchOptions["method"]).toBe("POST");
+    expect(requests.length).toBe(1);
+    expect(new URL(requests[0].url).pathname).toBe("/suppress/href");
+    expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+    expect(requests[0].method).toBe("POST");
   });
   it("uses modal for unsuppress book confirmation", async () => {
-    // Configure standard constructors so that RTK Query works in tests with FetchMockJest
-    Object.assign(fetchMock.config, {
-      fetch,
-      Headers,
-      Request,
-      Response,
-    });
-
     const user = userEvent.setup();
 
     const { getByRole, getByText, queryByRole } = renderWithProviders(
@@ -228,12 +210,9 @@ describe("BookDetails", () => {
     // Check that the API was invoked.
     expect(unsuppressBook.mock.calls.length).toBe(1);
     expect(unsuppressBook.mock.calls[0][0]).toBe("/unsuppress/href");
-    const fetchCalls = fetchMock.calls();
-    expect(fetchCalls.length).toBe(1);
-    const fetchCall = fetchCalls[0];
-    const fetchOptions = fetchCalls[0][1];
-    expect(fetchCall[0]).toBe("/unsuppress/href");
-    expect(fetchOptions["headers"]["X-CSRF-Token"]).toContain("token");
-    expect(fetchOptions["method"]).toBe("DELETE");
+    expect(requests.length).toBe(1);
+    expect(new URL(requests[0].url).pathname).toBe("/unsuppress/href");
+    expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
+    expect(requests[0].method).toBe("DELETE");
   });
 });

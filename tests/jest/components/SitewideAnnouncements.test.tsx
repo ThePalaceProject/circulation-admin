@@ -1,5 +1,5 @@
 import * as React from "react";
-import { installFormDataShim, FormDataShim } from "../testUtils/formDataShim";
+import { installFormDataShim } from "../testUtils/formDataShim";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -9,6 +9,8 @@ import buildStore from "../../../src/store";
 // are exercised. The panel fetches its announcements on mount; the fetched data
 // flows back in through the Redux store.
 import SitewideAnnouncements from "../../../src/components/SitewideAnnouncements";
+import { delay, http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 const data = {
   announcements: [
@@ -32,12 +34,6 @@ const data = {
 };
 installFormDataShim();
 
-const jsonResponse = (body: unknown) =>
-  new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-
 const renderConnected = (
   element: React.ReactElement,
   appConfigSettings: Record<string, unknown> = {}
@@ -48,14 +44,12 @@ const renderConnected = (
   });
 
 describe("SitewideAnnouncements", () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  const { server, requests } = setupMswServer(
+    http.get("*/admin/announcements", () => HttpResponse.json(data)),
+    http.post("*/admin/announcements", () => HttpResponse.text("success"))
+  );
 
   it("renders a form containing the announcements section", async () => {
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () => jsonResponse(data));
     const { container } = renderConnected(
       <SitewideAnnouncements csrfToken="token" />
     );
@@ -71,10 +65,12 @@ describe("SitewideAnnouncements", () => {
   });
 
   it("renders a loading indicator instead of a form while data is loading", () => {
-    // A never-resolving fetch keeps the panel in its fetching state.
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(() => new Promise(() => {}));
+    // A never-answered request keeps the panel in its fetching state.
+    server.use(
+      http.get("*/admin/announcements", async () => {
+        await delay("infinite");
+      })
+    );
     const { container } = renderConnected(
       <SitewideAnnouncements csrfToken="token" />
     );
@@ -85,14 +81,6 @@ describe("SitewideAnnouncements", () => {
 
   it("submits the announcements to editItem when the form is submitted", async () => {
     const user = userEvent.setup();
-    const fetchSpy = jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async (_url, opts?: RequestInit) => {
-        if (opts?.method === "POST") {
-          return new Response("success", { status: 200 });
-        }
-        return jsonResponse(data);
-      });
 
     // System admin so the settings' required permission level is satisfied and
     // the submit button is enabled.
@@ -105,26 +93,19 @@ describe("SitewideAnnouncements", () => {
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
     // The submit dispatches editSitewideAnnouncements, which POSTs the form.
-    await waitFor(() => {
-      const postCall = fetchSpy.mock.calls.find(
-        ([, opts]) => (opts as RequestInit)?.method === "POST"
-      );
-      expect(postCall).toBeDefined();
-    });
-
-    const postCall = fetchSpy.mock.calls.find(
-      ([, opts]) => (opts as RequestInit)?.method === "POST"
+    await waitFor(() =>
+      expect(requests.find((r) => r.method === "POST")).toBeDefined()
     );
-    const body = (postCall[1] as RequestInit).body as unknown as FormDataShim;
-    expect(JSON.parse(body.get("announcements"))).toStrictEqual(
+
+    const post = requests.find((r) => r.method === "POST");
+    expect(new URL(post.url).pathname).toBe("/admin/announcements");
+    const body = await post.formData();
+    expect(JSON.parse(body.get("announcements") as string)).toStrictEqual(
       data.announcements
     );
   });
 
   it("disables the submit button when the admin lacks the required permission level", async () => {
-    jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () => jsonResponse(data));
     // No roles => admin level 1, below the settings' required level of 3.
     renderConnected(<SitewideAnnouncements csrfToken="token" />);
 

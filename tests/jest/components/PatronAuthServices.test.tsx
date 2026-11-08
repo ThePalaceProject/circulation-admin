@@ -3,6 +3,8 @@ import { screen, waitFor } from "@testing-library/react";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 // Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
 // are exercised: the panel fetches its data on mount, the fetch populates the
 // Redux store, and mapStateToProps feeds it back in as props.
@@ -26,17 +28,18 @@ const listData = {
   allLibraries: [{ short_name: "nypl" }],
 };
 
-/**
- * Stub `fetch` so the panel's on-mount fetch resolves with `body`. Returning a
- * fresh Response per call avoids "body already used" when several fetches run.
- */
-const stubFetch = (body: unknown) =>
-  jest.spyOn(globalThis, "fetch").mockImplementation(
-    async () =>
-      new Response(JSON.stringify(body), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      })
+// Every request the panel makes on mount, answered for the whole file. The
+// services body is per test (see `stubServices`).
+const { server, requests } = setupMswServer(
+  http.get("*/admin/libraries", () =>
+    HttpResponse.json({ libraries: [{ short_name: "nypl" }] })
+  )
+);
+
+/** Answer the panel's on-mount services request with `body`. */
+const stubServices = (body: Record<string, unknown>) =>
+  server.use(
+    http.get("*/admin/patron_auth_services", () => HttpResponse.json(body))
   );
 
 // A fresh store per test keeps the fetched data isolated between tests.
@@ -46,12 +49,8 @@ const renderConnected = (element: React.ReactElement) =>
   });
 
 describe("PatronAuthServices", () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   it("shows the patron auth service list", async () => {
-    stubFetch(listData);
+    stubServices(listData);
     const { container } = renderConnected(
       <PatronAuthServices csrfToken="token" />
     );
@@ -78,15 +77,15 @@ describe("PatronAuthServices", () => {
   });
 
   it("fetches the libraries list along with the services on mount", async () => {
-    const fetchSpy = stubFetch(listData);
+    stubServices(listData);
     renderConnected(<PatronAuthServices csrfToken="token" />);
 
     await waitFor(() => {
-      const urls = fetchSpy.mock.calls.map((call) => String(call[0]));
-      expect(urls).toEqual(
+      const paths = requests.map((r) => new URL(r.url).pathname);
+      expect(paths).toEqual(
         expect.arrayContaining([
-          expect.stringContaining("/admin/patron_auth_services"),
-          expect.stringContaining("/admin/libraries"),
+          "/admin/patron_auth_services",
+          "/admin/libraries",
         ])
       );
     });
@@ -110,7 +109,7 @@ describe("PatronAuthServices", () => {
       ],
       allLibraries: [{ short_name: "nypl" }],
     };
-    stubFetch(createData);
+    stubServices(createData);
 
     const { container } = renderConnected(
       <PatronAuthServices csrfToken="token" editOrCreate="create" />

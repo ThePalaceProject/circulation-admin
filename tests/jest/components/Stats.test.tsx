@@ -14,7 +14,8 @@ import {
 
 import { normalizeStatistics } from "../../../src/features/stats/normalizeStatistics";
 import { useGetStatsQuery } from "../../../src/features/stats/statsSlice";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 import { STATS_API_ENDPOINT } from "../../../src/features/stats/statsSlice";
 import Stats from "../../../src/components/Stats";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -27,13 +28,11 @@ const normalizedData = normalizeStatistics(statisticsApiResponseData);
 global.ResizeObserver = require("resize-observer-polyfill");
 
 describe("Dashboard Statistics", () => {
-  // Configure standard constructors so that RTK Query works in tests with FetchMockJest
-  Object.assign(fetchMock.config, {
-    fetch,
-    Headers,
-    Request,
-    Response,
-  });
+  const { server, requests } = setupMswServer(
+    http.get(`*${STATS_API_ENDPOINT}`, () =>
+      HttpResponse.json(statisticsApiResponseData)
+    )
+  );
 
   const statGroupToHeading = {
     patrons: "Current Circulation Activity",
@@ -48,23 +47,12 @@ describe("Dashboard Statistics", () => {
 
     beforeEach(() => {
       store.dispatch(api.util.resetApiState());
-      fetchMock.restore();
     });
     afterAll(() => {
       store.dispatch(api.util.resetApiState());
-      fetchMock.restore();
     });
 
     it("returns data when fetch successful", async () => {
-      fetchMock.get(
-        `path:${STATS_API_ENDPOINT}`,
-        {
-          body: JSON.stringify(statisticsApiResponseData),
-          status: 200,
-        },
-        { overwriteRoutes: true }
-      );
-
       const { result } = renderHook(() => useGetStatsQuery(), {
         wrapper,
       });
@@ -99,14 +87,11 @@ describe("Dashboard Statistics", () => {
     });
 
     it("returns error and no data when request fails", async () => {
-      fetchMock.get(
-        `path:${STATS_API_ENDPOINT}`,
-        {
-          status: 500,
-        },
-        {
-          overwriteRoutes: true,
-        }
+      server.use(
+        http.get(
+          `*${STATS_API_ENDPOINT}`,
+          () => new HttpResponse(null, { status: 500 })
+        )
       );
 
       const { result } = renderHook(() => useGetStatsQuery(), {
@@ -143,21 +128,7 @@ describe("Dashboard Statistics", () => {
   });
 
   describe("rendering", () => {
-    beforeAll(() => {
-      fetchMock.get(`path:${STATS_API_ENDPOINT}`, {
-        body: JSON.stringify(statisticsApiResponseData),
-        status: 200,
-      });
-    });
-    afterAll(() => {
-      fetchMock.restore();
-    });
-
     describe("correctly handles fetching and caching", () => {
-      afterEach(() => {
-        fetchMock.resetHistory();
-      });
-
       const assertLoadingState = ({ getByRole }) => {
         getByRole("dialog", { name: "Loading" });
         getByRole("heading", { level: 1, name: "Loading" });
@@ -174,7 +145,7 @@ describe("Dashboard Statistics", () => {
 
       it("shows/hides the loading indicator", async () => {
         // We haven't tried to fetch anything yet.
-        expect(fetchMock.calls()).toHaveLength(0);
+        expect(requests).toHaveLength(0);
 
         const { rerender, getByRole, queryByRole } = renderWithProviders(
           <Stats />
@@ -186,7 +157,7 @@ describe("Dashboard Statistics", () => {
         // Wait a tick for the statistics to render.
         await new Promise(process.nextTick);
         // Now we've fetched something.
-        expect(fetchMock.calls()).toHaveLength(1);
+        expect(requests).toHaveLength(1);
 
         rerender(<Stats />);
 
@@ -195,7 +166,7 @@ describe("Dashboard Statistics", () => {
         getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
 
         // We haven't made another call, since the response is cached.
-        expect(fetchMock.calls()).toHaveLength(1);
+        expect(requests).toHaveLength(1);
       });
 
       it("doesn't fetch again, because response is cached", async () => {
@@ -206,7 +177,7 @@ describe("Dashboard Statistics", () => {
         getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
 
         // We never tried to fetch anything because the result is cached.
-        expect(fetchMock.calls()).toHaveLength(0);
+        expect(requests).toHaveLength(0);
       });
 
       it("show stats for a library, if a library is specified", async () => {
@@ -224,7 +195,7 @@ describe("Dashboard Statistics", () => {
         getByText("21");
 
         // We never tried to fetch anything because the result is cached.
-        expect(fetchMock.calls()).toHaveLength(0);
+        expect(requests).toHaveLength(0);
       });
 
       it("shows site-wide stats when no library specified", async () => {
@@ -243,7 +214,7 @@ describe("Dashboard Statistics", () => {
         getByText("1.6k");
 
         // We never tried to fetch anything because the result is cached.
-        expect(fetchMock.calls()).toHaveLength(0);
+        expect(requests).toHaveLength(0);
       });
     });
 

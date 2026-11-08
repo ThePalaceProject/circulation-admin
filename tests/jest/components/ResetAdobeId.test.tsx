@@ -7,6 +7,7 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import ConnectedResetAdobeId, {
   ResetAdobeId,
 } from "../../../src/components/ResetAdobeId";
+import { setupMswServer } from "../testUtils/mswServer";
 
 const patrons = [
   {
@@ -38,10 +39,6 @@ describe("ResetAdobeId", () => {
 
   beforeEach(() => {
     store = buildStore();
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
   });
 
   // Render the unconnected component with explicit props (patron / resetAdobeId /
@@ -271,16 +268,11 @@ describe("ResetAdobeId", () => {
   });
 
   describe("connected (default export)", () => {
-    it("wires state and dispatch through connect", async () => {
-      // Defensive: nothing fetches on this mount, but stub fetch so any stray
-      // request settles rather than crashing the strict worker.
-      jest.spyOn(globalThis, "fetch").mockResolvedValue(
-        new Response(JSON.stringify({}), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-      );
+    // Nothing fetches on this mount. The server has no handlers, so a stray
+    // request fails the test instead of going to the network.
+    const { requests } = setupMswServer();
 
+    it("wires state and dispatch through connect", async () => {
       renderWithProviders(
         <ConnectedResetAdobeId
           store={buildStore()}
@@ -297,6 +289,7 @@ describe("ResetAdobeId", () => {
       expect(
         screen.getByText("Search for a patron to begin.")
       ).toBeInTheDocument();
+      expect(requests).toHaveLength(0);
     });
   });
 });

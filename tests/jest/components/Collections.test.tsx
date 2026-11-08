@@ -12,6 +12,8 @@ import {
   ConfigurationSettings,
 } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 describe("Collections - associated library disclosure", () => {
   // ── Shared fixtures ───────────────────────────────────────────────────────
@@ -256,14 +258,7 @@ describe("Collections - connected wiring, deletion, and registration", () => {
       successMessage: null,
     };
 
-    const stubFetch = (body: unknown) =>
-      jest.spyOn(globalThis, "fetch").mockImplementation(
-        async () =>
-          new Response(JSON.stringify(body), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      );
+    const { server } = setupMswServer();
 
     it("wires mapStateToProps/mapDispatchToProps and marks a collection for deletion", async () => {
       const listData = {
@@ -278,7 +273,9 @@ describe("Collections - connected wiring, deletion, and registration", () => {
         ],
         protocols: [{ name: "test protocol", label: "TP", settings: [] }],
       };
-      stubFetch(listData);
+      server.use(
+        http.get("*/admin/collections", () => HttpResponse.json(listData))
+      );
       const store = buildStore({
         editor: { libraries: loadedLibrariesState },
       } as any);

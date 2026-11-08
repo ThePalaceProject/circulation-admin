@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as fetchMock from "fetch-mock-jest";
+import { http, HttpResponse } from "msw";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PatronAuthServiceEditForm from "../../../src/components/PatronAuthServiceEditForm";
 import {
@@ -9,6 +9,7 @@ import {
   PatronBlockingRule,
 } from "../../../src/interfaces";
 import { SIP2_PROTOCOL } from "../../../src/utils/patronBlockingRules";
+import { setupMswServer } from "../testUtils/mswServer";
 
 const VALIDATE_URL = "/admin/patron_auth_service_validate_patron_blocking_rule";
 
@@ -78,15 +79,27 @@ function renderForm(element: React.ReactElement) {
 }
 
 // Guard: any blur on the Rule Expression textarea calls validatePatronBlockingRuleExpression.
-// All describe blocks get a default 200 mock so tests that incidentally trigger blur
-// don't fail with "only absolute URLs are supported" from the fetch polyfill.
-beforeEach(() => {
-  fetchMock.post(VALIDATE_URL, { status: 200 });
-});
+// All describe blocks get a default 200 response so tests that incidentally trigger blur
+// get a response instead of an unhandled request error.
+const { server, requests } = setupMswServer(
+  http.post(`*${VALIDATE_URL}`, () => new HttpResponse(null, { status: 200 }))
+);
 
-afterEach(() => {
-  fetchMock.mockReset();
-});
+/**
+ * The validation request sent for the rule with this name, and its form data.
+ * The editor also prefetches available fields on mount with its own rule, so
+ * tests about blur validation look up the request by rule name.
+ */
+async function validationRequestFor(ruleName: string) {
+  const validations = requests.filter(
+    (r) => r.method === "POST" && new URL(r.url).pathname === VALIDATE_URL
+  );
+  const forms = await Promise.all(validations.map((r) => r.clone().formData()));
+  const index = forms.findIndex((form) => form.get("name") === ruleName);
+  return index === -1
+    ? undefined
+    : { request: validations[index], form: forms[index] };
+}
 
 describe("PatronAuthServiceEditForm – capability gating", () => {
   it("shows PatronBlockingRulesEditor in expanded library settings for SIP2", async () => {
@@ -378,7 +391,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
     await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
-    // Tab out triggers blur → server validation → 200 OK (from beforeEach mock)
+    // Tab out triggers blur → server validation → 200 OK (from the default handler)
     await user.tab();
 
     const saveButton = screen.getByRole("button", { name: /^Save$/i });
@@ -387,11 +400,11 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
 
   it("keeps the per-library Save button disabled when validation fails", async () => {
     const user = userEvent.setup();
-    fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, {
-      status: 400,
-      body: { detail: "Unknown placeholder" },
-    });
+    server.use(
+      http.post(`*${VALIDATE_URL}`, () =>
+        HttpResponse.json({ detail: "Unknown placeholder" }, { status: 400 })
+      )
+    );
 
     renderForm(
       <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
@@ -517,7 +530,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
     await user.type(ruleTextarea, "new_expr");
     await waitFor(() => expect(saveButton).toBeDisabled());
 
-    // Blur → 200 OK from beforeEach mock → Save re-enabled
+    // Blur → 200 OK from the default handler → Save re-enabled
     await user.tab();
     await waitFor(() => expect(saveButton).not.toBeDisabled());
   });
@@ -541,16 +554,12 @@ describe("PatronAuthServiceEditForm – csrfToken / serviceId wiring", () => {
     await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
     await user.tab();
 
-    await waitFor(() =>
-      expect(fetchMock).toHaveBeenCalledWith(
-        VALIDATE_URL,
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            "X-CSRF-Token": "test-csrf-token",
-          }),
-        })
-      )
-    );
+    await waitFor(async () => {
+      const sent = await validationRequestFor("My Rule");
+      expect(sent).toBeDefined();
+      expect(new URL(sent.request.url).pathname).toBe(VALIDATE_URL);
+      expect(sent.request.headers.get("X-CSRF-Token")).toBe("test-csrf-token");
+    });
   });
 
   it("passes the item id as service_id in the validation API request body", async () => {
@@ -567,9 +576,11 @@ describe("PatronAuthServiceEditForm – csrfToken / serviceId wiring", () => {
     await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
     await user.tab();
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    const [, options] = fetchMock.calls(VALIDATE_URL)[0];
-    const body = (options as RequestInit).body as FormData;
-    expect(body.get("service_id")).toBe("1");
+    await waitFor(async () => {
+      const sent = await validationRequestFor("My Rule");
+      expect(sent).toBeDefined();
+      expect(new URL(sent.request.url).pathname).toBe(VALIDATE_URL);
+      expect(sent.form.get("service_id")).toBe("1");
+    });
   });
 });

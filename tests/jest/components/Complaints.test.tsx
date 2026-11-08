@@ -6,6 +6,8 @@ import ConnectedComplaints, {
   Complaints,
 } from "../../../src/components/Complaints";
 import { renderWithProviders } from "../testUtils/withProviders";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
 
 const bookData = {
   id: "id",
@@ -214,14 +216,12 @@ describe("Complaints", () => {
   });
 
   describe("connect() wiring", () => {
-    it("renders the connected default export, mapping state and dispatch", async () => {
-      const fetchSpy = jest.spyOn(globalThis, "fetch").mockResolvedValue(
-        new Response(JSON.stringify({ complaints: {} }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        })
-      );
+    const complaintsUrl = "http://example.com/admin/works/fakeid/complaints";
+    const { requests } = setupMswServer(
+      http.get(complaintsUrl, () => HttpResponse.json({ complaints: {} }))
+    );
 
+    it("renders the connected default export, mapping state and dispatch", async () => {
       const { container } = renderWithProviders(
         <ConnectedComplaints
           bookUrl="http://example.com/works/fakeid"
@@ -237,13 +237,11 @@ describe("Complaints", () => {
       ).toBeInTheDocument();
 
       // mapDispatchToProps.fetchComplaints ran on mount and hit the network.
-      await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy.mock.calls[0][0]).toBe(
-        "http://example.com/admin/works/fakeid/complaints"
-      );
+      await waitFor(() => expect(requests).toHaveLength(1));
+      expect(requests[0].url).toBe(complaintsUrl);
 
-      // Let the request/load cycle settle (isFetching true -> false), which also
-      // flushes the pending fetch so it cannot reject during teardown.
+      // Let the request/load cycle settle (isFetching true -> false), so the
+      // response is handled before teardown.
       await waitFor(() =>
         expect(
           container.querySelector(".updating-loader")
@@ -252,8 +250,6 @@ describe("Complaints", () => {
 
       // mapStateToProps: no complaints in the store -> "None found." is shown.
       expect(screen.getByText("None found.")).toBeInTheDocument();
-
-      jest.restoreAllMocks();
     });
   });
 });
