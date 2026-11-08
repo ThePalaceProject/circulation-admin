@@ -41,7 +41,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.toggleVisible = this.toggleVisible.bind(this);
     this.renderVisibilityToggle = this.renderVisibilityToggle.bind(this);
-    this.renderButton = this.renderButton.bind(this);
+    this.renderAction = this.renderAction.bind(this);
   }
 
   render(): JSX.Element {
@@ -78,8 +78,8 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           </div>
           {this.state.expanded && (
             <div className="lane-buttons">
-              {this.renderButton("edit")}
-              {this.renderButton("create")}
+              {this.renderAction("edit")}
+              {this.renderAction("create")}
             </div>
           )}
           {this.state.expanded &&
@@ -130,7 +130,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     );
   }
 
-  renderButton(editOrCreate: string): JSX.Element {
+  renderAction(editOrCreate: string): JSX.Element {
     const content =
       editOrCreate === "create" ? (
         <span>

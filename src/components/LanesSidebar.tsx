@@ -35,7 +35,7 @@ export default class LanesSidebar extends React.Component<
 > {
   constructor(props: LanesSidebarProps) {
     super(props);
-    this.renderLink = this.renderLink.bind(this);
+    this.renderAction = this.renderAction.bind(this);
     this.isDropDisabled = this.isDropDisabled.bind(this);
     this.renderLanes = this.renderLanes.bind(this);
     this.renderLane = this.renderLane.bind(this);
@@ -48,8 +48,8 @@ export default class LanesSidebar extends React.Component<
       <div className="lanes-sidebar">
         <h2>Lane Manager</h2>
         <div>
-          {this.renderLink("create")}
-          {this.renderLink("reset")}
+          {this.renderAction("create")}
+          {this.renderAction("reset")}
         </div>
         {this.props.lanes && (
           <DragDropContext
@@ -63,7 +63,7 @@ export default class LanesSidebar extends React.Component<
     );
   }
 
-  renderLink(createOrReset: string): JSX.Element {
+  renderAction(createOrReset: string): JSX.Element {
     const linkBase = `/admin/web/lanes/${this.props.library}/`;
     const content = {
       create: ["Create Top-Level Lane", <AddIcon />, ""],
@@ -88,7 +88,7 @@ export default class LanesSidebar extends React.Component<
       );
     }
     return (
-      <Link className={className} to={linkBase + createOrReset}>
+      <Link className={className} to={`${linkBase}${createOrReset}`}>
         {label}
       </Link>
     );
