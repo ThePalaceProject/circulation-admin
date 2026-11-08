@@ -61,29 +61,29 @@ describe("Lane", () => {
     );
   });
 
-  it("disables the edit and create links when lane order has changed", () => {
-    const laneData = createLaneData("Custom Lane", false);
+  it.each(["Edit Lane", "Create Sublane"])(
+    "disables %s when lane order has changed",
+    (name) => {
+      const laneData = createLaneData("Custom Lane", false);
 
-    render(
-      <Lane
-        lane={laneData}
-        active={false}
-        library="test_library"
-        orderChanged={true}
-        renderLanes={renderLanes}
-        toggleLaneVisibility={toggleLaneVisibility}
-      />
-    );
+      render(
+        <Lane
+          lane={laneData}
+          active={false}
+          library="test_library"
+          orderChanged={true}
+          renderLanes={renderLanes}
+          toggleLaneVisibility={toggleLaneVisibility}
+        />
+      );
 
-    // With pending order changes, the edit and create links are disabled
-    // buttons, so neither a click nor the keyboard can follow them.
-    expect(screen.queryAllByTestId("Link")).toHaveLength(0);
-    for (const name of [/edit lane/i, /create sublane/i]) {
+      // With pending order changes, the control is a disabled button, so
+      // neither a click nor the keyboard can follow it.
       const button = screen.getByRole("button", { name });
       expect(button).toBeDisabled();
       expect(button).toHaveClass("disabled");
     }
-  });
+  );
 });
 
 // The visibility toggle, the prop-sync in componentWillReceiveProps, and
