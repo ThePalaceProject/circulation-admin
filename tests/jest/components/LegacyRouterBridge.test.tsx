@@ -176,6 +176,26 @@ describe("LegacyRouterBridge", () => {
     );
   });
 
+  it("replaces the history entry when `push` repeats the current path and state", async () => {
+    // As v3 did, compare the state by value: each push has a new state object.
+    const user = userEvent.setup();
+    renderBridge(undefined, ["/admin/web/dashboard", "/admin/web/config"]);
+    const pushWithState = () =>
+      act(() =>
+        legacyRouter.push({
+          pathname: "/admin/web/config",
+          state: { bookTitle: "A Book" },
+        })
+      );
+    pushWithState();
+    pushWithState();
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByTestId("location")).toHaveTextContent(
+      "/admin/web/config null"
+    );
+  });
+
   it("keeps one router object that reads the current location", () => {
     renderBridge();
     const router = legacyRouter;
@@ -207,6 +227,11 @@ describe("LegacyRouterBridge", () => {
         hash: "#top",
       })
     ).toBe("/admin/web/account?a=1#top");
+  });
+
+  it("reports that no link is active", () => {
+    renderBridge();
+    expect(legacyRouter.isActive()).toBe(false);
   });
 
   it("drives web-opds-client's react-router v3 CatalogLink", async () => {
