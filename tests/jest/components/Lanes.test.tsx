@@ -17,8 +17,9 @@ import { LaneData, CustomListData } from "../../../src/interfaces";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
 
-// Render react-router's Link as a marker so the lane tree and editor links
-// render without a Router in context (see Lane.test.tsx / CustomListsSidebar.test.tsx).
+// Render React Router's `Link` as a marker, so that the lane tree and editor
+// links render without a router, and a test can read each target. To test real
+// links, remove this mock and use the `route` option of `renderWithProviders`.
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   Link: (props) => (
