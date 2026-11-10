@@ -5,8 +5,8 @@ import { http, HttpResponse } from "msw";
 import { renderWithProviders } from "../testUtils/withProviders";
 import { setupMswServer } from "../testUtils/mswServer";
 
-// Header and Footer are page chrome; Header pulls in the react-router v3 context
-// that renderWithProviders does not supply. Mock them to markers.
+// Header and Footer are page chrome; Header reads the legacy `router` context
+// and fetches on mount. Mock them to markers.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,
   default: () => <div data-testid="header" />,
@@ -16,9 +16,9 @@ jest.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
-// The real Lanes child (and its sidebar/editor) renders React Router `Link`s,
-// which need router context renderWithProviders does not supply. Mock `Link` to
-// a marker, matching Lane.test.tsx.
+// Render React Router's `Link` as a marker, so that the real Lanes child (and
+// its sidebar and editor) can render without a router. To test real links,
+// remove this mock and use the `route` option of `renderWithProviders`.
 jest.mock("react-router", () => ({
   ...jest.requireActual("react-router"),
   Link: (props) => <div data-testid="Link">{props.children}</div>,

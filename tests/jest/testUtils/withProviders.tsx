@@ -3,7 +3,9 @@ import { Provider, ProviderProps } from "react-redux";
 import ContextProvider, {
   ContextProviderProps,
 } from "../../../src/components/ContextProvider";
+import LegacyRouterBridge from "../../../src/components/LegacyRouterBridge";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { store } from "../../../src/store";
@@ -13,6 +15,7 @@ export type TestProviderWrapperOptions = {
   reduxProviderProps?: ProviderProps;
   appConfigSettings?: Partial<ConfigurationSettings>;
   queryClient?: QueryClient;
+  route?: string;
 };
 export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
   renderOptions?: Omit<RenderOptions, "queries">;
@@ -37,6 +40,10 @@ const requiredAppConfigSettings: Partial<ConfigurationSettings> = {
  * @param options.reduxProviderProps Props to pass to the Redux `Provider` wrapper
  * @param {ConfigurationSettings} options.appConfigSettings
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
+ * @param {string} options.route If set, render inside a React Router
+ *  `MemoryRouter` at this path, with the legacy `router` context that
+ *  `LegacyRouterBridge` provides. Like the app, it does not use transitions.
+ *  Without it, there is no router.
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */
 export const componentWithProviders = ({
@@ -45,6 +52,7 @@ export const componentWithProviders = ({
   },
   appConfigSettings = {},
   queryClient = new QueryClient(),
+  route,
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const config = { ...requiredAppConfigSettings, ...appConfigSettings };
   const effectiveContextProviderProps = {
@@ -55,7 +63,13 @@ export const componentWithProviders = ({
     <Provider {...reduxProviderProps}>
       <ContextProvider {...effectiveContextProviderProps}>
         <QueryClientProvider client={queryClient}>
-          {children}
+          {route === undefined ? (
+            children
+          ) : (
+            <MemoryRouter initialEntries={[route]} useTransitions={false}>
+              <LegacyRouterBridge>{children}</LegacyRouterBridge>
+            </MemoryRouter>
+          )}
         </QueryClientProvider>
       </ContextProvider>
     </Provider>

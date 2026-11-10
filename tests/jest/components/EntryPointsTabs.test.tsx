@@ -1,22 +1,20 @@
 import * as React from "react";
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { useLocation } from "react-router";
 import { FacetData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 
-// Each tab is a CatalogLink, which renders a React Router `Link`. Router `Link`
-// needs router context that `renderWithProviders` does not supply, so mock it to
-// a marker that exposes its navigation target and children (matching Lane.test.tsx).
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  Link: (props) => (
-    <div data-testid="Link" data-to={props.to}>
-      {props.children}
-    </div>
-  ),
-}));
-
 import { EntryPointsTabs } from "../../../src/components/EntryPointsTabs";
+
+// Each tab is a web-opds-client CatalogLink, which needs the legacy `router`
+// context, so render inside a router.
+const route = "/admin/web";
+
+const CurrentPath = () => (
+  <div data-testid="path">{useLocation().pathname}</div>
+);
 
 const twoFacets: FacetData[] = [
   {
@@ -33,14 +31,15 @@ const twoFacets: FacetData[] = [
 
 describe("EntryPointsTabs", () => {
   it("should not generate any tabs", () => {
-    const { container } = renderWithProviders(<EntryPointsTabs />);
+    const { container } = renderWithProviders(<EntryPointsTabs />, { route });
 
     expect(container.querySelector(".nav-tabs")).toBeNull();
   });
 
   it("should generate two tabs with two entry points", () => {
     const { container } = renderWithProviders(
-      <EntryPointsTabs facets={twoFacets} />
+      <EntryPointsTabs facets={twoFacets} />,
+      { route }
     );
 
     const list = container.querySelector("ul.nav-tabs");
@@ -55,16 +54,30 @@ describe("EntryPointsTabs", () => {
     expect(screen.getByText("Audiobooks")).toBeInTheDocument();
   });
 
-  it("uses router to navigate when a tab is clicked", () => {
-    renderWithProviders(<EntryPointsTabs facets={twoFacets} />);
+  it("links each tab to its collection and navigates on click", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <>
+        <EntryPointsTabs facets={twoFacets} />
+        <CurrentPath />
+      </>,
+      { route }
+    );
 
-    const links = screen.getAllByTestId("Link");
-    expect(links).toHaveLength(2);
-    expect(links[0]).toHaveTextContent("Ebooks");
-    expect(links[1]).toHaveTextContent("Audiobooks");
-    // Each tab links somewhere for the router to navigate to.
-    expect(links[0]).toHaveAttribute("data-to");
-    expect(links[1]).toHaveAttribute("data-to");
+    const collectionPath = (href: string) =>
+      `/admin/web/collection/${encodeURIComponent(href)}`;
+    const ebooks = screen.getByRole("link", { name: "Ebooks" });
+    const audiobooks = screen.getByRole("link", { name: "Audiobooks" });
+    expect(ebooks).toHaveAttribute("href", collectionPath(twoFacets[0].href));
+    expect(audiobooks).toHaveAttribute(
+      "href",
+      collectionPath(twoFacets[1].href)
+    );
+
+    await user.click(audiobooks);
+    expect(screen.getByTestId("path")).toHaveTextContent(
+      collectionPath(twoFacets[1].href)
+    );
   });
 
   it("should generate one tab with an active entry point", () => {
@@ -76,7 +89,8 @@ describe("EntryPointsTabs", () => {
       },
     ];
     const { container } = renderWithProviders(
-      <EntryPointsTabs facets={oneFacet} />
+      <EntryPointsTabs facets={oneFacet} />,
+      { route }
     );
 
     const items = container.querySelectorAll("ul.nav-tabs li");

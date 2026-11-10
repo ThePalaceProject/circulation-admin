@@ -6,26 +6,7 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
-
-// CustomListsForBook renders a react-router v3 <Link> for which
-// renderWithProviders supplies no router context. Mock it to a marker that
-// exposes the `to` pathname and state so the destination can be asserted.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  Link: (props: any) => (
-    <div
-      data-testid="Link"
-      data-pathname={
-        typeof props.to === "string" ? props.to : props.to?.pathname
-      }
-      data-book-title={
-        typeof props.to === "object" ? props.to?.state?.bookTitle : undefined
-      }
-    >
-      {props.children}
-    </div>
-  ),
-}));
+import { MemoryRouter, useLocation } from "react-router";
 
 // Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
 // are exercised. The book's lists and all available lists are fetched on mount
@@ -44,18 +25,32 @@ const listsForBook = [
   { id: "2", name: "list 2", is_owner: true, is_shared: false },
 ];
 
+// Shows where the list creator link goes, and the state it carries.
+const CurrentLocation = () => {
+  const { pathname, state } = useLocation();
+  return (
+    <div data-testid="location">
+      {pathname} {JSON.stringify(state)}
+    </div>
+  );
+};
+
 const renderConnected = () => {
   const store = buildStore();
   const refreshCatalog = jest.fn().mockResolvedValue(undefined);
   const result = renderWithProviders(
-    <CustomListsForBook
-      csrfToken="token"
-      book={{ id: "id", title: "test title" } as any}
-      bookUrl="works/book url"
-      library="library"
-      refreshCatalog={refreshCatalog}
-    />,
-    { reduxProviderProps: { store } }
+    <>
+      <CustomListsForBook
+        csrfToken="token"
+        book={{ id: "id", title: "test title" } as any}
+        bookUrl="works/book url"
+        library="library"
+        refreshCatalog={refreshCatalog}
+      />
+      <CurrentLocation />
+    </>,
+    // The list creator link needs a router.
+    { reduxProviderProps: { store }, route: "/admin/web" }
   );
   return { ...result, refreshCatalog };
 };
@@ -162,13 +157,16 @@ describe("CustomListsForBook", () => {
 
     await screen.findByRole("link", { name: "list 2" });
 
-    const creatorLink = screen.getByTestId("Link");
-    expect(creatorLink).toHaveTextContent("Create a new list");
+    const creatorLink = screen.getByRole("link", { name: "Create a new list" });
     expect(creatorLink).toHaveAttribute(
-      "data-pathname",
+      "href",
       "/admin/web/lists/library/create"
     );
-    expect(creatorLink).toHaveAttribute("data-book-title", "test title");
+    // The list creator page reads the title from the location state.
+    await userEvent.setup().click(creatorLink);
+    expect(screen.getByTestId("location")).toHaveTextContent(
+      '/admin/web/lists/library/create {"bookTitle":"test title"}'
+    );
     expect(
       screen.getByText(
         "(The book title will be automatically copied and searched on the list creator page.)"
@@ -207,7 +205,9 @@ describe("CustomListsForBook", () => {
         fetchAllCustomLists={fetchAllCustomLists}
         fetchCustomListsForBook={fetchCustomListsForBook}
         editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
-      />
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
     );
 
     expect(fetchCustomListsForBook).toHaveBeenCalledTimes(1);
@@ -275,7 +275,9 @@ describe("CustomListsForBook", () => {
         fetchCustomListsForBook={jest.fn()}
         editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
         fetchError={{ status: 400, response: "boom", url: "" } as any}
-      />
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
     );
     expect(screen.getByText(/Error: boom/)).toBeInTheDocument();
   });
@@ -295,7 +297,9 @@ describe("CustomListsForBook", () => {
         fetchCustomListsForBook={jest.fn()}
         editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
         isFetching={true}
-      />
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
     );
     expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
@@ -317,7 +321,9 @@ describe("CustomListsForBook", () => {
         book={{ id: "a", title: "Book A" } as any}
         bookUrl="works/book-a"
         customListsForBook={listsForBook as any}
-      />
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
     );
     // list 2 (the book's only list) is in the current column, which renders
     // each list as a link; the add-menu renders options instead.

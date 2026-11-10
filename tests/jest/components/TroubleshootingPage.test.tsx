@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "../testUtils/withProviders";
 import title from "../../../src/utils/title";
 
-// Header needs react-router v3 context that renderWithProviders does not supply,
-// and both Header and Footer are page chrome, so mock them to markers.
+// Header reads the legacy `router` context and fetches on mount, and both
+// Header and Footer are page chrome, so mock them to markers.
 jest.mock("../../../src/components/Header", () => ({
   __esModule: true,
   default: () => <div data-testid="header" />,
