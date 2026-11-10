@@ -1,6 +1,5 @@
 import * as React from "react";
 import { screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
 
 import CirculationEventsDownload from "../../../src/components/CirculationEventsDownload";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
