@@ -18,17 +18,17 @@ export default defineConfig({
       jsdom: { url: "http://localhost/" },
     },
     setupFiles: [
-      "tests/jest/vitest-polyfills.js",
-      "tests/jest/vitest-setup.ts",
+      "tests/unit/vitest-polyfills.js",
+      "tests/unit/vitest-setup.ts",
     ],
-    include: ["tests/jest/**/*.test.{js,jsx,ts,tsx}"],
+    include: ["tests/unit/**/*.test.{js,jsx,ts,tsx}"],
     css: false,
     // Run `afterEach` and `afterAll` hooks in the order they are defined.
     // Vitest's default is the reverse order.
     sequence: { hooks: "list" },
     coverage: {
       provider: "v8",
-      reportsDirectory: "coverage/jest",
+      reportsDirectory: "coverage/unit",
       reporter: ["lcov", "text-summary"],
       // Listing `src` here also reports source files that no test imports.
       // Without it they are left out, and the percentage rises while real

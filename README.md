@@ -126,14 +126,14 @@ In order to run the app with `react-axe`, run `npm run dev-test-axe`. This will 
 
 ### Unit Tests
 
-Like the codebase, the unit tests are written in Typescript. They cover React components as well as redux and utility functions. Tests run under [Vitest](https://vitest.dev/) and live in the `tests/jest` directory, whose structure mirrors `src`; each file is named `*.test.ts` / `*.test.tsx`, and shared fixture data lives in `tests/jest/fixtures`.
+Like the codebase, the unit tests are written in Typescript. They cover React components as well as redux and utility functions. Tests run under [Vitest](https://vitest.dev/) and live in the `tests/unit` directory, whose structure mirrors `src`; each file is named `*.test.ts` / `*.test.tsx`, and shared fixture data lives in `tests/unit/fixtures`.
 
-Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), which drives components the way a user does — query by role and text, not by internal structure. `tests/jest/testUtils` has helpers for the common setup: `renderWithProviders()` wraps a component in the Redux store, app context, and QueryClient, and `renderWithContext()` does app context alone. Network calls are mocked with [MSW](https://mswjs.io/) through `setupMswServer()` in `tests/jest/testUtils/mswServer.ts`, which also records each request so a test can check it.
+Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), which drives components the way a user does — query by role and text, not by internal structure. `tests/unit/testUtils` has helpers for the common setup: `renderWithProviders()` wraps a component in the Redux store, app context, and QueryClient, and `renderWithContext()` does app context alone. Network calls are mocked with [MSW](https://mswjs.io/) through `setupMswServer()` in `tests/unit/testUtils/mswServer.ts`, which also records each request so a test can check it.
 
 ```bash
 npm test                       # the whole suite
 npm run test-file <path>       # a single file
-npm run coverage               # the suite with a coverage report, written to coverage/jest/lcov.info
+npm run coverage               # the suite with a coverage report, written to coverage/unit/lcov.info
 ```
 
 We use GitHub Actions for continuous integration. Any pull requests submitted must have tests and those tests must pass on GitHub Actions. Coverage is reported to Codecov, which will comment on the pull request if it drops.

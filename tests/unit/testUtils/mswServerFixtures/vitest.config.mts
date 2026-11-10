@@ -7,6 +7,6 @@ export default defineConfig({
   ...baseConfig,
   test: {
     ...baseConfig.test,
-    include: ["tests/jest/testUtils/mswServerFixtures/*.fixture.ts"],
+    include: ["tests/unit/testUtils/mswServerFixtures/*.fixture.ts"],
   },
 });

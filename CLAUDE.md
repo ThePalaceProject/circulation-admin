@@ -18,12 +18,12 @@ npm run lint                   # Run ESLint (lint:js) + sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
 npm run typecheck              # Check types with tsc (Vitest does not check types)
 npm test                       # Full Vitest suite
-npm run test-file <path>       # Single test: npm run test-file tests/jest/components/MyTest.test.tsx
-npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
+npm run test-file <path>       # Single test: npm run test-file tests/unit/components/MyTest.test.tsx
+npm run coverage               # Test suite with coverage (what CI runs); writes coverage/unit/lcov.info
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
-Run a single file with `npx vitest run tests/jest/components/MyTest.test.tsx`.
+Run a single file with `npx vitest run tests/unit/components/MyTest.test.tsx`.
 
 The dev server can also read the backend URL from `.env` or `.env.local` with `BACKEND=https://...`.
 
@@ -69,11 +69,11 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Every test runs under one Vitest config (`vitest.config.mts`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `include` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`. The `tests/jest/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
+Every test runs under one Vitest config (`vitest.config.mts`). Tests live in `tests/unit/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `include` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/unit/fixtures/`. The `tests/unit/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
 
-Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/vitest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
+Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/unit/vitest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
 
-Helpers in `tests/jest/testUtils/`:
+Helpers in `tests/unit/testUtils/`:
 
 - `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store. Pass `route` (for example `{ route: "/admin/web" }`) to also render inside a React Router `MemoryRouter` with `LegacyRouterBridge`, so links and navigation work.
 - `renderWithContext.tsx` — lighter: app Context only.
@@ -91,7 +91,7 @@ Helpers in `tests/jest/testUtils/`:
   - A mock of `react-router` does not reach `CatalogLink`, because it uses web-opds-client's own react-router v3.
 - If you must mock `Link`, mock it as a `<div>`, not an `<a>` (jsx-a11y). Mock a default export as `{ default: ... }`. A `vi.mock` factory needs the `default` key, and Vitest does not need `__esModule`.
 
-**Environment:** tests run in jsdom, with `describe`, `it`, `expect`, and `vi` as globals. `tests/jest/vitest-polyfills.js` runs first. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `resolve.alias` in `vitest.config.mts` stubs asset and markdown imports out to `tests/__mocks__/fileMock.js`. `jsdom` is on 26 on purpose: a later version loses the space before a `<span>` in the accessible names that `getByRole` matches, and that needs test changes.
+**Environment:** tests run in jsdom, with `describe`, `it`, `expect`, and `vi` as globals. `tests/unit/vitest-polyfills.js` runs first. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `resolve.alias` in `vitest.config.mts` stubs asset and markdown imports out to `tests/__mocks__/fileMock.js`. `jsdom` is on 26 on purpose: a later version loses the space before a `<span>` in the accessible names that `getByRole` matches, and that needs test changes.
 
 **Vitest differences that matter here:**
 
@@ -101,7 +101,7 @@ Helpers in `tests/jest/testUtils/`:
 - In `src/`, use `import`, not `require`, for anything a test mocks and for assets. `vi.mock` and `resolve.alias` do not apply to `require`. Do not write `import React = require("react")` in a `.tsx` file: the import is removed as unused and `React` is undefined at run time.
 - `sequence.hooks` is `"list"`, so `afterEach` and `afterAll` hooks run in the order they are defined, as in Jest.
 
-**Coverage:** `npm run coverage` writes `coverage/jest/lcov.info`, uploaded to Codecov under the `jest` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. `coverage.include` in `vitest.config.mts` must keep listing `src`, so that source files no test imports are counted as uncovered instead of being left out of the report.
+**Coverage:** `npm run coverage` writes `coverage/unit/lcov.info`, uploaded to Codecov under the `unit` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. `coverage.include` in `vitest.config.mts` must keep listing `src`, so that source files no test imports are counted as uncovered instead of being left out of the report.
 
 **End-to-end:** Nightwatch/selenium tests live in `tests/browser/` (config: `nightwatch.json`, run via `npm run test-browser`). They need credentials and a selenium install, are not part of `npm test`, and do not run in CI; see `tests/browser/README.md`.
 

@@ -41,8 +41,8 @@ jobs:
       # than a build failure.
       - name: Check coverage report was written 🔍
         run: |
-          if [ ! -s coverage/jest/lcov.info ]; then
-            echo "::error::coverage/jest/lcov.info is missing or empty"
+          if [ ! -s coverage/unit/lcov.info ]; then
+            echo "::error::coverage/unit/lcov.info is missing or empty"
             exit 1
           fi
 
@@ -52,8 +52,8 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/jest/lcov.info
+          files: ./coverage/unit/lcov.info
           disable_search: true
-          flags: jest
-          name: jest-node-${{ matrix.node-version }}
+          flags: unit
+          name: unit-node-${{ matrix.node-version }}
           verbose: true

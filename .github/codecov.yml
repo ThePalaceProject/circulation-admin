@@ -9,7 +9,7 @@ comment:
   # Only comment when coverage changes
   require_changes: true
 
-# Everything is uploaded under the `jest` flag; it runs on every push, so
+# Everything is uploaded under the `unit` flag; it runs on every push, so
 # carryforward is off.
 flag_management:
   default_rules: # the rules that will be followed for any flag added, generally
