@@ -459,7 +459,7 @@ describe("ProtocolFormField — setting types", () => {
 
   it("forwards onChange to the underlying EditableInput", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <ProtocolFormField
         setting={baseSetting}
@@ -473,7 +473,7 @@ describe("ProtocolFormField — setting types", () => {
 
   it("forwards onChange to the InputList (a list setting reports add/remove)", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <ProtocolFormField
         setting={{ ...baseSetting, type: "list" }}
@@ -507,7 +507,7 @@ describe("ProtocolFormField — setting types", () => {
   // the `list` add-control above, so it needs its own coverage.
   it("forwards onChange to the InputList menu control", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <ProtocolFormField
         setting={{ ...baseSetting, type: "menu", menuOptions } as any}
@@ -523,7 +523,7 @@ describe("ProtocolFormField — setting types", () => {
   });
 
   it("forwards readOnly to the InputList menu control", () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(
       <ProtocolFormField
         setting={{ ...baseSetting, type: "menu", menuOptions } as any}

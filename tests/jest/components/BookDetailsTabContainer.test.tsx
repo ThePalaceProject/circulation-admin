@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { Provider } from "react-redux";
@@ -11,8 +12,7 @@ import { getBookData } from "../../../src/features/book/bookEditorSlice";
 // This container's behavior is the tab SET, tab SWITCHING, and clearing book data,
 // not the panels' internals, so mock each panel to a marker echoing the props the
 // container is responsible for threading into it.
-jest.mock("../../../src/components/BookDetailsEditor", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/BookDetailsEditor", () => ({
   default: (props: any) => (
     <div
       data-testid="book-details-editor"
@@ -21,14 +21,12 @@ jest.mock("../../../src/components/BookDetailsEditor", () => ({
     />
   ),
 }));
-jest.mock("../../../src/components/Classifications", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Classifications", () => ({
   default: (props: any) => (
     <div data-testid="classifications" data-book-url={props.bookUrl} />
   ),
 }));
-jest.mock("../../../src/components/CustomListsForBook", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/CustomListsForBook", () => ({
   default: (props: any) => (
     <div
       data-testid="custom-lists-for-book"
@@ -37,8 +35,7 @@ jest.mock("../../../src/components/CustomListsForBook", () => ({
     />
   ),
 }));
-jest.mock("../../../src/components/BookCoverEditor", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/BookCoverEditor", () => ({
   default: (props: any) => (
     <div data-testid="book-cover-editor" data-book-url={props.bookUrl} />
   ),
@@ -76,13 +73,13 @@ describe("BookDetailsTabContainer", () => {
   type Overrides = {
     bookData?: any;
     bookUrl?: string;
-    clearBook?: jest.Mock;
-    push?: jest.Mock;
+    clearBook?: Mock;
+    push?: Mock;
   };
 
   const renderContainer = (overrides: Overrides = {}) => {
-    const push = overrides.push || jest.fn();
-    const clearBook = overrides.clearBook || jest.fn();
+    const push = overrides.push || vi.fn();
+    const clearBook = overrides.clearBook || vi.fn();
     const context = { router: { push }, pathFor };
     // One store for the lifetime of the render: a fresh one per element() call
     // would hand the panels a new store identity on every rerender.
@@ -93,7 +90,7 @@ describe("BookDetailsTabContainer", () => {
           bookUrl={bookUrl}
           collectionUrl={TEST_COLLECTION_URL}
           csrfToken="token"
-          refreshCatalog={jest.fn()}
+          refreshCatalog={vi.fn()}
           store={store}
           library={() => "library"}
           canSuppress={true}
@@ -174,14 +171,14 @@ describe("BookDetailsTabContainer", () => {
   });
 
   it("clears book data when receiving new book url", () => {
-    const clearBook = jest.fn();
+    const clearBook = vi.fn();
     const { rerenderWith } = renderContainer({ clearBook });
     rerenderWith("new book url");
     expect(clearBook).toHaveBeenCalledTimes(1);
   });
 
   it("clears book data on unmount", () => {
-    const clearBook = jest.fn();
+    const clearBook = vi.fn();
     const { unmount } = renderContainer({ clearBook });
     unmount();
     expect(clearBook).toHaveBeenCalledTimes(1);
@@ -192,14 +189,12 @@ describe("BookDetailsTabContainer", () => {
   const renderConnected = (store = buildStore()) =>
     render(
       <Provider store={store}>
-        <LegacyContextProvider
-          context={{ router: { push: jest.fn() }, pathFor }}
-        >
+        <LegacyContextProvider context={{ router: { push: vi.fn() }, pathFor }}>
           <BookDetailsTabContainerConnected
             bookUrl={TEST_BOOK_URL}
             collectionUrl={TEST_COLLECTION_URL}
             csrfToken="token"
-            refreshCatalog={jest.fn()}
+            refreshCatalog={vi.fn()}
             library={() => "library"}
             canSuppress={true}
             tab={null}

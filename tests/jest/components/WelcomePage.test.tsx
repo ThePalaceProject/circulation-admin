@@ -4,12 +4,10 @@ import { render, screen } from "@testing-library/react";
 // Header reads the legacy `router` context and fetches on mount, and both
 // Header and Footer are page chrome with no behavior worth exercising here.
 // Mock them to markers so the test stays about what WelcomePage composes.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 

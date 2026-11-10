@@ -8,8 +8,7 @@ import buildStore from "../../../src/store";
 // It is incidental to what `SelfTestsCategory` itself does (build one panel per
 // item, color-code them, decide `openByDefault`, and compute `sortByCollection`),
 // so mock it to a marker that exposes the props the category passes down.
-jest.mock("../../../src/components/SelfTests", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/SelfTests", () => ({
   default: (props: any) => (
     <div
       data-testid="self-tests"

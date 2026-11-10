@@ -14,9 +14,7 @@ import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../utils/title";
-
-const palaceLogoUrl =
-  require("../images/PalaceCollectionManagerLogo.svg").default;
+import palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 
 export interface HeaderStateProps {
   isFetchingLibraries?: boolean;

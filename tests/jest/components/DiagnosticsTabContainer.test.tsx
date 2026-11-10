@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,8 +8,7 @@ import buildStore from "../../../src/store";
 // The active tab renders DiagnosticsServiceType, which recurses into the service
 // tab machinery. The legacy test only asserted the `type`/`services` props it
 // received, so mock it to a marker that echoes those.
-jest.mock("../../../src/components/DiagnosticsServiceType", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/DiagnosticsServiceType", () => ({
   default: (props: any) => (
     <div
       data-testid="service-type"
@@ -21,8 +21,8 @@ jest.mock("../../../src/components/DiagnosticsServiceType", () => ({
 import { DiagnosticsTabContainer } from "../../../src/components/DiagnosticsTabContainer";
 
 describe("DiagnosticsTabContainer", () => {
-  let goToTab: jest.Mock;
-  let fetchDiagnostics: jest.Mock;
+  let goToTab: Mock;
+  let fetchDiagnostics: Mock;
 
   const ts1 = {
     service: "test_service",
@@ -37,8 +37,8 @@ describe("DiagnosticsTabContainer", () => {
   };
 
   beforeEach(() => {
-    goToTab = jest.fn();
-    fetchDiagnostics = jest.fn();
+    goToTab = vi.fn();
+    fetchDiagnostics = vi.fn();
   });
 
   const element = (overrides = {}) => {

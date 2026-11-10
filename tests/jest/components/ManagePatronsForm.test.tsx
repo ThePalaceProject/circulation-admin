@@ -8,9 +8,9 @@ import buildStore from "../../../src/store";
 import { ManagePatronsForm } from "../../../src/components/ManagePatronsForm";
 import { PatronData } from "../../../src/interfaces";
 
-// The reusable-components `Form` builds `new FormData(formElement)` on submit,
-// which the unit jsdom environment's undici FormData rejects; install the shared
-// shim that reads the form's successful controls.
+// The reusable-components `Form` builds `new FormData(formElement)` on
+// submit. Install the shared shim, so the payload holds only the form's
+// successful controls, as a browser sends them.
 installFormDataShim();
 
 const patron: PatronData = {
@@ -34,8 +34,8 @@ const renderForm = (props: Record<string, unknown> = {}) =>
       store={buildStore()}
       csrfToken="token"
       library="nypl"
-      patronLookup={jest.fn()}
-      clearPatronData={jest.fn()}
+      patronLookup={vi.fn()}
+      clearPatronData={vi.fn()}
       {...props}
     />
   );
@@ -74,7 +74,7 @@ describe("ManagePatronsForm", () => {
   describe("behavior", () => {
     it("calls patronLookup on submit", async () => {
       const user = userEvent.setup();
-      const patronLookup = jest.fn();
+      const patronLookup = vi.fn();
       renderForm({ patronLookup });
 
       expect(patronLookup).not.toHaveBeenCalled();
@@ -100,8 +100,8 @@ describe("ManagePatronsForm", () => {
           store={buildStore()}
           csrfToken="token"
           library="nypl"
-          patronLookup={jest.fn()}
-          clearPatronData={jest.fn()}
+          patronLookup={vi.fn()}
+          clearPatronData={vi.fn()}
           fetchError={fetchError}
         />
       );
@@ -126,8 +126,8 @@ describe("ManagePatronsForm", () => {
           store={buildStore()}
           csrfToken="token"
           library="nypl"
-          patronLookup={jest.fn()}
-          clearPatronData={jest.fn()}
+          patronLookup={vi.fn()}
+          clearPatronData={vi.fn()}
           fetchError={fetchError}
         />
       );
@@ -146,8 +146,8 @@ describe("ManagePatronsForm", () => {
           store={buildStore()}
           csrfToken="token"
           library="nypl"
-          patronLookup={jest.fn()}
-          clearPatronData={jest.fn()}
+          patronLookup={vi.fn()}
+          clearPatronData={vi.fn()}
           patron={patron}
         />
       );
@@ -168,8 +168,8 @@ describe("ManagePatronsForm", () => {
           store={buildStore()}
           csrfToken="token"
           library="nypl"
-          patronLookup={jest.fn()}
-          clearPatronData={jest.fn()}
+          patronLookup={vi.fn()}
+          clearPatronData={vi.fn()}
           patron={patron}
         />
       );

@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from "react";
 import { Button } from "library-simplified-reusable-components";
 import StatsGroup from "./StatsGroup";
 import InventoryReportRequestModal from "./InventoryReportRequestModal";

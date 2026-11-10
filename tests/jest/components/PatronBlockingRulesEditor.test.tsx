@@ -80,7 +80,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(true) when a rule is added because it is incomplete", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -98,7 +98,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(false) after successful validation on blur", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -119,7 +119,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(false) after failed validation on blur (validation does not block save)", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     server.use(failureHandler("Bad expression"));
 
@@ -144,7 +144,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(true) when two rules have the same name", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const rules: PatronBlockingRule[] = [
       { name: "Rule A", rule: "expr_a" },
       { name: "Rule B", rule: "expr_b" },
@@ -174,7 +174,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(false) after a duplicate name is resolved", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const rules: PatronBlockingRule[] = [
       { name: "Rule A", rule: "expr_a" },
       { name: "Rule A", rule: "expr_b" }, // duplicate
@@ -204,7 +204,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("calls onValidationStateChange(true) when a rule is added without a serviceId because it is incomplete", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -223,7 +223,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("removes blocking state when the pending rule is deleted", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -244,7 +244,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("does not block save when a rule with no serviceId has all required fields filled", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -265,7 +265,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("keeps save blocked until every rule has required fields (validation does not block)", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
 
     renderEditor(
       <PatronBlockingRulesEditor
@@ -300,7 +300,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
   it("does not block save when an existing rule's expression is edited (validation is advisory)", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const rules: PatronBlockingRule[] = [{ name: "Rule A", rule: "expr_a" }];
 
     renderEditor(

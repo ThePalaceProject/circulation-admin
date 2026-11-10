@@ -10,8 +10,8 @@ import ConnectedChangePasswordForm, {
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
 // The reusable-components `Form` builds `new FormData(formElement)` on
-// submit, which the unit jsdom env's undici FormData rejects; install the
-// shared shim that reads the form's successful controls.
+// submit. Install the shared shim, so the payload holds only the form's
+// successful controls, as a browser sends them.
 installFormDataShim();
 
 // Render the unconnected class so tests can pass a `changePassword` spy and
@@ -24,7 +24,7 @@ const renderUnconnected = (
     <ChangePasswordForm
       isFetching={false}
       csrfToken="token"
-      changePassword={jest.fn().mockResolvedValue(undefined)}
+      changePassword={vi.fn().mockResolvedValue(undefined)}
       {...props}
     />
   );
@@ -47,7 +47,7 @@ describe("ChangePasswordForm", () => {
       <ChangePasswordForm
         isFetching={false}
         csrfToken="token"
-        changePassword={jest.fn()}
+        changePassword={vi.fn()}
         fetchError={{ status: 500, response: "response", url: "" }}
       />
     );
@@ -64,7 +64,7 @@ describe("ChangePasswordForm", () => {
       <ChangePasswordForm
         isFetching={true}
         csrfToken="token"
-        changePassword={jest.fn()}
+        changePassword={vi.fn()}
       />
     );
 
@@ -84,7 +84,7 @@ describe("ChangePasswordForm", () => {
 
   it("does not submit a blank form", async () => {
     const user = userEvent.setup();
-    const changePassword = jest.fn().mockResolvedValue(undefined);
+    const changePassword = vi.fn().mockResolvedValue(undefined);
     renderUnconnected({ changePassword });
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -97,7 +97,7 @@ describe("ChangePasswordForm", () => {
   // this partial submit rather than lingering from an earlier blank one.
   it("does not submit a partially blank form", async () => {
     const user = userEvent.setup();
-    const changePassword = jest.fn().mockResolvedValue(undefined);
+    const changePassword = vi.fn().mockResolvedValue(undefined);
     const { container } = renderUnconnected({ changePassword });
     expect(screen.queryByText("Fields cannot be blank.")).toBeNull();
 
@@ -111,7 +111,7 @@ describe("ChangePasswordForm", () => {
 
   it("does not submit when the passwords do not match", async () => {
     const user = userEvent.setup();
-    const changePassword = jest.fn().mockResolvedValue(undefined);
+    const changePassword = vi.fn().mockResolvedValue(undefined);
     const { container } = renderUnconnected({ changePassword });
 
     await user.type(passwordInput(container), "newPassword");
@@ -124,7 +124,7 @@ describe("ChangePasswordForm", () => {
 
   it("submits the new password and shows a success message", async () => {
     const user = userEvent.setup();
-    const changePassword = jest.fn().mockResolvedValue(undefined);
+    const changePassword = vi.fn().mockResolvedValue(undefined);
     const { container } = renderUnconnected({ changePassword });
 
     await user.type(passwordInput(container), "newPassword");

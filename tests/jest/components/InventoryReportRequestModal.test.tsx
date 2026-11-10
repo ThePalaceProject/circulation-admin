@@ -71,10 +71,10 @@ describe("InventoryReportRequestModal", () => {
     const wrapper = componentWithProviders({ queryClient });
 
     describe("get report information", () => {
-      const mock_info_api = jest.spyOn(AdminAPI, "getInventoryReportInfo");
+      const mock_info_api = vi.spyOn(AdminAPI, "getInventoryReportInfo");
 
       afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         queryClient.clear();
       });
       afterAll(() => mock_info_api.mockRestore());
@@ -138,14 +138,14 @@ describe("InventoryReportRequestModal", () => {
     });
 
     describe("generate report", () => {
-      const mock_generate_api = jest.spyOn(AdminAPI, "requestInventoryReport");
+      const mock_generate_api = vi.spyOn(AdminAPI, "requestInventoryReport");
 
-      const setResponseMessage = jest.fn();
-      const setShowConfirmationModal = jest.fn();
-      const setShowResponseModal = jest.fn();
+      const setResponseMessage = vi.fn();
+      const setShowConfirmationModal = vi.fn();
+      const setShowResponseModal = vi.fn();
 
       afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         queryClient.clear();
       });
       afterAll(() => mock_generate_api.mockRestore());
@@ -281,7 +281,7 @@ describe("InventoryReportRequestModal", () => {
   });
 
   describe("component rendering", () => {
-    const onHide = jest.fn();
+    const onHide = vi.fn();
     const { server } = setupMockServer();
 
     afterEach(() => {

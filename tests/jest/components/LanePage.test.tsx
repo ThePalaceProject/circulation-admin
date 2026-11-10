@@ -7,20 +7,18 @@ import { setupMswServer } from "../testUtils/mswServer";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
 // Render React Router's `Link` as a marker, so that the real Lanes child (and
 // its sidebar and editor) can render without a router. To test real links,
 // remove this mock and use the `route` option of `renderWithProviders`.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual<object>("react-router")),
   Link: (props) => <div data-testid="Link">{props.children}</div>,
 }));
 

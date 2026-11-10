@@ -27,7 +27,7 @@ describe("LibraryRegistrationForm", () => {
     library: library as Props["library"],
     checked: true,
     buttonText: "Update registration",
-    register: jest.fn(),
+    register: vi.fn(),
     disabled: false,
     registrationData: registrationData as Props["registrationData"],
     ...overrides,
@@ -184,7 +184,7 @@ describe("LibraryRegistrationForm", () => {
 
   it("calls register", async () => {
     const user = userEvent.setup();
-    const register = jest.fn();
+    const register = vi.fn();
     const { rerender } = renderForm({ register });
 
     await user.click(

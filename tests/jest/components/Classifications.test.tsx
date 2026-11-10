@@ -37,7 +37,7 @@ const renderConnected = (
     bookEditor: { ...bookEditorInitialState, url: bookAdminUrl },
   } as any);
   const refreshCatalog =
-    overrides.refreshCatalog ?? jest.fn().mockResolvedValue(undefined);
+    overrides.refreshCatalog ?? vi.fn().mockResolvedValue(undefined);
   const result = renderWithProviders(
     <Classifications
       store={store}
@@ -111,13 +111,13 @@ describe("Classifications", () => {
         csrfToken="token"
         bookUrl={bookUrl}
         book={bookData as any}
-        refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
         bookAdminUrl="book admin url"
         fetchError={{ status: 500, url: "url", response: "response" } as any}
-        fetchGenreTree={jest.fn()}
-        fetchClassifications={jest.fn()}
-        fetchBook={jest.fn()}
-        editClassifications={jest.fn().mockResolvedValue(undefined)}
+        fetchGenreTree={vi.fn()}
+        fetchClassifications={vi.fn()}
+        fetchBook={vi.fn()}
+        editClassifications={vi.fn().mockResolvedValue(undefined)}
         genreTree={null}
         classifications={null}
         isFetching={false}

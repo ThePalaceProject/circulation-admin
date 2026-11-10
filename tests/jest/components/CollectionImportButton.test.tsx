@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -35,13 +36,13 @@ function renderButton(overrides: Partial<CollectionImportButtonProps> = {}) {
   const defaultProps: CollectionImportButtonProps = {
     collection: savedCollection,
     protocols: [protocolWithImport, protocolWithoutImport],
-    importCollection: jest.fn().mockResolvedValue(undefined),
+    importCollection: vi.fn().mockResolvedValue(undefined),
     disabled: false,
     ...overrides,
   };
   return {
     ...render(<CollectionImportButton {...defaultProps} />),
-    importCollection: defaultProps.importCollection as jest.Mock,
+    importCollection: defaultProps.importCollection as Mock,
   };
 }
 
@@ -233,7 +234,7 @@ describe("CollectionImportButton", () => {
 
   it("shows error feedback with alert-danger styling on failure", async () => {
     const user = userEvent.setup();
-    const mockImport = jest
+    const mockImport = vi
       .fn()
       .mockRejectedValue({ response: "Something went wrong" });
     renderButton({ importCollection: mockImport });
@@ -300,7 +301,7 @@ describe("CollectionImportButton", () => {
     const pendingImport = new Promise<void>((resolve) => {
       resolveImport = resolve;
     });
-    const mockImport = jest.fn().mockReturnValue(pendingImport);
+    const mockImport = vi.fn().mockReturnValue(pendingImport);
     renderButton({ importCollection: mockImport });
     await expandPanel(user);
 
@@ -322,7 +323,7 @@ describe("CollectionImportButton", () => {
     const pendingImport = new Promise<void>((resolve) => {
       resolveImport = resolve;
     });
-    const mockImport = jest.fn().mockReturnValue(pendingImport);
+    const mockImport = vi.fn().mockReturnValue(pendingImport);
     renderButton({ importCollection: mockImport });
     await expandPanel(user);
 

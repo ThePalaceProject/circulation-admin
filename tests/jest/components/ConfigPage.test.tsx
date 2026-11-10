@@ -5,12 +5,10 @@ import { renderWithProviders } from "../testUtils/withProviders";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
@@ -19,8 +17,7 @@ jest.mock("../../../src/components/Footer", () => ({
 // is incidental to what ConfigPage composes — the page's job is to hand the tab
 // container the params and context it needs — so mock it to a marker that echoes
 // the props it received.
-jest.mock("../../../src/components/ConfigTabContainer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/ConfigTabContainer", () => ({
   default: (props: any) => (
     <div
       data-testid="config-tab-container"

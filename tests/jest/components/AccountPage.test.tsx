@@ -6,12 +6,10 @@ import { renderWithProviders } from "../testUtils/withProviders";
 // Header and Footer are page chrome with no behavior worth exercising here, and
 // Header reads the legacy `router` context and fetches on mount. Mock them to
 // markers so the test stays about what AccountPage composes.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 

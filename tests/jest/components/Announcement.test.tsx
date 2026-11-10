@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -5,12 +6,12 @@ import userEvent from "@testing-library/user-event";
 import Announcement from "../../../src/components/Announcement";
 
 describe("Announcement", () => {
-  let stubDelete: jest.Mock;
-  let stubEdit: jest.Mock;
+  let stubDelete: Mock;
+  let stubEdit: Mock;
 
   beforeEach(() => {
-    stubDelete = jest.fn();
-    stubEdit = jest.fn();
+    stubDelete = vi.fn();
+    stubEdit = vi.fn();
   });
 
   const renderAnnouncement = (

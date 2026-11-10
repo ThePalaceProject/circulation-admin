@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as classNames from "classnames";
+import { default as classNames } from "classnames";
 import {
   ConnectDragPreview,
   ConnectDragSource,
@@ -74,7 +74,7 @@ const AdvancedSearchValueFilter = ({
 
   const [dropProps, drop]: [
     { canDrop: boolean; isOver: boolean },
-    ConnectDropTarget
+    ConnectDropTarget,
   ] = useDrop(
     {
       accept: "filter",

@@ -15,8 +15,8 @@ import { setupMswServer } from "../testUtils/mswServer";
 // Render react-router's Link as a marker `<div>` so we can read its target
 // (`data-to`) and text without a real Router in context. (A bare `<a>` without an
 // href would fail jsx-a11y, so use a div.)
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual<object>("react-router")),
   Link: (props) => (
     <div data-testid="Link" data-to={props.to} className={props.className}>
       {props.children}
@@ -48,15 +48,15 @@ class LegacyContextProvider extends React.Component<{
 }
 
 const makeRouter = () => ({
-  createHref: jest.fn(),
-  push: jest.fn(),
-  isActive: jest.fn(),
-  replace: jest.fn(),
-  go: jest.fn(),
-  goBack: jest.fn(),
-  goForward: jest.fn(),
-  setRouteLeaveHook: jest.fn(),
-  getCurrentLocation: jest.fn(),
+  createHref: vi.fn(),
+  push: vi.fn(),
+  isActive: vi.fn(),
+  replace: vi.fn(),
+  go: vi.fn(),
+  goBack: vi.fn(),
+  goForward: vi.fn(),
+  setRouteLeaveHook: vi.fn(),
+  getCurrentLocation: vi.fn(),
 });
 
 const libraryManager = new Admin([{ role: "manager", library: "nypl" }]);
@@ -280,13 +280,13 @@ describe("Header", () => {
 
   describe("behavior", () => {
     it("fetches libraries on mount", () => {
-      const fetchLibraries = jest.fn();
+      const fetchLibraries = vi.fn();
       renderHeader({ admin: libraryManager, props: { fetchLibraries } });
       expect(fetchLibraries).toHaveBeenCalledTimes(1);
     });
 
     it("does not fetch libraries on mount if a fetch is already in progress", () => {
-      const fetchLibraries = jest.fn();
+      const fetchLibraries = vi.fn();
       renderHeader({
         admin: libraryManager,
         props: { fetchLibraries, isFetchingLibraries: true },

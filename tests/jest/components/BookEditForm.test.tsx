@@ -63,8 +63,8 @@ describe("BookEditForm", () => {
     media,
     languages,
     disabled: false,
-    refresh: jest.fn(),
-    editBook: jest.fn().mockResolvedValue(undefined),
+    refresh: vi.fn(),
+    editBook: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   });
 
@@ -274,7 +274,7 @@ describe("BookEditForm", () => {
 
   it("calls editBook on submit", async () => {
     const user = userEvent.setup();
-    const editBook = jest.fn().mockResolvedValue(undefined);
+    const editBook = vi.fn().mockResolvedValue(undefined);
     renderForm({ editBook });
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -314,8 +314,8 @@ describe("BookEditForm", () => {
 
   it("refreshes book after editing", async () => {
     const user = userEvent.setup();
-    const editBook = jest.fn().mockResolvedValue(undefined);
-    const refresh = jest.fn().mockResolvedValue(undefined);
+    const editBook = vi.fn().mockResolvedValue(undefined);
+    const refresh = vi.fn().mockResolvedValue(undefined);
     renderForm({ editBook, refresh });
 
     await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -325,8 +325,8 @@ describe("BookEditForm", () => {
 
   it("only adds updated summary content if it's not empty", async () => {
     const user = userEvent.setup();
-    const editBook = jest.fn().mockResolvedValue(undefined);
-    const refresh = jest.fn().mockResolvedValue(undefined);
+    const editBook = vi.fn().mockResolvedValue(undefined);
+    const refresh = vi.fn().mockResolvedValue(undefined);
     // Since we are adding an empty string, there should be no `summary` value
     // in the FormData object that gets passed to the `editBook` function.
     renderForm({

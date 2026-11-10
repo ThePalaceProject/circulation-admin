@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
@@ -10,38 +11,37 @@ import Admin from "../../../src/models/Admin";
 // This container's behavior is the tab SET and tab SWITCHING, not the panels'
 // internals, so mock each panel to a marker echoing the props the container is
 // responsible for threading into it (csrfToken / editOrCreate / identifier).
-const panelMock = (testId: string) => ({
-  __esModule: true,
-  default: (props: any) => (
-    <div
-      data-testid={testId}
-      data-csrf-token={props.csrfToken}
-      data-edit-or-create={props.editOrCreate}
-      data-identifier={props.identifier}
-    />
-  ),
-});
+function panelMock(testId: string) {
+  return {
+    default: (props: any) => (
+      <div
+        data-testid={testId}
+        data-csrf-token={props.csrfToken}
+        data-edit-or-create={props.editOrCreate}
+        data-identifier={props.identifier}
+      />
+    ),
+  };
+}
 
-jest.mock("../../../src/components/Libraries", () => panelMock("libraries"));
-jest.mock("../../../src/components/Collections", () =>
-  panelMock("collections")
-);
-jest.mock("../../../src/components/IndividualAdmins", () =>
+vi.mock("../../../src/components/Libraries", () => panelMock("libraries"));
+vi.mock("../../../src/components/Collections", () => panelMock("collections"));
+vi.mock("../../../src/components/IndividualAdmins", () =>
   panelMock("individual-admins")
 );
-jest.mock("../../../src/components/PatronAuthServices", () =>
+vi.mock("../../../src/components/PatronAuthServices", () =>
   panelMock("patron-auth-services")
 );
-jest.mock("../../../src/components/MetadataServices", () =>
+vi.mock("../../../src/components/MetadataServices", () =>
   panelMock("metadata-services")
 );
-jest.mock("../../../src/components/CatalogServices", () =>
+vi.mock("../../../src/components/CatalogServices", () =>
   panelMock("catalog-services")
 );
-jest.mock("../../../src/components/DiscoveryServices", () =>
+vi.mock("../../../src/components/DiscoveryServices", () =>
   panelMock("discovery-services")
 );
-jest.mock("../../../src/components/SitewideAnnouncements", () =>
+vi.mock("../../../src/components/SitewideAnnouncements", () =>
   panelMock("sitewide-announcements")
 );
 
@@ -72,8 +72,8 @@ describe("ConfigTabContainer", () => {
   const libraryManagerA = new Admin([{ role: "manager", library: "a" }]);
   const sitewideLibrarian = new Admin([{ role: "librarian-all" }]);
 
-  const renderWithAdmin = (admin: Admin, push: jest.Mock = jest.fn()) => {
-    const context = { router: { push }, pathFor: jest.fn(), admin };
+  const renderWithAdmin = (admin: Admin, push: Mock = vi.fn()) => {
+    const context = { router: { push }, pathFor: vi.fn(), admin };
     const result = render(
       <LegacyContextProvider context={context}>
         <ConfigTabContainer

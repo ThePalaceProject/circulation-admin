@@ -172,8 +172,8 @@ describe("Redux bookEditorSlice...", () => {
       const brokenBookUrl = "https://example.com/broken-book";
       const errorBookUrl = "https://example.com/error-book";
 
-      const dispatch = jest.fn();
-      const getState = jest.fn().mockReturnValue({
+      const dispatch = vi.fn();
+      const getState = vi.fn().mockReturnValue({
         bookEditor: initialState,
       });
 
@@ -281,8 +281,8 @@ describe("Redux bookEditorSlice...", () => {
         detail: "There was an error saving your changes.",
       };
 
-      const dispatch = jest.fn();
-      const getState = jest.fn().mockReturnValue({
+      const dispatch = vi.fn();
+      const getState = vi.fn().mockReturnValue({
         bookEditor: initialState,
       });
 

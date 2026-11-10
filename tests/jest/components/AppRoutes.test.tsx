@@ -9,7 +9,7 @@ const mounts: Record<string, number> = {};
 
 // Replace each page with a marker that shows which page rendered and the
 // `params` and `location` props it got, and counts its mounts. This is a
-// function declaration, not a `const`, because Jest runs the `jest.mock`
+// function declaration, not a `const`, because Vitest runs the `vi.mock`
 // calls first.
 function mockPage(name: string) {
   const Page = ({ params, location }) => {
@@ -24,25 +24,25 @@ function mockPage(name: string) {
       </div>
     );
   };
-  return { __esModule: true, default: Page };
+  return { default: Page };
 }
-jest.mock("../../../src/components/CatalogPage", () => mockPage("CatalogPage"));
-jest.mock("../../../src/components/CustomListPage", () =>
+vi.mock("../../../src/components/CatalogPage", () => mockPage("CatalogPage"));
+vi.mock("../../../src/components/CustomListPage", () =>
   mockPage("CustomListPage")
 );
-jest.mock("../../../src/components/LanePage", () => mockPage("LanePage"));
-jest.mock("../../../src/components/DashboardPage", () =>
+vi.mock("../../../src/components/LanePage", () => mockPage("LanePage"));
+vi.mock("../../../src/components/DashboardPage", () =>
   mockPage("DashboardPage")
 );
-jest.mock("../../../src/components/QuicksightDashboardPage", () =>
+vi.mock("../../../src/components/QuicksightDashboardPage", () =>
   mockPage("QuicksightDashboardPage")
 );
-jest.mock("../../../src/components/ConfigPage", () => mockPage("ConfigPage"));
-jest.mock("../../../src/components/AccountPage", () => mockPage("AccountPage"));
-jest.mock("../../../src/components/ManagePatrons", () =>
+vi.mock("../../../src/components/ConfigPage", () => mockPage("ConfigPage"));
+vi.mock("../../../src/components/AccountPage", () => mockPage("AccountPage"));
+vi.mock("../../../src/components/ManagePatrons", () =>
   mockPage("ManagePatrons")
 );
-jest.mock("../../../src/components/TroubleshootingPage", () =>
+vi.mock("../../../src/components/TroubleshootingPage", () =>
   mockPage("TroubleshootingPage")
 );
 
@@ -63,7 +63,7 @@ const renderAt = (entry: string | { pathname: string; state: unknown }) =>
 
 describe("AppRoutes", () => {
   // Restore spies even when a test fails before its last line.
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   // Each URL gives the same page and params that the react-router v3 routes
   // gave. Each param is decoded once, so an encoded "/" becomes "/" and an
@@ -194,7 +194,7 @@ describe("AppRoutes", () => {
 
   it("renders no page for an unknown path", () => {
     // React Router warns about a path that no route matches.
-    jest.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
     renderAt("/admin/web/patrons");
     expect(screen.queryByTestId("page")).not.toBeInTheDocument();
   });

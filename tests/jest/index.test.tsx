@@ -1,13 +1,18 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import { BrowserRouter } from "react-router";
 
+import CirculationAdmin from "../../src/index";
 import SetupPage from "../../src/components/SetupPage";
 import AppRoutes from "../../src/components/AppRoutes";
 import LegacyRouterBridge from "../../src/components/LegacyRouterBridge";
 
-// index.tsx does `export = CirculationAdmin`.
-const CirculationAdmin = require("../../src/index");
+// A test cannot spy on an export of an ES module, so mock `createRoot`.
+vi.mock("react-dom/client", async () => ({
+  ...(await vi.importActual<object>("react-dom/client")),
+  createRoot: vi.fn(),
+}));
 
 /** Walk a React element tree for an element of the given type — the structural
  *  analog of enzyme's `wrapper.find(Type)`, used where the tree is the app root
@@ -31,25 +36,30 @@ function findType(node: any, type: React.ElementType): any {
 }
 
 describe("CirculationAdmin", () => {
-  let renderSpy: jest.Mock;
+  let renderSpy: Mock;
 
   beforeEach(() => {
     // Capture what the bootstrap hands to the root's `render` without letting it
     // paint into the jsdom document. We assert on the captured element tree
     // (the structural analog of the original enzyme `wrapper.find(...)`); what
     // SetupPage and the routed pages render is covered by their own tests.
-    renderSpy = jest.fn();
-    jest
-      .spyOn(ReactDOMClient, "createRoot")
-      .mockReturnValue({ render: renderSpy, unmount: jest.fn() });
+    renderSpy = vi.fn();
+    // The mocked module lasts for the whole file, so clear the calls from the
+    // previous test.
+    vi.mocked(ReactDOMClient.createRoot)
+      .mockClear()
+      .mockReturnValue({
+        render: renderSpy,
+        unmount: vi.fn(),
+      } as any);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders the setup page when setting up", () => {
-    new CirculationAdmin({ settingUp: true, csrfToken: "token" });
+    new CirculationAdmin({ settingUp: true, csrfToken: "token" } as any);
 
     expect(ReactDOMClient.createRoot).toHaveBeenCalledWith(
       document.getElementById("opds-catalog")
@@ -59,7 +69,7 @@ describe("CirculationAdmin", () => {
   });
 
   it("renders the router otherwise", () => {
-    new CirculationAdmin({ csrfToken: "token" });
+    new CirculationAdmin({ csrfToken: "token" } as any);
 
     expect(renderSpy).toHaveBeenCalledTimes(1);
     const router = findType(renderSpy.mock.calls[0][0], BrowserRouter);

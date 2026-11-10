@@ -29,9 +29,9 @@ describe("AdvancedSearchValueFilter", () => {
     );
 
   beforeEach(() => {
-    onMove = jest.fn();
-    onRemove = jest.fn();
-    onSelect = jest.fn();
+    onMove = vi.fn();
+    onRemove = vi.fn();
+    onSelect = vi.fn();
 
     query = {
       id: "91",

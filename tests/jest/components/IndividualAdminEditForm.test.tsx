@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { installFormDataShim } from "../testUtils/formDataShim";
 import { screen } from "@testing-library/react";
@@ -132,8 +133,8 @@ describe("IndividualAdminEditForm", () => {
 // checkboxes and inputs; role-change behavior is driven with real clicks.
 describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
   // The reusable-components `Form` builds `new FormData(formElement)` on
-  // submit, which the unit jsdom env's undici FormData rejects; install the
-  // shared shim that reads the form's successful controls.
+  // submit. Install the shared shim, so the payload holds only the form's
+  // successful controls, as a browser sends them.
   installFormDataShim();
   const adminData = { email: "test@nypl.org", password: "password" };
   const allLibraries = [
@@ -168,7 +169,7 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
 
   const systemConfig = configFor(systemAdmin);
 
-  let save: jest.Mock;
+  let save: Mock;
 
   const baseProps = (overrides: Record<string, any> = {}) => ({
     data: baseData,
@@ -323,7 +324,7 @@ describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
     container.querySelector<HTMLButtonElement>("button:not(.panel-heading)");
 
   beforeEach(() => {
-    save = jest.fn().mockResolvedValue(undefined);
+    save = vi.fn().mockResolvedValue(undefined);
   });
 
   // ── Rendering ──────────────────────────────────────────────────────────────

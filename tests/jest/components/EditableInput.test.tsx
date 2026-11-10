@@ -70,7 +70,7 @@ describe("EditableInput", () => {
 describe("EditableInput - value, change, and imperative API", () => {
   it("updates as the user types and reports the value via getValue()", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const ref = React.createRef<EditableInput>();
     render(
       <EditableInput ref={ref} label="Field" value="" onChange={onChange} />
@@ -99,7 +99,7 @@ describe("EditableInput - value, change, and imperative API", () => {
   });
 
   it("does not fire onChange when readOnly", () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(<EditableInput label="RO" value="x" readOnly onChange={onChange} />);
 
     // `userEvent.type` honors the DOM's read-only semantics and never dispatches

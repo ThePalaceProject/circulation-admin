@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -6,18 +7,17 @@ import userEvent from "@testing-library/user-event";
 // Diagnostics/Self-tests containers, which need Redux store + csrf context this
 // test does not supply. That content is incidental here — the test is about the
 // tab navigation — so mock it to a marker.
-jest.mock("../../../src/components/TroubleshootingCategoryPage", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/TroubleshootingCategoryPage", () => ({
   default: () => <div data-testid="category-page" />,
 }));
 
 import TroubleshootingTabContainer from "../../../src/components/TroubleshootingTabContainer";
 
 describe("TroubleshootingTabContainer", () => {
-  let goToTab: jest.Mock;
+  let goToTab: Mock;
 
   beforeEach(() => {
-    goToTab = jest.fn();
+    goToTab = vi.fn();
   });
 
   it("renders tabs and defaults to showing the Diagnostics tab", () => {

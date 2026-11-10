@@ -79,7 +79,7 @@ describe("ErrorMessage", () => {
 
   it("shows a try again button that fires the callback when clicked", async () => {
     const user = userEvent.setup();
-    const tryAgain = jest.fn();
+    const tryAgain = vi.fn();
     render(
       <ErrorMessage
         error={{ status: 500, response: "response", url: "" }}

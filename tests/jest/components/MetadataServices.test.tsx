@@ -44,8 +44,8 @@ describe("MetadataServices", () => {
     renderWithContext(
       <MetadataServices
         data={data}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,

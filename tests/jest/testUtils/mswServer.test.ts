@@ -1,16 +1,18 @@
 import { spawnSync } from "child_process";
+import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "./mswServer";
 
 // `setupMswServer` fails a test from its own hooks, so a test cannot check
-// that from the inside. This test runs the fixture files in a separate Jest
+// that from the inside. This test runs the fixture files in a separate Vitest
 // process and checks which of them failed.
 const rootDir = path.resolve(__dirname, "../../..");
-// Use `<rootDir>`, not an absolute path. Jest escapes glob characters (such
-// as parentheses) in the checkout path only when it expands `<rootDir>`.
-const fixtureGlob =
-  "<rootDir>/tests/jest/testUtils/mswServerFixtures/*.fixture.ts";
+// `spawnSync` blocks, so a timer cannot stop a hung child. `fixtureRunTimeout`
+// stops it, and the hook timeout must be longer so the hook can report that.
+const fixtureRunTimeout = 60000;
+const hookTimeout = fixtureRunTimeout + 10000;
 
 type FileResult = {
   name: string;
@@ -22,30 +24,36 @@ type FileResult = {
 let results: Record<string, FileResult>;
 
 beforeAll(() => {
-  const run = spawnSync(
-    process.execPath,
-    [
-      require.resolve("jest/bin/jest"),
-      "--config",
-      path.join(rootDir, "jest.config.js"),
-      "--testMatch",
-      fixtureGlob,
-      "--coverage=false",
-      "--json",
-    ],
-    // `spawnSync` blocks, so Jest's hook timeout cannot stop a hung child.
-    { cwd: rootDir, encoding: "utf8", timeout: 60000 }
-  );
-  if (run.error) {
-    throw run.error;
-  }
+  const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "msw-fixtures-"));
+  const outputFile = path.join(outputDir, "report.json");
   let report: { testResults: FileResult[] };
   try {
-    report = JSON.parse(run.stdout);
-  } catch {
-    throw new Error(
-      `The fixture run printed no JSON report (status ${run.status}, signal ${run.signal}):\n${run.stderr}`
+    const run = spawnSync(
+      process.execPath,
+      [
+        path.join(rootDir, "node_modules/vitest/vitest.mjs"),
+        "run",
+        "--config",
+        path.join(__dirname, "mswServerFixtures/vitest.config.mts"),
+        "--coverage.enabled=false",
+        "--no-file-parallelism",
+        "--reporter=json",
+        `--outputFile=${outputFile}`,
+      ],
+      { cwd: rootDir, encoding: "utf8", timeout: fixtureRunTimeout }
     );
+    if (run.error) {
+      throw run.error;
+    }
+    try {
+      report = JSON.parse(fs.readFileSync(outputFile, "utf8"));
+    } catch {
+      throw new Error(
+        `The fixture run wrote no JSON report (status ${run.status}, signal ${run.signal}):\n${run.stderr}`
+      );
+    }
+  } finally {
+    fs.rmSync(outputDir, { recursive: true, force: true });
   }
   results = {};
   report.testResults.forEach((file) => {
@@ -56,7 +64,7 @@ beforeAll(() => {
     }
     results[path.basename(file.name, ".fixture.ts")] = file;
   });
-});
+}, hookTimeout);
 
 describe("setupMswServer", () => {
   it("runs every fixture file", () => {

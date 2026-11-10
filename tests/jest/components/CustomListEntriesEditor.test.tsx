@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen, within, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -25,8 +26,7 @@ type DndCallbacks = {
   onDragEnd: (result: DragResult) => void;
 };
 
-jest.mock("react-beautiful-dnd", () => ({
-  __esModule: true,
+vi.mock("react-beautiful-dnd", () => ({
   DragDropContext: ({ onDragStart, onDragEnd, children }) => {
     (
       globalThis as typeof globalThis & { __dndCallbacks?: DndCallbacks }
@@ -62,21 +62,17 @@ jest.mock("react-beautiful-dnd", () => ({
 // their `bookUrl`/`collectionUrl` props and "View details" text, so mock it to
 // a marker that surfaces exactly those. `renderCatalogLink` in the component
 // still runs, so its coverage is preserved.
-jest.mock(
-  "@thepalaceproject/web-opds-client/lib/components/CatalogLink",
-  () => ({
-    __esModule: true,
-    default: ({ bookUrl, collectionUrl, children }) => (
-      <div
-        data-testid="catalog-link"
-        data-book-url={bookUrl}
-        data-collection-url={collectionUrl}
-      >
-        {children}
-      </div>
-    ),
-  })
-);
+vi.mock("@thepalaceproject/web-opds-client/lib/components/CatalogLink", () => ({
+  default: ({ bookUrl, collectionUrl, children }) => (
+    <div
+      data-testid="catalog-link"
+      data-book-url={bookUrl}
+      data-collection-url={collectionUrl}
+    >
+      {children}
+    </div>
+  ),
+}));
 
 const getDndCallbacks = (): DndCallbacks =>
   (globalThis as typeof globalThis & { __dndCallbacks: DndCallbacks })
@@ -86,13 +82,13 @@ describe("CustomListEntriesEditor", () => {
   // The component calls Element.scrollTo on mount/update, which jsdom lacks.
   Element.prototype.scrollTo = () => {};
 
-  let addAllEntries: jest.Mock;
-  let addEntry: jest.Mock;
-  let deleteAllEntries: jest.Mock;
-  let deleteEntry: jest.Mock;
-  let loadMoreSearchResults: jest.Mock;
-  let loadMoreEntries: jest.Mock;
-  let refreshResults: jest.Mock;
+  let addAllEntries: Mock;
+  let addEntry: Mock;
+  let deleteAllEntries: Mock;
+  let deleteEntry: Mock;
+  let loadMoreSearchResults: Mock;
+  let loadMoreEntries: Mock;
+  let refreshResults: Mock;
 
   const makeSearchResults = (): any => ({
     id: "id",
@@ -195,13 +191,13 @@ describe("CustomListEntriesEditor", () => {
     entriesSection(container).querySelector("h4")?.textContent;
 
   beforeEach(() => {
-    addAllEntries = jest.fn();
-    addEntry = jest.fn();
-    deleteAllEntries = jest.fn();
-    deleteEntry = jest.fn();
-    loadMoreSearchResults = jest.fn();
-    loadMoreEntries = jest.fn();
-    refreshResults = jest.fn();
+    addAllEntries = vi.fn();
+    addEntry = vi.fn();
+    deleteAllEntries = vi.fn();
+    deleteEntry = vi.fn();
+    loadMoreSearchResults = vi.fn();
+    loadMoreEntries = vi.fn();
+    refreshResults = vi.fn();
   });
 
   afterEach(() => {

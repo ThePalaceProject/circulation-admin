@@ -1,3 +1,4 @@
+import type { MockInstance } from "vitest";
 import * as React from "react";
 import { render, screen, within, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,7 +31,7 @@ const fullBook = (): BookData => ({
 type RenderProps = Partial<React.ComponentProps<typeof ClassificationsForm>>;
 
 const renderForm = (book: BookData, props: RenderProps = {}) => {
-  const editClassifications = jest.fn();
+  const editClassifications = vi.fn();
   const result = render(
     <ClassificationsForm
       book={book}
@@ -82,16 +83,16 @@ const addSubgenre = async (
 };
 
 describe("ClassificationsForm", () => {
-  let confirmSpy: jest.SpyInstance;
-  let alertSpy: jest.SpyInstance;
+  let confirmSpy: MockInstance;
+  let alertSpy: MockInstance;
 
   beforeEach(() => {
-    confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
-    alertSpy = jest.spyOn(window, "alert").mockImplementation(() => undefined);
+    confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+    alertSpy = vi.spyOn(window, "alert").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("rendering without classification values", () => {
@@ -143,25 +144,25 @@ describe("ClassificationsForm", () => {
     });
 
     it("moves focus to the error message so it is announced", () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       // Watch the focus() call itself: the component focuses the alert on a
       // 500ms timer. Use fireEvent (not userEvent, which focuses the target it
       // clicks) so the only focus() we observe is the intended one.
-      const focusSpy = jest.spyOn(HTMLElement.prototype, "focus");
+      const focusSpy = vi.spyOn(HTMLElement.prototype, "focus");
       try {
         const { container } = renderForm(noValuesBook());
 
         fireEvent.click(screen.getByRole("button", { name: "Save" }));
         expect(focusSpy).not.toHaveBeenCalled();
 
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
 
         const alert = container.querySelector(".alert-danger");
         expect(focusSpy).toHaveBeenCalledTimes(1);
         expect(focusSpy.mock.instances[0]).toBe(alert);
       } finally {
         focusSpy.mockRestore();
-        jest.useRealTimers();
+        vi.useRealTimers();
       }
     });
 
@@ -250,7 +251,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows the book's full genres even if inconsistent with fiction status", () => {
-      const editClassifications = jest.fn();
+      const editClassifications = vi.fn();
       const { container, rerender } = render(
         <ClassificationsForm
           book={fullBook()}
@@ -384,7 +385,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("updates state upon receiving new state-related props", () => {
-      const editClassifications = jest.fn();
+      const editClassifications = vi.fn();
       const { container, rerender } = render(
         <ClassificationsForm
           book={fullBook()}
@@ -417,7 +418,7 @@ describe("ClassificationsForm", () => {
 
     it("doesn't reset user edits upon receiving new state-unrelated props", async () => {
       const user = userEvent.setup();
-      const editClassifications = jest.fn();
+      const editClassifications = vi.fn();
       const { container, rerender } = render(
         <ClassificationsForm
           book={fullBook()}

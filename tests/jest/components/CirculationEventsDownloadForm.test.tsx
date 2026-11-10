@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -5,10 +6,10 @@ import userEvent from "@testing-library/user-event";
 import CirculationEventsDownloadForm from "../../../src/components/CirculationEventsDownloadForm";
 
 describe("CirculationEventsDownloadForm", () => {
-  let hide: jest.Mock;
+  let hide: Mock;
 
   beforeEach(() => {
-    hide = jest.fn();
+    hide = vi.fn();
     render(<CirculationEventsDownloadForm show={true} hide={hide} />);
   });
 

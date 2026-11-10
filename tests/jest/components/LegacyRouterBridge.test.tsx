@@ -1,3 +1,4 @@
+import type { MockInstance } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { act, render, screen } from "@testing-library/react";
@@ -15,16 +16,13 @@ import { renderWithProviders } from "../testUtils/withProviders";
 // For the troubleshooting page test below: Header and Footer are page chrome,
 // and each troubleshooting tab fetches on mount. The test is about the tab
 // container's pushes, so mock them.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div />,
 }));
-jest.mock("../../../src/components/TroubleshootingCategoryPage", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/TroubleshootingCategoryPage", () => ({
   default: () => <div />,
 }));
 
@@ -92,10 +90,10 @@ describe("LegacyRouterBridge", () => {
   // until nothing reads the legacy `router` context, so hide only those
   // warnings. Any other error, such as a failed context type check in the v3
   // `Link`, fails the test.
-  let consoleError: jest.SpyInstance;
+  let consoleError: MockInstance;
   beforeEach(() => {
     legacyRouter = undefined;
-    consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
   });
   afterEach(() => {
     const unexpected = consoleError.mock.calls.filter(
@@ -106,7 +104,7 @@ describe("LegacyRouterBridge", () => {
     );
     // Also restore any other spy, such as on `console.warn`, even if its test
     // failed before it restored the spy itself.
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     expect(unexpected).toEqual([]);
   });
 
@@ -150,7 +148,7 @@ describe("LegacyRouterBridge", () => {
 
   it("does nothing on a push during the first mount, unlike v3", () => {
     // React Router 7 ignores the push from `componentDidMount`, and warns.
-    const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     renderBridge(undefined, ["/admin/web"], "/admin/web/config");
     expect(screen.getByTestId("location")).toHaveTextContent("/admin/web null");
     expect(warn).toHaveBeenCalled();

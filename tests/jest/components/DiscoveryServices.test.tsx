@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { installFormDataShim } from "../testUtils/formDataShim";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
@@ -41,11 +42,11 @@ describe("DiscoveryServices - registered library disclosure", () => {
             ...data,
           } as DiscoveryServicesData
         }
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
-        registerLibrary={jest.fn().mockResolvedValue(undefined)}
-        fetchLibraryRegistrations={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
+        registerLibrary={vi.fn().mockResolvedValue(undefined)}
+        fetchLibraryRegistrations={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -690,12 +691,12 @@ describe("DiscoveryServices - connected wiring and registration", () => {
 
   describe("registerLibrary child context (edit mode)", () => {
     // The reusable-components `Form` builds `new FormData(formElement)` on
-    // submit, which the unit jsdom env's undici FormData rejects; install the
-    // shared shim that reads the form's successful controls.
+    // submit. Install the shared shim, so the payload holds only the form's
+    // successful controls, as a browser sends them.
     installFormDataShim();
     const renderEditMode = (
-      registerLibrary: jest.Mock,
-      fetchLibraryRegistrations: jest.Mock
+      registerLibrary: Mock,
+      fetchLibraryRegistrations: Mock
     ) =>
       renderWithContext(
         <DiscoveryServices
@@ -717,9 +718,9 @@ describe("DiscoveryServices - connected wiring and registration", () => {
           }
           editOrCreate="edit"
           identifier="2"
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
           csrfToken="token"
@@ -730,8 +731,8 @@ describe("DiscoveryServices - connected wiring and registration", () => {
 
     it("fetches library registrations on mount, and registers a library (building the right FormData) and refetches on click", async () => {
       const user = userEvent.setup();
-      const registerLibrary = jest.fn().mockResolvedValue(undefined);
-      const fetchLibraryRegistrations = jest.fn().mockResolvedValue(undefined);
+      const registerLibrary = vi.fn().mockResolvedValue(undefined);
+      const fetchLibraryRegistrations = vi.fn().mockResolvedValue(undefined);
       renderEditMode(registerLibrary, fetchLibraryRegistrations);
 
       // getChildContext supplies registerLibrary to the edit form; the edit form

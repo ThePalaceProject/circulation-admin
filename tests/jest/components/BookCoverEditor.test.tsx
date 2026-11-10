@@ -15,8 +15,8 @@ import { BookData, RightsStatusData } from "../../../src/interfaces";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
 // The reusable-components `Form` builds `new FormData(formElement)` on
-// submit, which the unit jsdom env's undici FormData rejects; install the
-// shared shim that reads the form's successful controls.
+// submit. Install the shared shim, so the payload holds only the form's
+// successful controls, as a browser sends them.
 installFormDataShim();
 const rightsStatuses: RightsStatusData = {
   "http://creativecommons.org/licenses/by/4.0/": {
@@ -74,7 +74,7 @@ describe("BookCoverEditor", () => {
       bookEditor: { ...bookEditorInitialState, url: bookAdminUrl },
     } as any);
     preSeed?.(store);
-    const refreshCatalog = jest.fn().mockResolvedValue(undefined);
+    const refreshCatalog = vi.fn().mockResolvedValue(undefined);
     const utils = renderWithProviders(
       <BookCoverEditor
         csrfToken="token"

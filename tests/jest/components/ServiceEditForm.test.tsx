@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { installFormDataShim, FormDataShim } from "../testUtils/formDataShim";
 import { render, within } from "@testing-library/react";
@@ -11,8 +12,8 @@ import ServiceEditForm, {
 import NeighborhoodAnalyticsForm from "../../../src/components/NeighborhoodAnalyticsForm";
 import { ServicesData } from "../../../src/interfaces";
 // The reusable-components `Form` builds `new FormData(formElement)` on
-// submit, which the unit jsdom env's undici FormData rejects; install the
-// shared shim that reads the form's successful controls.
+// submit. Install the shared shim, so the payload holds only the form's
+// successful controls, as a browser sends them.
 installFormDataShim();
 describe("ServiceEditForm", () => {
   // ServiceEditForm is a generic class; expose a concrete constructor type so
@@ -24,7 +25,7 @@ describe("ServiceEditForm", () => {
     ServiceEditFormState
   > = ServiceEditForm;
 
-  let save: jest.Mock;
+  let save: Mock;
   const urlBase = "/services";
 
   const serviceData = {
@@ -148,7 +149,7 @@ describe("ServiceEditForm", () => {
     );
 
   beforeEach(() => {
-    save = jest.fn();
+    save = vi.fn();
   });
 
   describe("rendering", () => {
@@ -1088,7 +1089,7 @@ describe("ServiceEditForm", () => {
     it("builds library ref keys for add and edit mode", () => {
       expect(libraryRefKey("key", "add")).toBe("key");
       expect(libraryRefKey("key", "edit", "nypl")).toBe("nypl_key");
-      // Compile-time guard: ts-jest fails this file if the overloads stop
+      // Compile-time guard: `npm run typecheck` fails if the overloads stop
       // rejecting an edit-mode call with no short name.
       // @ts-expect-error edit mode must pass the library short name
       libraryRefKey("key", "edit");

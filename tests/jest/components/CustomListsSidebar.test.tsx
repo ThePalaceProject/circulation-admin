@@ -5,8 +5,8 @@ import CustomListsSidebar from "../../../src/components/CustomListsSidebar";
 
 // Render react-router's Link as a marker anchor so we can assert its target
 // (`data-to`), text, and className without needing a Router in the test.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual<object>("react-router")),
   Link: (props) => (
     <a
       data-testid="Link"
@@ -43,8 +43,8 @@ describe("CustomListsSidebar", () => {
     library: "library_name",
     identifier: "123",
     isLibraryManager: true,
-    deleteCustomList: jest.fn(),
-    changeSort: jest.fn(),
+    deleteCustomList: vi.fn(),
+    changeSort: vi.fn(),
     sortOrder: "asc",
   });
 
@@ -98,7 +98,7 @@ describe("CustomListsSidebar", () => {
 
   it("renders a list of custom list info items", async () => {
     const user = userEvent.setup();
-    const deleteCustomList = jest.fn();
+    const deleteCustomList = vi.fn();
     const { container } = render(
       <CustomListsSidebar
         {...baseProps()}

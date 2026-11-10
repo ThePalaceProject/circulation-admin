@@ -95,7 +95,7 @@ describe("ResetAdobeId", () => {
 
   describe("behavior", () => {
     it("has a disabled submit button initially", () => {
-      renderReset({ patron: patrons[0], resetAdobeId: jest.fn() });
+      renderReset({ patron: patrons[0], resetAdobeId: vi.fn() });
       expect(
         screen.getByRole("button", { name: "Reset Adobe ID" })
       ).toBeDisabled();
@@ -103,7 +103,7 @@ describe("ResetAdobeId", () => {
 
     it("enables the submit button when the checkbox is checked", async () => {
       const user = userEvent.setup();
-      renderReset({ patron: patrons[0], resetAdobeId: jest.fn() });
+      renderReset({ patron: patrons[0], resetAdobeId: vi.fn() });
       const button = screen.getByRole("button", { name: "Reset Adobe ID" });
       expect(button).toBeDisabled();
 
@@ -114,7 +114,7 @@ describe("ResetAdobeId", () => {
 
     it("disables the submit button when the checkbox is unchecked again", async () => {
       const user = userEvent.setup();
-      renderReset({ patron: patrons[0], resetAdobeId: jest.fn() });
+      renderReset({ patron: patrons[0], resetAdobeId: vi.fn() });
       const button = screen.getByRole("button", { name: "Reset Adobe ID" });
       const checkbox = screen.getByRole("checkbox");
 
@@ -127,7 +127,7 @@ describe("ResetAdobeId", () => {
 
     it("calls the Adobe ID action when the button is clicked", async () => {
       const user = userEvent.setup();
-      const resetAdobeId = jest.fn().mockResolvedValue(undefined);
+      const resetAdobeId = vi.fn().mockResolvedValue(undefined);
       renderReset({ patron: patrons[0], resetAdobeId });
       expect(resetAdobeId).not.toHaveBeenCalled();
 
@@ -149,7 +149,7 @@ describe("ResetAdobeId", () => {
     it("shows a success alert message if the reset is successful", () => {
       const { container, rerender } = renderReset({
         patron: patrons[0],
-        resetAdobeId: jest.fn().mockResolvedValue(undefined),
+        resetAdobeId: vi.fn().mockResolvedValue(undefined),
       });
       expect(container.querySelector(".alert-success")).not.toBeInTheDocument();
 
@@ -172,7 +172,7 @@ describe("ResetAdobeId", () => {
     it("hides the checkbox and the reset button if the reset is successful", () => {
       const { container, rerender } = renderReset({
         patron: patrons[0],
-        resetAdobeId: jest.fn().mockResolvedValue(undefined),
+        resetAdobeId: vi.fn().mockResolvedValue(undefined),
       });
       expect(
         container.querySelector(".reset-adobe-id input")
@@ -202,14 +202,14 @@ describe("ResetAdobeId", () => {
       // failure alert itself is driven by the fetchError prop the reducer sets.
       const { container, rerender } = renderReset({
         patron: patrons[0],
-        resetAdobeId: jest.fn().mockRejectedValue(fetchError),
+        resetAdobeId: vi.fn().mockRejectedValue(fetchError),
       });
       expect(container.querySelector(".alert-danger")).not.toBeInTheDocument();
 
       rerender(
         resetElement({
           patron: patrons[0],
-          resetAdobeId: jest.fn().mockRejectedValue(fetchError),
+          resetAdobeId: vi.fn().mockRejectedValue(fetchError),
           fetchError,
         })
       );
@@ -224,13 +224,13 @@ describe("ResetAdobeId", () => {
     it("updates the warning message if a new patron is searched and found", () => {
       const { container, rerender } = renderReset({
         patron: patrons[0],
-        resetAdobeId: jest.fn(),
+        resetAdobeId: vi.fn(),
       });
       expect(container.querySelector(".patron-warning")).toHaveTextContent(
         "IMPORTANT: Patron User Name will lose access"
       );
 
-      rerender(resetElement({ patron: patrons[1], resetAdobeId: jest.fn() }));
+      rerender(resetElement({ patron: patrons[1], resetAdobeId: vi.fn() }));
 
       expect(container.querySelector(".patron-warning")).toHaveTextContent(
         "IMPORTANT: Patron Personal Name2 will lose access"
@@ -241,7 +241,7 @@ describe("ResetAdobeId", () => {
       const { container, rerender } = renderReset({
         patron: patrons[0],
         responseBody: "Adobe ID for patron has been reset.",
-        resetAdobeId: jest.fn(),
+        resetAdobeId: vi.fn(),
       });
       expect(
         container.querySelector(".reset-adobe-id input")
@@ -254,7 +254,7 @@ describe("ResetAdobeId", () => {
         resetElement({
           patron: patrons[0],
           responseBody: "",
-          resetAdobeId: jest.fn(),
+          resetAdobeId: vi.fn(),
         })
       );
 

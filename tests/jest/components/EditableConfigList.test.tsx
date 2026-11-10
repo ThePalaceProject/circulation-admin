@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -74,9 +75,9 @@ describe("EditableConfigList - library association disclosure", () => {
     renderWithContext(
       <TestServiceList
         data={{ services: items, allLibraries }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -398,9 +399,9 @@ describe("EditableConfigList - library association disclosure", () => {
               url: "/admin/libraries",
             },
           }}
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -430,9 +431,9 @@ describe("EditableConfigList - library association disclosure", () => {
               url: "/admin/libraries",
             },
           }}
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -456,9 +457,9 @@ describe("EditableConfigList - library association disclosure", () => {
               { id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] },
             ],
           }}
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -597,9 +598,9 @@ describe("EditableConfigList - base class via test subclasses", () => {
   const thingData: Thing = { id: 5, label: "label" };
   const thingsData: Things = { things: [thingData] };
 
-  let fetchData: jest.Mock;
-  let editItem: jest.Mock;
-  let deleteItem: jest.Mock;
+  let fetchData: Mock;
+  let editItem: Mock;
+  let deleteItem: Mock;
 
   const systemConfig: Partial<ConfigurationSettings> = {
     csrfToken: "token",
@@ -626,17 +627,17 @@ describe("EditableConfigList - base class via test subclasses", () => {
   });
 
   beforeEach(() => {
-    fetchData = jest.fn();
-    editItem = jest.fn().mockResolvedValue(undefined);
-    deleteItem = jest.fn().mockResolvedValue(undefined);
+    fetchData = vi.fn();
+    editItem = vi.fn().mockResolvedValue(undefined);
+    deleteItem = vi.fn().mockResolvedValue(undefined);
     canCreate = true;
     canDelete = true;
     canEdit = true;
-    jest.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("shows an error message if there's a problem loading the list", () => {
@@ -873,7 +874,7 @@ describe("EditableConfigList - base class via test subclasses", () => {
 
   it("deletes an item only after the user confirms", async () => {
     const user = userEvent.setup();
-    const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
     const { container } = renderWithContext(
       <BaseThingList {...baseProps()} />,
       systemConfig
@@ -984,7 +985,7 @@ describe("EditableConfigList - base class via test subclasses", () => {
 
   it("navigates to the edit page after successfully creating a limit-one item", async () => {
     const user = userEvent.setup();
-    const navigateSpy = jest
+    const navigateSpy = vi
       .spyOn(navigate, "navigateTo")
       .mockImplementation(() => undefined);
     renderWithContext(

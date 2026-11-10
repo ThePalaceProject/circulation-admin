@@ -7,12 +7,10 @@ import title from "../../../src/utils/title";
 
 // Header reads the legacy `router` context and fetches on mount, and both
 // Header and Footer are page chrome, so mock them to markers.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
@@ -21,8 +19,7 @@ jest.mock("../../../src/components/Footer", () => ({
 // own behavior is to own the active tab and pass it (and a goToTab callback)
 // down, so mock the container to a marker that exposes its `tab`/`subtab` props
 // and a control that invokes `goToTab` — exactly the contract under test.
-jest.mock("../../../src/components/TroubleshootingTabContainer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/TroubleshootingTabContainer", () => ({
   default: ({
     tab,
     subtab,

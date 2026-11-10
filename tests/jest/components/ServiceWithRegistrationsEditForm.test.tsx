@@ -43,7 +43,7 @@ const servicesData: any = {
   libraryRegistrations: libraryRegistrationsData,
 };
 
-const renderForm = (save = jest.fn()) =>
+const renderForm = (save = vi.fn()) =>
   render(
     <DiscoveryServiceEditForm
       disabled={false}

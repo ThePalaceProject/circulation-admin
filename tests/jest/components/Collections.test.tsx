@@ -42,12 +42,12 @@ describe("Collections - associated library disclosure", () => {
             ...data,
           } as CollectionsData
         }
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
-        registerLibrary={jest.fn().mockResolvedValue(undefined)}
-        importCollection={jest.fn().mockResolvedValue(undefined)}
-        reapCollection={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
+        registerLibrary={vi.fn().mockResolvedValue(undefined)}
+        importCollection={vi.fn().mockResolvedValue(undefined)}
+        reapCollection={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -240,7 +240,7 @@ describe("Collections - connected wiring, deletion, and registration", () => {
   };
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("connected default export", () => {
@@ -313,13 +313,13 @@ describe("Collections - connected wiring, deletion, and registration", () => {
 
   describe("edit mode: registration and additional content", () => {
     // The reusable-components `Form` builds `new FormData(formElement)` on
-    // submit, which the unit jsdom env's undici FormData rejects; install the
-    // shared shim that reads the form's successful controls.
+    // submit. Install the shared shim, so the payload holds only the form's
+    // successful controls, as a browser sends them.
     installFormDataShim();
     it("fetches registrations on mount, renders task controls, and registers a library on click", async () => {
       const user = userEvent.setup();
-      const registerLibrary = jest.fn().mockResolvedValue(undefined);
-      const fetchLibraryRegistrations = jest.fn().mockResolvedValue(undefined);
+      const registerLibrary = vi.fn().mockResolvedValue(undefined);
+      const fetchLibraryRegistrations = vi.fn().mockResolvedValue(undefined);
       renderWithContext(
         <Collections
           data={
@@ -346,13 +346,13 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           }
           editOrCreate="edit"
           identifier="7"
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
-          importCollection={jest.fn().mockResolvedValue(undefined)}
-          reapCollection={jest.fn().mockResolvedValue(undefined)}
+          importCollection={vi.fn().mockResolvedValue(undefined)}
+          reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -410,12 +410,12 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           }
           editOrCreate="edit"
           identifier="7"
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
-          registerLibrary={jest.fn().mockResolvedValue(undefined)}
-          importCollection={jest.fn().mockResolvedValue(undefined)}
-          reapCollection={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
+          registerLibrary={vi.fn().mockResolvedValue(undefined)}
+          importCollection={vi.fn().mockResolvedValue(undefined)}
+          reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -423,7 +423,7 @@ describe("Collections - connected wiring, deletion, and registration", () => {
       );
 
     it("removes the library when the confirmation is accepted", () => {
-      const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
       const { container } = renderEditForm(
         [...initialLibraries],
         [...initialLibraries]
@@ -446,7 +446,7 @@ describe("Collections - connected wiring, deletion, and registration", () => {
     });
 
     it("keeps the library when the confirmation is canceled", () => {
-      jest.spyOn(window, "confirm").mockReturnValue(false);
+      vi.spyOn(window, "confirm").mockReturnValue(false);
       const { container } = renderEditForm(
         [...initialLibraries],
         [...initialLibraries]
@@ -459,7 +459,7 @@ describe("Collections - connected wiring, deletion, and registration", () => {
     });
 
     it("uses the library short_name in the prompt when the full name is unavailable", () => {
-      const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
       // The library is not present in allLibraries, so getLibrary() returns null.
       const { container } = renderEditForm([{ short_name: "orphan" }], []);
 
@@ -489,12 +489,12 @@ describe("Collections - connected wiring, deletion, and registration", () => {
             } as any
           }
           editOrCreate="create"
-          fetchData={jest.fn()}
-          editItem={jest.fn().mockResolvedValue(undefined)}
-          deleteItem={jest.fn().mockResolvedValue(undefined)}
-          registerLibrary={jest.fn().mockResolvedValue(undefined)}
-          importCollection={jest.fn().mockResolvedValue(undefined)}
-          reapCollection={jest.fn().mockResolvedValue(undefined)}
+          fetchData={vi.fn()}
+          editItem={vi.fn().mockResolvedValue(undefined)}
+          deleteItem={vi.fn().mockResolvedValue(undefined)}
+          registerLibrary={vi.fn().mockResolvedValue(undefined)}
+          importCollection={vi.fn().mockResolvedValue(undefined)}
+          reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,
@@ -509,9 +509,9 @@ describe("Collections - connected wiring, deletion, and registration", () => {
 
   describe("deletion", () => {
     it("deletes a collection and refetches after confirmation", async () => {
-      const deleteItem = jest.fn().mockResolvedValue(undefined);
-      const fetchData = jest.fn();
-      const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
+      const deleteItem = vi.fn().mockResolvedValue(undefined);
+      const fetchData = vi.fn();
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
 
       const { container } = renderWithContext(
         <Collections
@@ -523,11 +523,11 @@ describe("Collections - connected wiring, deletion, and registration", () => {
             } as any
           }
           fetchData={fetchData}
-          editItem={jest.fn().mockResolvedValue(undefined)}
+          editItem={vi.fn().mockResolvedValue(undefined)}
           deleteItem={deleteItem}
-          registerLibrary={jest.fn().mockResolvedValue(undefined)}
-          importCollection={jest.fn().mockResolvedValue(undefined)}
-          reapCollection={jest.fn().mockResolvedValue(undefined)}
+          registerLibrary={vi.fn().mockResolvedValue(undefined)}
+          importCollection={vi.fn().mockResolvedValue(undefined)}
+          reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
           isFetching={false}
         />,

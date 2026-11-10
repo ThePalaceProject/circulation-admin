@@ -4,12 +4,11 @@ import { screen } from "@testing-library/react";
 import { renderWithProviders } from "../testUtils/withProviders";
 import title from "../../../src/utils/title";
 
-// CatalogPage does `require("@thepalaceproject/web-opds-client")` and mounts the OPDS
-// Web Client, a heavy third-party render target that fetches on mount. Replace it
+// CatalogPage mounts the OPDS Web Client, a heavy third-party render target that fetches on mount. Replace it
 // with a marker that echoes the props CatalogPage hands it and the legacy
 // `tab`/`library` child context CatalogPage supplies (read via `contextTypes`), so
 // we can assert the wiring without the real catalog.
-jest.mock("@thepalaceproject/web-opds-client", () => {
+vi.mock("@thepalaceproject/web-opds-client/lib/components/OPDSCatalog", () => {
   const React = require("react");
   const PropTypes = require("prop-types");
   const OPDSCatalogMock = (props, context) => (
@@ -36,15 +35,14 @@ jest.mock("@thepalaceproject/web-opds-client", () => {
     tab: PropTypes.string,
     library: PropTypes.func,
   };
-  return OPDSCatalogMock;
+  return { default: OPDSCatalogMock };
 });
 
 // When there is no library, CatalogPage renders WelcomePage, which mounts the real
 // Header, which reads the legacy `router` context (see LegacyRouterBridge) and
 // fetches on mount. Mock Header to a marker so the WelcomePage path stays
 // self-contained.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: function Header() {
     return <div data-testid="header" />;
   },

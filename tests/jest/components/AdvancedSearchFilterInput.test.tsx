@@ -26,8 +26,8 @@ describe("AdvancedSearchFilterInput", () => {
     screen.getByRole("combobox", { name: "filter operator" });
 
   beforeEach(() => {
-    onAdd = jest.fn();
-    onClearFiltersFlagChange = jest.fn();
+    onAdd = vi.fn();
+    onClearFiltersFlagChange = vi.fn();
   });
 
   it("should render select with field names for field selection", () => {

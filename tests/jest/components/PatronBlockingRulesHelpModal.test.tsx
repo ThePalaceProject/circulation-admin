@@ -11,7 +11,7 @@ const SAMPLE_FIELDS = {
 
 const baseProps = {
   show: true,
-  onHide: jest.fn(),
+  onHide: vi.fn(),
   availableFields: null,
   fieldsLoading: false,
   fieldsError: null,
@@ -19,7 +19,7 @@ const baseProps = {
 
 describe("PatronBlockingRulesHelpModal", () => {
   beforeEach(() => {
-    baseProps.onHide = jest.fn();
+    baseProps.onHide = vi.fn();
   });
 
   it("renders the modal title when show is true", () => {
@@ -124,7 +124,7 @@ describe("PatronBlockingRulesHelpModal", () => {
 
   it("calls onHide when the header × button is clicked", async () => {
     const user = userEvent.setup();
-    const onHide = jest.fn();
+    const onHide = vi.fn();
     render(<PatronBlockingRulesHelpModal {...baseProps} onHide={onHide} />);
 
     // The header × button has class "close"; the footer button has content "Close".
@@ -135,7 +135,7 @@ describe("PatronBlockingRulesHelpModal", () => {
 
   it("calls onHide when the footer Close button is clicked", async () => {
     const user = userEvent.setup();
-    const onHide = jest.fn();
+    const onHide = vi.fn();
     render(<PatronBlockingRulesHelpModal {...baseProps} onHide={onHide} />);
 
     // Footer Close is the last close-named button; header × is first.

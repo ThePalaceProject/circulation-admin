@@ -1,3 +1,4 @@
+import type { Mock, MockInstance } from "vitest";
 import * as React from "react";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -17,8 +18,8 @@ import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 // targets can be asserted via `data-to` without a Router in the test. Only
 // CustomListsSidebar uses Link in this tree (CustomListEditor does not), so the
 // existing connected tests are unaffected.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual<object>("react-router")),
   Link: (props) => (
     <div data-testid="Link" data-to={props.to} className={props.className}>
       {props.children}
@@ -49,7 +50,7 @@ describe("CustomLists", () => {
   );
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("adds filters when new filter values are entered", async () => {
@@ -254,9 +255,9 @@ describe("CustomLists", () => {
         })
       )
     );
-    const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
     // On load, the component navigates to the first list's edit page.
-    jest.spyOn(navigate, "navigateTo").mockImplementation(() => undefined);
+    vi.spyOn(navigate, "navigateTo").mockImplementation(() => undefined);
     const user = userEvent.setup();
 
     renderWithContext(
@@ -409,20 +410,20 @@ describe("CustomLists", () => {
     const allLanes = [lane1, lane2, lane3];
 
     // Test doubles for the dispatch props.
-    let fetchCustomLists: jest.Mock;
-    let fetchCustomListDetails: jest.Mock;
-    let deleteCustomList: jest.Mock;
-    let shareCustomList: jest.Mock;
-    let openCustomListEditor: jest.Mock;
-    let saveCustomListEditor: jest.Mock;
-    let executeCustomListEditorSearch: jest.Mock;
-    let loadMoreSearchResults: jest.Mock;
-    let loadMoreEntries: jest.Mock;
-    let fetchCollections: jest.Mock;
-    let fetchLibraries: jest.Mock;
-    let fetchLanes: jest.Mock;
-    let fetchLanguages: jest.Mock;
-    let navigateSpy: jest.SpyInstance;
+    let fetchCustomLists: Mock;
+    let fetchCustomListDetails: Mock;
+    let deleteCustomList: Mock;
+    let shareCustomList: Mock;
+    let openCustomListEditor: Mock;
+    let saveCustomListEditor: Mock;
+    let executeCustomListEditorSearch: Mock;
+    let loadMoreSearchResults: Mock;
+    let loadMoreEntries: Mock;
+    let fetchCollections: Mock;
+    let fetchLibraries: Mock;
+    let fetchLanes: Mock;
+    let fetchLanguages: Mock;
+    let navigateSpy: MockInstance;
 
     const configWithRoles = (
       roles: Partial<ConfigurationSettings>["roles"]
@@ -494,30 +495,29 @@ describe("CustomLists", () => {
       navigateSpy.mock.calls[navigateSpy.mock.calls.length - 1]?.[0];
 
     beforeEach(() => {
-      fetchCustomLists = jest.fn();
-      fetchCustomListDetails = jest.fn();
-      deleteCustomList = jest.fn().mockResolvedValue(undefined);
-      shareCustomList = jest.fn().mockResolvedValue(undefined);
-      openCustomListEditor = jest.fn();
-      saveCustomListEditor = jest.fn().mockResolvedValue(undefined);
-      executeCustomListEditorSearch = jest.fn();
-      loadMoreSearchResults = jest.fn();
-      loadMoreEntries = jest.fn();
-      fetchCollections = jest.fn();
-      fetchLibraries = jest.fn();
-      fetchLanes = jest.fn().mockResolvedValue({ lanes: [] });
-      fetchLanguages = jest.fn();
+      fetchCustomLists = vi.fn();
+      fetchCustomListDetails = vi.fn();
+      deleteCustomList = vi.fn().mockResolvedValue(undefined);
+      shareCustomList = vi.fn().mockResolvedValue(undefined);
+      openCustomListEditor = vi.fn();
+      saveCustomListEditor = vi.fn().mockResolvedValue(undefined);
+      executeCustomListEditorSearch = vi.fn();
+      loadMoreSearchResults = vi.fn();
+      loadMoreEntries = vi.fn();
+      fetchCollections = vi.fn();
+      fetchLibraries = vi.fn();
+      fetchLanes = vi.fn().mockResolvedValue({ lanes: [] });
+      fetchLanguages = vi.fn();
 
-      navigateSpy = jest
+      navigateSpy = vi
         .spyOn(navigate, "navigateTo")
         .mockImplementation(() => undefined);
-      jest.spyOn(navigate, "currentHref").mockReturnValue(listsUrl);
+      vi.spyOn(navigate, "currentHref").mockReturnValue(listsUrl);
 
       // Stub the heavy editor child so we can assert the props CustomLists
       // hands it and drive its `save` callback without its full render tree.
-      jest
-        .spyOn(CustomListEditorModule, "default")
-        .mockImplementation((props: any) => (
+      vi.spyOn(CustomListEditorModule, "default").mockImplementation(
+        (props: any) => (
           <div data-testid="custom-list-editor">
             <span data-testid="editor-library">
               {props.library ? props.library.short_name : "none"}
@@ -544,11 +544,12 @@ describe("CustomLists", () => {
               share
             </button>
           </div>
-        ));
+        )
+      );
     });
 
     afterEach(() => {
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it("fetches libraries, languages, lists, and collections on mount", () => {
@@ -728,7 +729,7 @@ describe("CustomLists", () => {
 
     it("deletes a list only after the user confirms, fetching lanes first", async () => {
       const user = userEvent.setup();
-      const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(false);
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
       const { container } = renderCustomLists();
 
       const deleteButton = () =>
@@ -750,7 +751,7 @@ describe("CustomLists", () => {
 
     it("warns which lanes will be deleted along with the list", async () => {
       const user = userEvent.setup();
-      const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
       const { container } = renderCustomLists({ lanes: allLanes });
 
       const deleteButtons = () =>

@@ -24,10 +24,10 @@ describe("AdvancedSearchFilter", () => {
     );
 
   beforeEach(() => {
-    onBooleanChange = jest.fn();
-    onMove = jest.fn();
-    onSelect = jest.fn();
-    onRemove = jest.fn();
+    onBooleanChange = vi.fn();
+    onMove = vi.fn();
+    onSelect = vi.fn();
+    onRemove = vi.fn();
   });
 
   it("should render an AdvancedSearchBooleanFilter if the query is a boolean AND", () => {

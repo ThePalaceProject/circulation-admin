@@ -9,8 +9,8 @@ import { MemoryRouter } from "react-router";
 // not a mocked Link, show what React Router does with each target.
 const wrapper = MemoryRouter;
 
-const renderLanes = jest.fn();
-const toggleLaneVisibility = jest.fn();
+const renderLanes = vi.fn();
+const toggleLaneVisibility = vi.fn();
 
 function createLaneData(displayName: string, isAutomated: boolean): LaneData {
   return {
@@ -91,14 +91,14 @@ describe("Lane - visibility toggle and expansion", () => {
   });
 
   const renderLane = (overrides: Record<string, unknown> = {}) => {
-    const toggle = jest.fn();
+    const toggle = vi.fn();
     const result = render(
       <Lane
         lane={makeLane(true)}
         active={false}
         library="lib"
         orderChanged={false}
-        renderLanes={jest.fn()}
+        renderLanes={vi.fn()}
         toggleLaneVisibility={toggle}
         {...overrides}
       />,
@@ -162,8 +162,8 @@ describe("Lane - visibility toggle and expansion", () => {
         active={false}
         library="lib"
         orderChanged={false}
-        renderLanes={jest.fn()}
-        toggleLaneVisibility={jest.fn()}
+        renderLanes={vi.fn()}
+        toggleLaneVisibility={vi.fn()}
       />
     );
     expect(container.querySelector("button.show-lane")).toBeInTheDocument();

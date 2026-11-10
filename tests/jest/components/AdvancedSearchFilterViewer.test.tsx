@@ -12,10 +12,10 @@ describe("AdvancedSearchFilterViewer", () => {
   let query;
 
   beforeEach(() => {
-    onBooleanChange = jest.fn();
-    onMove = jest.fn();
-    onSelect = jest.fn();
-    onRemove = jest.fn();
+    onBooleanChange = vi.fn();
+    onMove = vi.fn();
+    onSelect = vi.fn();
+    onRemove = vi.fn();
 
     query = {
       id: "0",

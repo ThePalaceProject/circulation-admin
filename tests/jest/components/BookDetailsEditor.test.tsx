@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 
@@ -13,8 +14,7 @@ import { setupMswServer } from "../testUtils/mswServer";
 // BookEditForm is a heavy child; the legacy enzyme tests only shallow-rendered
 // it and asserted the props it received. Mock it to a marker that surfaces those
 // props as data attributes so the same facts can be asserted against real DOM.
-jest.mock("../../../src/components/BookEditForm", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/BookEditForm", () => ({
   default: (props: any) => (
     <div
       data-testid="book-edit-form"
@@ -47,14 +47,14 @@ const renderEditor = (overrides: Record<string, unknown> = {}) => {
     isFetching: false,
     fetchError: undefined,
     editError: undefined,
-    refreshCatalog: jest.fn().mockResolvedValue(undefined),
-    fetchBookData: jest.fn(),
-    fetchRoles: jest.fn(),
-    fetchMedia: jest.fn(),
-    fetchLanguages: jest.fn(),
-    postBookData: jest.fn(),
-    suppressBook: jest.fn(),
-    unsuppressBook: jest.fn(),
+    refreshCatalog: vi.fn().mockResolvedValue(undefined),
+    fetchBookData: vi.fn(),
+    fetchRoles: vi.fn(),
+    fetchMedia: vi.fn(),
+    fetchLanguages: vi.fn(),
+    postBookData: vi.fn(),
+    suppressBook: vi.fn(),
+    unsuppressBook: vi.fn(),
     ...overrides,
   };
   const result = render(<UnconnectedBookDetailsEditor {...(props as any)} />);
@@ -90,7 +90,7 @@ describe("BookDetailsEditor", () => {
     );
 
     expect(props.fetchBookData).toHaveBeenCalledTimes(2);
-    expect((props.fetchBookData as jest.Mock).mock.calls[1][0]).toBe(
+    expect((props.fetchBookData as Mock).mock.calls[1][0]).toBe(
       "admin/works/5555"
     );
   });
@@ -263,7 +263,7 @@ describe("BookDetailsEditor", () => {
         bookUrl="works/1234"
         csrfToken="token"
         canSuppress={true}
-        refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
       />,
       { reduxProviderProps: { store } }
     );

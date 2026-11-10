@@ -9,21 +9,17 @@ import CustomListEditor, {
 // Each list entry renders a web-opds-client CatalogLink whose `collectionUrl` is
 // the list's opdsFeedUrl. Mock it to a marker that echoes that URL, so the
 // crawlable-feed derivation can be asserted without router/pathFor context.
-jest.mock(
-  "@thepalaceproject/web-opds-client/lib/components/CatalogLink",
-  () => ({
-    __esModule: true,
-    default: (props: any) => (
-      <a
-        href={props.bookUrl}
-        data-testid="catalog-link"
-        data-collection-url={props.collectionUrl}
-      >
-        {props.children}
-      </a>
-    ),
-  })
-);
+vi.mock("@thepalaceproject/web-opds-client/lib/components/CatalogLink", () => ({
+  default: (props: any) => (
+    <a
+      href={props.bookUrl}
+      data-testid="catalog-link"
+      data-collection-url={props.collectionUrl}
+    >
+      {props.children}
+    </a>
+  ),
+}));
 
 describe("CustomListEditor", () => {
   // CustomListEntriesEditor calls Element.scrollTo on mount, which JSDOM does
@@ -108,14 +104,14 @@ describe("CustomListEditor", () => {
     properties: properties as CustomListEditorProps["properties"],
     searchParams: searchParams as CustomListEditorProps["searchParams"],
     searchResults: searchResults as CustomListEditorProps["searchResults"],
-    loadMoreEntries: jest.fn(),
-    loadMoreSearchResults: jest.fn(),
-    reset: jest.fn(),
-    save: jest.fn().mockResolvedValue(undefined),
-    search: jest.fn(),
-    share: jest.fn(),
-    updateProperty: jest.fn(),
-    updateSearchParam: jest.fn(),
+    loadMoreEntries: vi.fn(),
+    loadMoreSearchResults: vi.fn(),
+    reset: vi.fn(),
+    save: vi.fn().mockResolvedValue(undefined),
+    search: vi.fn(),
+    share: vi.fn(),
+    updateProperty: vi.fn(),
+    updateSearchParam: vi.fn(),
     ...overrides,
   });
 
@@ -246,7 +242,7 @@ describe("CustomListEditor", () => {
 
   it("calls save when the save button is clicked", async () => {
     const user = userEvent.setup();
-    const save = jest.fn().mockResolvedValue(undefined);
+    const save = vi.fn().mockResolvedValue(undefined);
     renderEditor({ save });
 
     await user.click(screen.getByRole("button", { name: "Save this list" }));
@@ -264,7 +260,7 @@ describe("CustomListEditor", () => {
 
   it("calls reset when the cancel button is clicked", async () => {
     const user = userEvent.setup();
-    const reset = jest.fn();
+    const reset = vi.fn();
     renderEditor({ reset });
 
     await user.click(screen.getByRole("button", { name: "Cancel changes" }));
@@ -298,7 +294,7 @@ describe("CustomListEditor", () => {
     const user = userEvent.setup();
     // The auto-update controls only render when auto-update is enabled and the
     // list is new (listId null), which is when the radios are interactive.
-    const updateProperty = jest.fn();
+    const updateProperty = vi.fn();
     renderEditor({
       updateProperty,
       isAutoUpdateEnabled: true,
@@ -315,7 +311,7 @@ describe("CustomListEditor", () => {
   });
 
   it("calls search when listId changes", () => {
-    const search = jest.fn();
+    const search = vi.fn();
     const { rerender } = renderEditor({ search });
 
     expect(search).toHaveBeenCalledTimes(1);
@@ -326,7 +322,7 @@ describe("CustomListEditor", () => {
   });
 
   it("calls search when isLoaded changes", () => {
-    const search = jest.fn();
+    const search = vi.fn();
     const { rerender } = renderEditor({ search });
 
     expect(search).toHaveBeenCalledTimes(1);
@@ -338,7 +334,7 @@ describe("CustomListEditor", () => {
 
   it("calls share when the share button is clicked", async () => {
     const user = userEvent.setup();
-    const share = jest.fn();
+    const share = vi.fn();
     const { container } = renderEditor({ share });
 
     const shareButton = container.querySelector<HTMLButtonElement>(

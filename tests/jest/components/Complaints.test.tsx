@@ -37,16 +37,16 @@ const renderComplaints = (
       bookUrl="book url"
       book={bookData}
       complaints={complaintsData}
-      fetchComplaints={jest.fn()}
-      postComplaint={jest.fn()}
-      refreshCatalog={jest.fn()}
+      fetchComplaints={vi.fn()}
+      postComplaint={vi.fn()}
+      refreshCatalog={vi.fn()}
       {...props}
     />
   );
 
 describe("Complaints", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("rendering", () => {
@@ -107,7 +107,7 @@ describe("Complaints", () => {
 
     it("shows a fetch error and re-fetches when trying again", async () => {
       const user = userEvent.setup();
-      const fetchComplaints = jest.fn();
+      const fetchComplaints = vi.fn();
       const fetchError = { status: 401, response: "test", url: "test url" };
       const { container } = render(
         <Complaints
@@ -116,8 +116,8 @@ describe("Complaints", () => {
           book={{ id: "id", title: "test book" }}
           fetchError={fetchError}
           fetchComplaints={fetchComplaints}
-          postComplaint={jest.fn()}
-          refreshCatalog={jest.fn()}
+          postComplaint={vi.fn()}
+          refreshCatalog={vi.fn()}
         />
       );
 
@@ -140,7 +140,7 @@ describe("Complaints", () => {
     const bookUrl = "http://example.com/works/fakeid";
 
     it("fetches complaints on mount", () => {
-      const fetchComplaints = jest.fn();
+      const fetchComplaints = vi.fn();
       render(
         <Complaints
           csrfToken="token"
@@ -148,8 +148,8 @@ describe("Complaints", () => {
           bookUrl={bookUrl}
           complaints={singleComplaint}
           fetchComplaints={fetchComplaints}
-          refreshCatalog={jest.fn()}
-          resolveComplaints={jest.fn().mockResolvedValue(undefined)}
+          refreshCatalog={vi.fn()}
+          resolveComplaints={vi.fn().mockResolvedValue(undefined)}
         />
       );
 
@@ -161,16 +161,16 @@ describe("Complaints", () => {
 
     it("resolves a complaint type when its resolve button is clicked", async () => {
       const user = userEvent.setup();
-      jest.spyOn(window, "confirm").mockReturnValue(true);
-      const resolveComplaints = jest.fn().mockResolvedValue(undefined);
+      vi.spyOn(window, "confirm").mockReturnValue(true);
+      const resolveComplaints = vi.fn().mockResolvedValue(undefined);
       render(
         <Complaints
           csrfToken="token"
           book={{ id: "id", title: "test book" }}
           bookUrl={bookUrl}
           complaints={singleComplaint}
-          fetchComplaints={jest.fn()}
-          refreshCatalog={jest.fn()}
+          fetchComplaints={vi.fn()}
+          refreshCatalog={vi.fn()}
           resolveComplaints={resolveComplaints}
         />
       );
@@ -190,10 +190,10 @@ describe("Complaints", () => {
 
     it("re-fetches complaints and refreshes the catalog after resolving", async () => {
       const user = userEvent.setup();
-      jest.spyOn(window, "confirm").mockReturnValue(true);
-      const fetchComplaints = jest.fn();
-      const refreshCatalog = jest.fn();
-      const resolveComplaints = jest.fn().mockResolvedValue(undefined);
+      vi.spyOn(window, "confirm").mockReturnValue(true);
+      const fetchComplaints = vi.fn();
+      const refreshCatalog = vi.fn();
+      const resolveComplaints = vi.fn().mockResolvedValue(undefined);
       render(
         <Complaints
           csrfToken="token"
@@ -227,7 +227,7 @@ describe("Complaints", () => {
           bookUrl="http://example.com/works/fakeid"
           book={{ id: "id", title: "connected book" }}
           csrfToken="token"
-          refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+          refreshCatalog={vi.fn().mockResolvedValue(undefined)}
         />
       );
 

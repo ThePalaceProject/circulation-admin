@@ -101,7 +101,7 @@ describe("JsonField", () => {
   });
 
   it("calls onChange with parsed value on valid input", () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(<JsonField setting={setting} onChange={onChange} />);
     const ta = screen.getByLabelText("JSON Setting");
 
@@ -110,7 +110,7 @@ describe("JsonField", () => {
   });
 
   it("does not call onChange when JSON is invalid", () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(<JsonField setting={setting} onChange={onChange} />);
     const ta = screen.getByLabelText("JSON Setting");
 
@@ -212,7 +212,7 @@ describe("JsonField", () => {
   describe("Copy button", () => {
     beforeEach(() => {
       Object.defineProperty(navigator, "clipboard", {
-        value: { writeText: jest.fn().mockResolvedValue(undefined) },
+        value: { writeText: vi.fn().mockResolvedValue(undefined) },
         writable: true,
         configurable: true,
       });
@@ -244,7 +244,7 @@ describe("JsonField", () => {
     });
 
     it("shows Copied! text briefly after click then hides it", async () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       render(<JsonField setting={setting} value={{ a: 1 }} />);
       expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
       await act(async () => {
@@ -253,9 +253,9 @@ describe("JsonField", () => {
         );
       });
       expect(screen.getByText("Copied!")).toBeInTheDocument();
-      act(() => jest.advanceTimersByTime(2000));
+      act(() => vi.advanceTimersByTime(2000));
       expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it("shows 'Copy failed.' when navigator.clipboard is unavailable", () => {
@@ -275,7 +275,7 @@ describe("JsonField", () => {
     it("shows 'Copy failed.' when clipboard write fails", async () => {
       Object.defineProperty(navigator, "clipboard", {
         value: {
-          writeText: jest.fn().mockRejectedValue(new Error("denied")),
+          writeText: vi.fn().mockRejectedValue(new Error("denied")),
         },
         writable: true,
         configurable: true,
@@ -324,7 +324,7 @@ describe("JsonField", () => {
     });
 
     it("calls onChange with null when clicked", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       render(
         <JsonField setting={setting} value={{ a: 1 }} onChange={onChange} />
       );
@@ -355,15 +355,15 @@ describe("JsonField", () => {
     });
 
     it("hides 'Cleared!' message after timeout", () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       render(<JsonField setting={setting} value={{ a: 1 }} />);
       fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
       expect(
         screen.getByText("Cleared! Ctrl-Z / Cmd-Z to recover.")
       ).toBeInTheDocument();
-      act(() => jest.advanceTimersByTime(5000));
+      act(() => vi.advanceTimersByTime(5000));
       expect(screen.queryByText(/Cleared!/i)).not.toBeInTheDocument();
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it("hides 'Cleared!' message when user starts typing", () => {
@@ -413,7 +413,7 @@ describe("JsonField", () => {
     });
 
     it("calls onChange with restored value on undo", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const obj = { a: 1 };
       render(<JsonField setting={setting} value={obj} onChange={onChange} />);
       const ta = screen.getByLabelText("JSON Setting");
@@ -460,7 +460,7 @@ describe("JsonField", () => {
     });
 
     it("does not call onChange when restored text is invalid JSON", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       render(<JsonField setting={setting} onChange={onChange} />);
       const ta = screen.getByLabelText("JSON Setting");
 
@@ -516,7 +516,7 @@ describe("JsonField", () => {
     });
 
     it("calls onChange with null when cleared programmatically", () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const ref = React.createRef<JsonFieldHandle>();
       render(
         <JsonField

@@ -266,7 +266,7 @@ describe("InputList", () => {
 
   it("optionally accepts an onChange prop", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const { container } = renderList({ onChange });
     expect(onChange).not.toHaveBeenCalled();
 

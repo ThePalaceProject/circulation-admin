@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -5,7 +6,7 @@ import userEvent from "@testing-library/user-event";
 import DiagnosticsServiceTabs from "../../../src/components/DiagnosticsServiceTabs";
 
 describe("DiagnosticsServiceTabs", () => {
-  let goToTab: jest.Mock;
+  let goToTab: Mock;
 
   const ts1 = {
     service: "test_service_1",
@@ -29,7 +30,7 @@ describe("DiagnosticsServiceTabs", () => {
   };
 
   const renderTabs = () => {
-    goToTab = jest.fn();
+    goToTab = vi.fn();
     return render(
       <DiagnosticsServiceTabs
         goToTab={goToTab}

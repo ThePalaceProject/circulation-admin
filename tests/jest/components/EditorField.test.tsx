@@ -6,14 +6,14 @@ import EditorField from "../../../src/components/EditorField";
 
 describe("EditorField", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders the three inline-style buttons and toggles the matching style on mouse-down", () => {
     // There is no DOM-observable effect of toggling an inline style over a
     // collapsed (unfocused) selection, so we drive the real mouse-down interaction
     // and observe the actual `RichUtils.toggleInlineStyle` call the button triggers.
-    const toggleSpy = jest.spyOn(RichUtils, "toggleInlineStyle");
+    const toggleSpy = vi.spyOn(RichUtils, "toggleInlineStyle");
 
     const { container } = render(
       <EditorField content="This is a summary." disabled={false} />

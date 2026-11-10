@@ -7,7 +7,7 @@ import WithRemoveButton from "../../../src/components/WithRemoveButton";
 describe("WithRemoveButton", () => {
   it("shows children", () => {
     render(
-      <WithRemoveButton disabled={false} onRemove={jest.fn()}>
+      <WithRemoveButton disabled={false} onRemove={vi.fn()}>
         child
       </WithRemoveButton>
     );
@@ -17,7 +17,7 @@ describe("WithRemoveButton", () => {
 
   it("shows a remove button", () => {
     render(
-      <WithRemoveButton disabled={false} onRemove={jest.fn()}>
+      <WithRemoveButton disabled={false} onRemove={vi.fn()}>
         child
       </WithRemoveButton>
     );
@@ -27,7 +27,7 @@ describe("WithRemoveButton", () => {
 
   it("calls onRemove when clicked", async () => {
     const user = userEvent.setup();
-    const onRemove = jest.fn();
+    const onRemove = vi.fn();
     render(
       <WithRemoveButton disabled={false} onRemove={onRemove}>
         child
@@ -41,7 +41,7 @@ describe("WithRemoveButton", () => {
 
   it("does nothing when disabled", async () => {
     const user = userEvent.setup();
-    const onRemove = jest.fn();
+    const onRemove = vi.fn();
     render(
       <WithRemoveButton disabled={true} onRemove={onRemove}>
         child
@@ -55,8 +55,8 @@ describe("WithRemoveButton", () => {
 
   it("calls onRemove when confirmation returns true", async () => {
     const user = userEvent.setup();
-    const onRemove = jest.fn();
-    const confirmRemoval = jest.fn().mockReturnValue(true);
+    const onRemove = vi.fn();
+    const confirmRemoval = vi.fn().mockReturnValue(true);
     render(
       <WithRemoveButton
         disabled={false}
@@ -75,8 +75,8 @@ describe("WithRemoveButton", () => {
 
   it("does not call onRemove when confirmation returns false", async () => {
     const user = userEvent.setup();
-    const onRemove = jest.fn();
-    const confirmRemoval = jest.fn().mockReturnValue(false);
+    const onRemove = vi.fn();
+    const confirmRemoval = vi.fn().mockReturnValue(false);
     render(
       <WithRemoveButton
         disabled={false}

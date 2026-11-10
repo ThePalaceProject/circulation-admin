@@ -82,7 +82,7 @@ const book: BookData = {
 };
 
 describe("BookDetails", () => {
-  const updateBook = jest.fn();
+  const updateBook = vi.fn();
 
   it("shows audience and target age", () => {
     const { container } = render(

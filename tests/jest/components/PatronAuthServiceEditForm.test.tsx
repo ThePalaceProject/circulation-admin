@@ -51,7 +51,7 @@ const servicesData: PatronAuthServicesData = {
 const baseProps = {
   data: servicesData,
   disabled: false,
-  save: jest.fn(),
+  save: vi.fn(),
   urlBase: "/admin/web/config/patronAuth/",
   listDataKey: "patron_auth_services",
   adminLevel: 10,

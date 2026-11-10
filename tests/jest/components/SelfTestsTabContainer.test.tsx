@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -10,8 +11,7 @@ import buildStore from "../../../src/store";
 // slice of the store each category gets and under what type/link name, so mock it
 // to a marker echoing those. `data-items` names the slice's contents so passing
 // the wrong category's items — or the whole items object — is visible.
-jest.mock("../../../src/components/SelfTestsCategory", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/SelfTestsCategory", () => ({
   default: (props: any) => (
     <div
       data-testid="self-tests-category"
@@ -32,8 +32,8 @@ import { SelfTestsTabContainer } from "../../../src/components/SelfTestsTabConta
 // context via static contextTypes (handleSelect calls router.push). Supply them
 // through a tiny legacy-context provider.
 class LegacyContextProvider extends React.Component<{
-  router: { push: jest.Mock };
-  pathFor: jest.Mock;
+  router: { push: Mock };
+  pathFor: Mock;
   children: React.ReactNode;
 }> {
   static childContextTypes = {
@@ -49,10 +49,10 @@ class LegacyContextProvider extends React.Component<{
 }
 
 describe("SelfTestsTabContainer", () => {
-  let goToTab: jest.Mock;
-  let fetchItems: jest.Mock;
-  let router: { push: jest.Mock };
-  let pathFor: jest.Mock;
+  let goToTab: Mock;
+  let fetchItems: Mock;
+  let router: { push: Mock };
+  let pathFor: Mock;
   let store;
 
   const collections = [
@@ -81,10 +81,10 @@ describe("SelfTestsTabContainer", () => {
 
   beforeEach(() => {
     store = buildStore();
-    goToTab = jest.fn();
-    fetchItems = jest.fn();
-    router = { push: jest.fn() };
-    pathFor = jest.fn();
+    goToTab = vi.fn();
+    fetchItems = vi.fn();
+    router = { push: vi.fn() };
+    pathFor = vi.fn();
   });
 
   const element = (overrides = {}) => {

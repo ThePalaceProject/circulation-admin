@@ -28,10 +28,10 @@ describe("AdvancedSearchBooleanFilter", () => {
     );
 
   beforeEach(() => {
-    onBooleanChange = jest.fn();
-    onMove = jest.fn();
-    onRemove = jest.fn();
-    onSelect = jest.fn();
+    onBooleanChange = vi.fn();
+    onMove = vi.fn();
+    onRemove = vi.fn();
+    onSelect = vi.fn();
 
     query = {
       id: "90",

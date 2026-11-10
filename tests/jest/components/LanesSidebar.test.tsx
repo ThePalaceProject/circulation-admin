@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { LaneData } from "../../../src/interfaces";
 import LanesSidebar from "../../../src/components/LanesSidebar";
 import { MemoryRouter } from "react-router";
+import * as dnd from "react-beautiful-dnd";
 
 // LanesSidebar and its Lane children render React Router links, so render
 // inside a router. Real links, not a mocked Link, show what React Router does
@@ -17,7 +18,7 @@ import { MemoryRouter } from "react-router";
 // what gives draggable lanes their `.draggable` class and grab handle. A lane
 // group of size one is rendered by LanesSidebar without a Draggable, so those
 // lanes are (correctly) not draggable.
-jest.mock("react-beautiful-dnd", () => {
+vi.mock("react-beautiful-dnd", () => {
   const handlers: any = {};
   return {
     __handlers: handlers,
@@ -51,8 +52,7 @@ jest.mock("react-beautiful-dnd", () => {
   };
 });
 
-const getHandlers = () =>
-  (jest.requireMock("react-beautiful-dnd") as any).__handlers;
+const getHandlers = () => (dnd as any).__handlers;
 
 const makeSubsublane = (): LaneData => ({
   id: 3,
@@ -95,11 +95,11 @@ const makeLanes = (): LaneData[] => [
 
 const renderSidebar = (extra: any = {}) => {
   const lanes: LaneData[] = extra.lanes ?? makeLanes();
-  const drag = extra.drag ?? jest.fn();
+  const drag = extra.drag ?? vi.fn();
   const findLaneForIdentifier =
-    extra.findLaneForIdentifier ?? jest.fn().mockReturnValue(lanes[1]);
+    extra.findLaneForIdentifier ?? vi.fn().mockReturnValue(lanes[1]);
   const findParentOfLane =
-    extra.findParentOfLane ?? jest.fn().mockReturnValue(null);
+    extra.findParentOfLane ?? vi.fn().mockReturnValue(null);
   const props: any = {
     orderChanged: false,
     library: "library",
@@ -268,12 +268,12 @@ describe("LanesSidebar", () => {
     };
     lanes[0].sublanes = [sublaneData, newSublane];
 
-    const drag = jest.fn();
+    const drag = vi.fn();
     renderSidebar({
       lanes,
       drag,
-      findLaneForIdentifier: jest.fn().mockReturnValue(newSublane),
-      findParentOfLane: jest.fn().mockReturnValue(lanes[0]),
+      findLaneForIdentifier: vi.fn().mockReturnValue(newSublane),
+      findParentOfLane: vi.fn().mockReturnValue(lanes[0]),
     });
     const handlers = getHandlers();
 
@@ -527,15 +527,15 @@ describe("LanesSidebar", () => {
     const allLanes = [...lanes, ...parentA.sublanes, ...parentB.sublanes];
 
     let draggingId: string = null;
-    const drag = jest.fn(({ draggableId }) => {
+    const drag = vi.fn(({ draggableId }) => {
       draggingId = draggableId;
     });
-    const findLaneForIdentifier = jest.fn(() =>
+    const findLaneForIdentifier = vi.fn(() =>
       draggingId
         ? allLanes.find((l) => String(l.id) === String(draggingId))
         : null
     );
-    const findParentOfLane = jest.fn(
+    const findParentOfLane = vi.fn(
       (lane: LaneData) =>
         lanes.find((p) => p.sublanes.some((s) => s.id === lane?.id)) ?? null
     );

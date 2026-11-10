@@ -43,7 +43,7 @@ const announcementEls = (container: HTMLElement) =>
 
 describe("AnnouncementsSection", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders a list of announcements", () => {
@@ -114,7 +114,7 @@ describe("AnnouncementsSection", () => {
 
   it("deletes an announcement", async () => {
     const user = userEvent.setup();
-    jest.spyOn(window, "confirm").mockReturnValue(true);
+    vi.spyOn(window, "confirm").mockReturnValue(true);
     const { container } = renderSection();
     expect(announcementEls(container)).toHaveLength(2);
 

@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -29,9 +30,9 @@ const fillOutForm = async (
 };
 
 describe("AnnouncementForm", () => {
-  let add: jest.Mock;
+  let add: Mock;
   beforeEach(() => {
-    add = jest.fn();
+    add = vi.fn();
   });
 
   it("renders the input fields", () => {
@@ -70,7 +71,7 @@ describe("AnnouncementForm", () => {
   // with, so they would all still pass if the defaults came out blank. Pin the
   // clock and assert the actual values.
   it("prefills the date fields with today and two months from today", () => {
-    jest.useFakeTimers().setSystemTime(new Date(2026, 2, 15));
+    vi.useFakeTimers().setSystemTime(new Date(2026, 2, 15));
     try {
       const { container } = render(<AnnouncementForm add={add} />);
 
@@ -78,7 +79,7 @@ describe("AnnouncementForm", () => {
       expect(start.value).toBe("2026-03-15");
       expect(finish.value).toBe("2026-05-15");
     } finally {
-      jest.useRealTimers();
+      vi.useRealTimers();
     }
   });
 

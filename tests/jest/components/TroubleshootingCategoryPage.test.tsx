@@ -8,8 +8,7 @@ import { renderWithProviders } from "../testUtils/withProviders";
 // react-router context; TroubleshootingCategoryPage only chooses between them
 // and hands them a `tab` and `goToTab`. Mock them to markers that surface the
 // `tab` they receive and let us drive `goToTab`.
-jest.mock("../../../src/components/DiagnosticsTabContainer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/DiagnosticsTabContainer", () => ({
   default: (props: any) => (
     <div data-testid="diagnostics-tab-container" data-tab={props.tab}>
       <button type="button" onClick={() => props.goToTab("monitor")}>
@@ -18,8 +17,7 @@ jest.mock("../../../src/components/DiagnosticsTabContainer", () => ({
     </div>
   ),
 }));
-jest.mock("../../../src/components/SelfTestsTabContainer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/SelfTestsTabContainer", () => ({
   default: (props: any) => (
     <div data-testid="self-tests-tab-container" data-tab={props.tab} />
   ),

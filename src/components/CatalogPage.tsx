@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-const OPDSCatalog = require("@thepalaceproject/web-opds-client");
+import OPDSCatalogComponent from "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog";
 import * as PropTypes from "prop-types";
 import { ActionsProvider } from "@thepalaceproject/web-opds-client/lib/components/context/ActionsContext";
 import BookDetailsContainer from "./BookDetailsContainer";
@@ -15,6 +15,9 @@ import ActionsCreator from "@thepalaceproject/web-opds-client/lib/actions";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import title from "../utils/title";
 import NoCacheDataFetcher from "../utils/NoCacheDataFetcher";
+
+// web-opds-client's props type leaves out some props that it accepts.
+const OPDSCatalog = OPDSCatalogComponent as React.ComponentType<any>;
 
 export interface CatalogPageProps {
   params: {

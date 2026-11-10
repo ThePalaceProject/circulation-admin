@@ -9,15 +9,13 @@ import { render, screen } from "@testing-library/react";
 // otherwise only reachable through a real react-dnd drag that jsdom can't perform.
 let inputProps: any;
 let viewerProps: any;
-jest.mock("../../../src/components/AdvancedSearchFilterInput", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/AdvancedSearchFilterInput", () => ({
   default: (props: any) => {
     inputProps = props;
     return <div data-testid="filter-input" data-name={props.name} />;
   },
 }));
-jest.mock("../../../src/components/AdvancedSearchFilterViewer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/AdvancedSearchFilterViewer", () => ({
   default: (props: any) => {
     viewerProps = props;
     return (
@@ -36,12 +34,12 @@ describe("AdvancedSearchBuilder", () => {
 
   const renderBuilder = (overrides: Record<string, unknown> = {}) => {
     const handlers = {
-      addQuery: jest.fn(),
-      updateClearFiltersFlag: jest.fn(),
-      updateQueryBoolean: jest.fn(),
-      moveQuery: jest.fn(),
-      removeQuery: jest.fn(),
-      selectQuery: jest.fn(),
+      addQuery: vi.fn(),
+      updateClearFiltersFlag: vi.fn(),
+      updateQueryBoolean: vi.fn(),
+      moveQuery: vi.fn(),
+      removeQuery: vi.fn(),
+      selectQuery: vi.fn(),
     };
     render(
       <AdvancedSearchBuilder

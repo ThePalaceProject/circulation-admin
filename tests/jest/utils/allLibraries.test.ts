@@ -137,7 +137,7 @@ describe("settledAllLibraries", () => {
 
 describe("fetchLibrariesIfNeeded", () => {
   const fetchThunk = "libraries thunk";
-  const actions = { fetchLibraries: jest.fn(() => fetchThunk) } as any;
+  const actions = { fetchLibraries: vi.fn(() => fetchThunk) } as any;
 
   // A dispatch that runs thunks against the given libraries state and
   // records every other dispatched action.
@@ -154,7 +154,7 @@ describe("fetchLibrariesIfNeeded", () => {
     return { dispatch, dispatched };
   };
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   it("fetches when the list has never loaded", () => {
     const { dispatch, dispatched } = makeDispatch(undefined);

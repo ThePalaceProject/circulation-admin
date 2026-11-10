@@ -7,8 +7,7 @@ import userEvent from "@testing-library/user-event";
 // can't run in jsdom, so the drag-handler tests call the captured callbacks
 // directly.
 let dndCallbacks: { onDragStart?: any; onDragEnd?: any } = {};
-jest.mock("react-beautiful-dnd", () => ({
-  __esModule: true,
+vi.mock("react-beautiful-dnd", () => ({
   DragDropContext: ({ onDragStart, onDragEnd, children }: any) => {
     dndCallbacks = { onDragStart, onDragEnd };
     return children;
@@ -143,7 +142,7 @@ describe("LaneCustomListsEditor", () => {
 
   it("renders filter select", async () => {
     const user = userEvent.setup();
-    const changeFilter = jest.fn();
+    const changeFilter = vi.fn();
 
     const { container } = render(
       <LaneCustomListsEditor
@@ -223,7 +222,7 @@ describe("LaneCustomListsEditor", () => {
 
   it("adds a list to the lane when the add button is clicked", async () => {
     const user = userEvent.setup();
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
 
     const { container } = render(
       <LaneCustomListsEditor
@@ -257,7 +256,7 @@ describe("LaneCustomListsEditor", () => {
 
   it("removes a list from the lane when the remove button is clicked", async () => {
     const user = userEvent.setup();
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
 
     const { container, rerender } = render(
       <LaneCustomListsEditor
@@ -298,7 +297,7 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("exposes reset()/getCustomListIds() as the imperative API LaneEditor drives via a ref", () => {
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     const ref = React.createRef<LaneCustomListsEditor>();
 
     const { rerender } = render(
@@ -347,7 +346,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("adds a list when dragged from available to current", () => {
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
@@ -365,7 +364,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("removes a list when dragged from current to available", () => {
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
@@ -381,7 +380,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("does nothing when dropped outside a list (no destination)", () => {
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     render(<LaneCustomListsEditor {...makeProps()} onUpdate={onUpdate} />);
 
     act(() => {
@@ -396,7 +395,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("disables dropping within the available lists while dragging from available", () => {
-    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={vi.fn()} />);
 
     act(() => {
       dndCallbacks.onDragStart({ source: { droppableId: "available-lists" } });
@@ -409,7 +408,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("disables dropping within the current lists while dragging from current", () => {
-    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={vi.fn()} />);
 
     act(() => {
       dndCallbacks.onDragStart({ source: { droppableId: "current-lists" } });
@@ -422,7 +421,7 @@ describe("LaneCustomListsEditor - drag handlers", () => {
   });
 
   it("shows a removal message over the available lists while dragging from current, and clears it on drop", () => {
-    render(<LaneCustomListsEditor {...makeProps()} onUpdate={jest.fn()} />);
+    render(<LaneCustomListsEditor {...makeProps()} onUpdate={vi.fn()} />);
     const available = () => screen.getByTestId("droppable-available-lists");
     const removalMessage = () =>
       screen.queryByText("Drag lists here to remove them from the lane.");

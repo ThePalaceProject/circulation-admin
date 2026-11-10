@@ -7,7 +7,7 @@ import WithEditButton from "../../../src/components/WithEditButton";
 describe("WithEditButton", () => {
   it("shows children", () => {
     render(
-      <WithEditButton disabled={false} onEdit={jest.fn()}>
+      <WithEditButton disabled={false} onEdit={vi.fn()}>
         child
       </WithEditButton>
     );
@@ -17,7 +17,7 @@ describe("WithEditButton", () => {
 
   it("shows an edit button", () => {
     render(
-      <WithEditButton disabled={false} onEdit={jest.fn()}>
+      <WithEditButton disabled={false} onEdit={vi.fn()}>
         child
       </WithEditButton>
     );
@@ -27,7 +27,7 @@ describe("WithEditButton", () => {
 
   it("calls onEdit when clicked", async () => {
     const user = userEvent.setup();
-    const onEdit = jest.fn();
+    const onEdit = vi.fn();
     render(
       <WithEditButton disabled={false} onEdit={onEdit}>
         child
@@ -41,7 +41,7 @@ describe("WithEditButton", () => {
 
   it("does nothing when disabled", async () => {
     const user = userEvent.setup();
-    const onEdit = jest.fn();
+    const onEdit = vi.fn();
     render(
       <WithEditButton disabled={true} onEdit={onEdit}>
         child

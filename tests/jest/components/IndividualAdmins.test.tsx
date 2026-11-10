@@ -37,9 +37,9 @@ describe("IndividualAdmins - role association disclosure", () => {
     renderWithContext(
       <IndividualAdmins
         data={{ individualAdmins: admins, allLibraries }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -61,9 +61,9 @@ describe("IndividualAdmins - role association disclosure", () => {
             },
           ],
         }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -82,9 +82,9 @@ describe("IndividualAdmins - role association disclosure", () => {
             { email: "root@example.org", roles: [{ role: "system" }] },
           ],
         }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -113,9 +113,9 @@ describe("IndividualAdmins - role association disclosure", () => {
             url: "/admin/libraries",
           },
         }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
@@ -493,9 +493,9 @@ describe("IndividualAdmins - headers", () => {
         editOrCreate="create"
         csrfToken="token"
         data={{ individualAdmins: [] }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         isFetching={false}
       />,
       { csrfToken: "", featureFlags: defaultFeatureFlags, roles: [] }
@@ -523,9 +523,9 @@ describe("IndividualAdmins - access control", () => {
         data={{
           individualAdmins: [{ email: "someone@example.com", roles: [] }],
         }}
-        fetchData={jest.fn()}
-        editItem={jest.fn().mockResolvedValue(undefined)}
-        deleteItem={jest.fn().mockResolvedValue(undefined)}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        deleteItem={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,

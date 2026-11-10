@@ -1,4 +1,4 @@
-import * as classNames from "classnames";
+import { default as classNames } from "classnames";
 import * as React from "react";
 import { ConnectDropTarget, useDrop } from "react-dnd";
 import { AdvancedSearchQuery } from "../interfaces";
@@ -68,7 +68,7 @@ export default function AdvancedSearchBooleanFilter({
 
   const [dropProps, drop]: [
     { canDrop: boolean; isOver: boolean },
-    ConnectDropTarget
+    ConnectDropTarget,
   ] = useDrop(
     {
       accept: "filter",

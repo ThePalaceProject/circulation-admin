@@ -66,7 +66,7 @@ describe("TextWithEditMode", () => {
 
   it("switches out of edit mode", async () => {
     const user = userEvent.setup();
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
     render(
       <TextWithEditMode
         placeholder="editable thing"
@@ -126,7 +126,7 @@ describe("TextWithEditMode", () => {
 
   it("resets via the ref API", async () => {
     const user = userEvent.setup();
-    const onUpdate = jest.fn();
+    const onUpdate = vi.fn();
 
     // With no text prop, reset() returns to a blank edit mode.
     const blankRef = React.createRef<TextWithEditMode>();

@@ -73,7 +73,7 @@ describe("LibraryEditForm", () => {
   const makeProps = (overrides: Overrides = {}): LibraryEditFormProps => ({
     data: makeData(),
     disabled: false,
-    save: jest.fn(),
+    save: vi.fn(),
     urlBase: "url base",
     listDataKey: "libraries",
     adminLevel: 3,
@@ -332,7 +332,7 @@ describe("LibraryEditForm", () => {
   describe("behavior", () => {
     it("calls save when the save button is clicked", async () => {
       const user = userEvent.setup();
-      const save = jest.fn();
+      const save = vi.fn();
       renderForm({ save });
 
       await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -342,7 +342,7 @@ describe("LibraryEditForm", () => {
 
     it("submits data", async () => {
       const user = userEvent.setup();
-      const save = jest.fn();
+      const save = vi.fn();
       renderForm({ save, item: libraryData as LibraryData });
 
       await user.click(screen.getByRole("button", { name: "Submit" }));

@@ -27,7 +27,7 @@ describe("BookDetails", () => {
   let fetchLanguages;
   let postBookData;
   let dispatchProps;
-  const suppressBook = jest.fn().mockImplementation((url: string) =>
+  const suppressBook = vi.fn().mockImplementation((url: string) =>
     store.dispatch(
       bookEditorApiEndpoints.endpoints.suppressBook.initiate({
         url,
@@ -35,7 +35,7 @@ describe("BookDetails", () => {
       })
     )
   );
-  const unsuppressBook = jest.fn().mockImplementation((url: string) =>
+  const unsuppressBook = vi.fn().mockImplementation((url: string) =>
     store.dispatch(
       bookEditorApiEndpoints.endpoints.unsuppressBook.initiate({
         url,
@@ -58,11 +58,11 @@ describe("BookDetails", () => {
   );
 
   beforeEach(() => {
-    fetchBookData = jest.fn();
-    fetchRoles = jest.fn();
-    fetchMedia = jest.fn();
-    fetchLanguages = jest.fn();
-    postBookData = jest.fn();
+    fetchBookData = vi.fn();
+    fetchRoles = vi.fn();
+    fetchMedia = vi.fn();
+    fetchLanguages = vi.fn();
+    postBookData = vi.fn();
     dispatchProps = {
       fetchBookData,
       fetchRoles,
@@ -74,10 +74,10 @@ describe("BookDetails", () => {
     };
   });
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterAll(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("don't show hide button if not a library's admin", () => {

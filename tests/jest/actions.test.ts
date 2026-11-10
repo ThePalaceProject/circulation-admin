@@ -49,7 +49,7 @@ describe("actions", () => {
     formData.append("test", "test");
 
     it("dispatches request, success, and load", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const responseText = "response";
       server.use(http.post(url, () => HttpResponse.text(responseText)));
 
@@ -74,7 +74,7 @@ describe("actions", () => {
     });
 
     it("postForm with JSON response dispatches request, success, and load", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       // prettier-ignore
       const responseText = "{\"id\": \"test\", \"name\": \"test\"}";
       server.use(http.post(url, () => HttpResponse.text(responseText)));
@@ -102,7 +102,7 @@ describe("actions", () => {
     });
 
     it("dispatches a DELETE request", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const responseText = "response";
       server.use(http.delete(url, () => HttpResponse.text(responseText)));
 
@@ -117,7 +117,7 @@ describe("actions", () => {
     });
 
     it("dispatches failure on bad response", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       server.use(
         http.post(url, () =>
           HttpResponse.json({ detail: "problem detail" }, { status: 500 })
@@ -146,7 +146,7 @@ describe("actions", () => {
     });
 
     it("dispatches failure on non-JSON response", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       server.use(
         http.post(url, () => HttpResponse.text("Not JSON", { status: 500 }))
       );
@@ -179,7 +179,7 @@ describe("actions", () => {
     });
 
     it("dispatches failure on no response", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       // fetch rejects a network error with a "Failed to fetch" TypeError.
       server.use(http.post(url, () => HttpResponse.error()));
 
@@ -211,7 +211,7 @@ describe("actions", () => {
     const jsonData = { test: 1 };
 
     it("dispatches request and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       server.use(http.post(url, () => new HttpResponse(null, { status: 200 })));
 
       await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -233,7 +233,7 @@ describe("actions", () => {
     });
 
     it("dispatches failure on bad response", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       server.use(
         http.post(url, () =>
           HttpResponse.json({ detail: "problem detail" }, { status: 500 })
@@ -262,7 +262,7 @@ describe("actions", () => {
     });
 
     it("dispatches failure on no response", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       // fetch rejects a network error with a "Failed to fetch" TypeError.
       server.use(http.post(url, () => HttpResponse.error()));
 
@@ -290,7 +290,7 @@ describe("actions", () => {
 
   describe("fetchComplaints", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const complaintsData = {
         book: { id: "test id" },
         complaints: { "test-type": 1 },
@@ -325,7 +325,7 @@ describe("actions", () => {
   describe("postComplaint", () => {
     it("dispatches request and success", async () => {
       const postComplaintUrl = "http://example.com/postComplaint";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const data = {
         type: "test type",
       };
@@ -356,7 +356,7 @@ describe("actions", () => {
   describe("resolveComplaints", () => {
     it("dispatches request and success", async () => {
       const resolveComplaintsUrl = "http://example.com/resolveComplaints";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       formData.append("type", "test type");
 
@@ -384,7 +384,7 @@ describe("actions", () => {
 
   describe("fetchGenreTree", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const genresData = "test data";
       fetcher.testData = {
         ok: true,
@@ -416,7 +416,7 @@ describe("actions", () => {
   describe("editClassifications", () => {
     it("dispatches request and success", async () => {
       const editClassificationsUrl = "http://example.com/editClassifications";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
       newGenreTree.forEach((genre) => formData.append("genres", genre));
@@ -450,7 +450,7 @@ describe("actions", () => {
 
   describe("fetchClassifications", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const classificationsData = {
         book: { id: "test id" },
         classifications: { "test-type": 1 },
@@ -484,7 +484,7 @@ describe("actions", () => {
 
   describe("fetchDiagnostics", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const diagnosticsData = "diagnostics";
       fetcher.testData = {
         ok: true,
@@ -514,7 +514,7 @@ describe("actions", () => {
 
   describe("fetchLibraries", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const librariesData = "libraries";
       fetcher.testData = {
         ok: true,
@@ -544,7 +544,7 @@ describe("actions", () => {
   describe("editLibrary", () => {
     it("dispatches request and success", async () => {
       const editLibraryUrl = "/admin/libraries";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
@@ -570,7 +570,7 @@ describe("actions", () => {
 
   describe("fetchCollections", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const collectionsData = "collections";
       fetcher.testData = {
         ok: true,
@@ -600,7 +600,7 @@ describe("actions", () => {
   describe("editCollection", () => {
     it("dispatches request and success", async () => {
       const editCollectionUrl = "/admin/collections";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
@@ -627,7 +627,7 @@ describe("actions", () => {
   describe("importCollection", () => {
     it("dispatches request and success", async () => {
       const importCollectionUrl = "/admin/collection/123/import";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
       server.use(
         http.post(importCollectionUrl, () =>
@@ -656,7 +656,7 @@ describe("actions", () => {
 
   describe("fetchIndividualAdmins", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const individualAdminsData = "individualAdmins";
       fetcher.testData = {
         ok: true,
@@ -686,7 +686,7 @@ describe("actions", () => {
   describe("editIndividualAdmin", () => {
     it("dispatches request and success", async () => {
       const editIndividualAdminUrl = "/admin/individual_admins";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       formData.append("email", "email");
 
@@ -714,7 +714,7 @@ describe("actions", () => {
 
   describe("getSelfTests", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const collectionSelfTestURL = "/admin/collection_self_tests";
       const selfTestData = "selfTestData";
       fetcher.testData = {
@@ -748,7 +748,7 @@ describe("actions", () => {
     it("dispatches request and success", async () => {
       const collectionUrl = "/admin/collection_self_tests/";
       const collectionSelfTestURL = `${collectionUrl}/1`;
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
       server.use(
         http.post(collectionSelfTestURL, () =>
@@ -775,7 +775,7 @@ describe("actions", () => {
     it("dispatches request, success, and load", async () => {
       const formData = new (window as any).FormData();
       formData.append("test", "test");
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       // prettier-ignore
       const response = "{\"id\": \"test\", \"name\": \"test\"}";
 
@@ -812,7 +812,7 @@ describe("actions", () => {
   describe("resetAdobeId", () => {
     it("dispatches request and success", async () => {
       const formData = new (window as any).FormData();
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
       server.use(
         http.post("/nypl/admin/manage_patrons/reset_adobe_id", () =>
@@ -844,7 +844,7 @@ describe("actions", () => {
 
   describe("clearPatronData", () => {
     it("dispatches load", () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
       actions.clearPatronData()(dispatch);
 
@@ -858,9 +858,9 @@ describe("actions", () => {
 
   describe("fetchMoreCustomListEntries", () => {
     it("dispatches request and load", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
-      const getState = jest.fn().mockReturnValue({
+      const getState = vi.fn().mockReturnValue({
         editor: {
           customListDetails: {
             data: {
@@ -903,7 +903,7 @@ describe("actions", () => {
 
   describe("fetchSitewideAnnouncements", () => {
     it("dispatches request, load, and success", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const sitewideAnnouncementsData = "sitewide announcements";
       fetcher.testData = {
         ok: true,
@@ -934,7 +934,7 @@ describe("actions", () => {
   describe("editSitewideAnnouncements", () => {
     it("dispatches request and success", async () => {
       const editSitewideAnnouncementsUrl = "/admin/announcements";
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       const formData = new (window as any).FormData();
       formData.append("announcements", "[]");
 
@@ -964,7 +964,7 @@ describe("actions", () => {
 
   describe("openCustomListEditor", () => {
     it("dispatches CUSTOM_LIST_DETAILS_CLEAR and OPEN_CUSTOM_LIST_EDITOR", async () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
 
       const getState = () => ({
         editor: {

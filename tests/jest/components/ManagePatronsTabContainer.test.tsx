@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
@@ -9,14 +10,12 @@ import Admin from "../../../src/models/Admin";
 // Both tab panels fetch on mount (ResetAdobeId is a connected component; Debug
 // Authentication uses react-query). They're incidental to a tab-navigation test,
 // so mock them to markers. ResetAdobeId echoes the csrfToken asserted below.
-jest.mock("../../../src/components/ResetAdobeId", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/ResetAdobeId", () => ({
   default: (props: any) => (
     <div data-testid="reset-adobe-id" data-csrf-token={props.csrfToken} />
   ),
 }));
-jest.mock("../../../src/components/DebugAuthentication", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/DebugAuthentication", () => ({
   default: () => <div data-testid="debug-authentication" />,
 }));
 
@@ -48,8 +47,8 @@ describe("ManagePatronsTabContainer", () => {
   const libraryManagerA = new Admin([{ role: "manager", library: "a" }]);
   const librarian = new Admin([{ role: "librarian", library: "NYPL" }]);
 
-  const renderWithAdmin = (admin: Admin, push: jest.Mock = jest.fn()) => {
-    const context = { router: { push }, pathFor: jest.fn(), admin };
+  const renderWithAdmin = (admin: Admin, push: Mock = vi.fn()) => {
+    const context = { router: { push }, pathFor: vi.fn(), admin };
     const result = render(
       <LegacyContextProvider context={context}>
         <ManagePatronsTabContainer

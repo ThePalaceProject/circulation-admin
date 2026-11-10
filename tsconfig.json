@@ -9,7 +9,7 @@
     // Some dependencies' type declarations (recharts, @open-draft/deferred-promise)
     // do not compile under this project's `target` and `esModuleInterop` settings.
     "skipLibCheck": true,
-    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom/vitest"],
     "jsx": "react"
   },
   "exclude": [

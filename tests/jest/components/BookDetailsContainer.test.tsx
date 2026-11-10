@@ -10,8 +10,7 @@ import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // editors), each of which fetches over the network on mount. That machinery is
 // incidental to what BookDetailsContainer composes, so mock it to a marker that
 // echoes the props it receives and renders the book child it is handed.
-jest.mock("../../../src/components/BookDetailsTabContainer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/BookDetailsTabContainer", () => ({
   default: (props: any) => (
     <div
       data-testid="book-details-tab-container"
@@ -67,11 +66,11 @@ describe("BookDetailsContainer", () => {
 
   beforeEach(() => {
     store = buildStore();
-    refreshCatalog = jest.fn();
+    refreshCatalog = vi.fn();
     context = {
       editorStore: store,
       csrfToken: "token",
-      library: jest.fn(),
+      library: vi.fn(),
       admin: { isLibraryManager: () => true },
     };
   });
@@ -85,7 +84,7 @@ describe("BookDetailsContainer", () => {
           collectionUrl="collection url"
           refreshCatalog={refreshCatalog}
         >
-          <BookDetails book={bookData} updateBook={jest.fn()} />
+          <BookDetails book={bookData} updateBook={vi.fn()} />
         </BookDetailsContainer>
       </LegacyContextProvider>
     );

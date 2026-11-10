@@ -15,8 +15,8 @@ const renderForm = (
     <ComplaintForm
       disabled={false}
       complaintUrl="complaint url"
-      postComplaint={jest.fn().mockResolvedValue(undefined)}
-      refreshComplaints={jest.fn()}
+      postComplaint={vi.fn().mockResolvedValue(undefined)}
+      refreshComplaints={vi.fn()}
       {...props}
     />
   );
@@ -97,7 +97,7 @@ describe("ComplaintForm", () => {
   describe("behavior", () => {
     it("posts complaints", async () => {
       const user = userEvent.setup();
-      const postComplaint = jest.fn().mockResolvedValue(undefined);
+      const postComplaint = vi.fn().mockResolvedValue(undefined);
       const { container } = renderForm({ postComplaint });
 
       await user.selectOptions(getSelect(container), "bad-description");
@@ -112,9 +112,9 @@ describe("ComplaintForm", () => {
 
     it("refreshes complaints after a successful post", async () => {
       const user = userEvent.setup();
-      const refreshComplaints = jest.fn();
+      const refreshComplaints = vi.fn();
       const { container } = renderForm({
-        postComplaint: jest.fn().mockResolvedValue(undefined),
+        postComplaint: vi.fn().mockResolvedValue(undefined),
         refreshComplaints,
       });
 
@@ -127,7 +127,7 @@ describe("ComplaintForm", () => {
     it("clears the selected complaint type after a successful post", async () => {
       const user = userEvent.setup();
       const { container } = renderForm({
-        postComplaint: jest.fn().mockResolvedValue(undefined),
+        postComplaint: vi.fn().mockResolvedValue(undefined),
       });
 
       const select = getSelect(container);
@@ -141,7 +141,7 @@ describe("ComplaintForm", () => {
 
     it("displays an error if no type is selected", async () => {
       const user = userEvent.setup();
-      const postComplaint = jest.fn().mockResolvedValue(undefined);
+      const postComplaint = vi.fn().mockResolvedValue(undefined);
       renderForm({ postComplaint });
 
       await user.click(screen.getByRole("button", { name: "Submit" }));
@@ -157,7 +157,7 @@ describe("ComplaintForm", () => {
 
     it("shows an error message if the post fails", async () => {
       const user = userEvent.setup();
-      const postComplaint = jest.fn().mockRejectedValue(new Error("nope"));
+      const postComplaint = vi.fn().mockRejectedValue(new Error("nope"));
       const { container } = renderForm({ postComplaint });
 
       await user.selectOptions(getSelect(container), "bad-description");

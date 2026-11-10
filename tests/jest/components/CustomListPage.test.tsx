@@ -5,12 +5,10 @@ import { renderWithProviders } from "../testUtils/withProviders";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-jest.mock("../../../src/components/Header", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
-jest.mock("../../../src/components/Footer", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
@@ -18,8 +16,7 @@ jest.mock("../../../src/components/Footer", () => ({
 // and languages over the network on mount. That is incidental to what
 // CustomListPage composes — the page's job is to hand the editor the params and
 // context it needs — so mock it to a marker that echoes the props it received.
-jest.mock("../../../src/components/CustomLists", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/CustomLists", () => ({
   default: (props: any) => (
     <div
       data-testid="custom-lists"

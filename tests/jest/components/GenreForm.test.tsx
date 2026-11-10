@@ -14,7 +14,7 @@ const nonfictionOptions = Object.keys(genreData["Nonfiction"]).map(
 const bookGenres = ["Adventure", "Epic Fantasy"];
 
 const renderForm = (props: Record<string, unknown> = {}) => {
-  const addGenre = jest.fn();
+  const addGenre = vi.fn();
   const result = render(
     <GenreForm
       genreOptions={genreOptions}
@@ -110,7 +110,7 @@ describe("GenreForm", () => {
         <GenreForm
           genreOptions={nonfictionOptions}
           bookGenres={bookGenres}
-          addGenre={jest.fn()}
+          addGenre={vi.fn()}
         />
       );
       expect(subgenreSelect(container)).toBeNull();

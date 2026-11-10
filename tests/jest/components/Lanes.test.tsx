@@ -1,3 +1,4 @@
+import type { Mock, MockInstance } from "vitest";
 import * as React from "react";
 import {
   render,
@@ -20,8 +21,8 @@ import { setupMswServer } from "../testUtils/mswServer";
 // Render React Router's `Link` as a marker, so that the lane tree and editor
 // links render without a router, and a test can read each target. To test real
 // links, remove this mock and use the `route` option of `renderWithProviders`.
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual<object>("react-router")),
   Link: (props) => (
     <div data-testid="Link" data-to={props.to} className={props.className}>
       {props.children}
@@ -96,15 +97,15 @@ const customListsData: CustomListData[] = [
 ];
 
 describe("Lanes", () => {
-  let fetchLanes: jest.Mock;
-  let fetchCustomLists: jest.Mock;
-  let editLane: jest.Mock;
-  let deleteLane: jest.Mock;
-  let showLane: jest.Mock;
-  let hideLane: jest.Mock;
-  let resetLanes: jest.Mock;
-  let changeLaneOrder: jest.Mock;
-  let confirmSpy: jest.SpyInstance;
+  let fetchLanes: Mock;
+  let fetchCustomLists: Mock;
+  let editLane: Mock;
+  let deleteLane: Mock;
+  let showLane: Mock;
+  let hideLane: Mock;
+  let resetLanes: Mock;
+  let changeLaneOrder: Mock;
+  let confirmSpy: MockInstance;
   let lanesData: LaneData[];
 
   const makeProps = (overrides: Record<string, unknown> = {}) => ({
@@ -126,19 +127,19 @@ describe("Lanes", () => {
 
   beforeEach(() => {
     lanesData = makeLanesData();
-    fetchLanes = jest.fn();
-    fetchCustomLists = jest.fn();
-    editLane = jest.fn().mockResolvedValue(undefined);
-    deleteLane = jest.fn().mockResolvedValue(undefined);
-    showLane = jest.fn().mockResolvedValue(undefined);
-    hideLane = jest.fn().mockResolvedValue(undefined);
-    resetLanes = jest.fn().mockResolvedValue(undefined);
-    changeLaneOrder = jest.fn().mockResolvedValue(undefined);
-    confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
+    fetchLanes = vi.fn();
+    fetchCustomLists = vi.fn();
+    editLane = vi.fn().mockResolvedValue(undefined);
+    deleteLane = vi.fn().mockResolvedValue(undefined);
+    showLane = vi.fn().mockResolvedValue(undefined);
+    hideLane = vi.fn().mockResolvedValue(undefined);
+    resetLanes = vi.fn().mockResolvedValue(undefined);
+    changeLaneOrder = vi.fn().mockResolvedValue(undefined);
+    confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("renders an error message from a bad form submission", () => {
@@ -372,21 +373,21 @@ describe("Lanes - reorder flow", () => {
     lanes: makeLanesData(),
     customLists: [],
     isFetching: false,
-    fetchLanes: jest.fn(),
-    fetchCustomLists: jest.fn(),
-    editLane: jest.fn(),
-    deleteLane: jest.fn(),
-    showLane: jest.fn(),
-    hideLane: jest.fn(),
-    resetLanes: jest.fn(),
-    changeLaneOrder: jest.fn().mockResolvedValue(undefined),
+    fetchLanes: vi.fn(),
+    fetchCustomLists: vi.fn(),
+    editLane: vi.fn(),
+    deleteLane: vi.fn(),
+    showLane: vi.fn(),
+    hideLane: vi.fn(),
+    resetLanes: vi.fn(),
+    changeLaneOrder: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   });
 
   it("shows the reorder UI after a drag, then saves the reordered lanes and resets", async () => {
     const user = userEvent.setup();
-    const changeLaneOrder = jest.fn().mockResolvedValue(undefined);
-    const fetchLanes = jest.fn();
+    const changeLaneOrder = vi.fn().mockResolvedValue(undefined);
+    const fetchLanes = vi.fn();
     const ref = React.createRef<any>();
     // Two top-level lanes, so a reorder is observable in the saved payload.
     const secondLane: LaneData = {
@@ -466,16 +467,16 @@ describe("Lanes - connected", () => {
       )
     );
 
-  let navigateSpy: jest.SpyInstance;
+  let navigateSpy: MockInstance;
 
   beforeEach(() => {
-    navigateSpy = jest
+    navigateSpy = vi
       .spyOn(navigate, "navigateTo")
       .mockImplementation(() => undefined);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("goes to the new lane's edit page after creating a lane", async () => {

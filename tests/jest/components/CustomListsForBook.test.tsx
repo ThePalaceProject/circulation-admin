@@ -37,7 +37,7 @@ const CurrentLocation = () => {
 
 const renderConnected = () => {
   const store = buildStore();
-  const refreshCatalog = jest.fn().mockResolvedValue(undefined);
+  const refreshCatalog = vi.fn().mockResolvedValue(undefined);
   const result = renderWithProviders(
     <>
       <CustomListsForBook
@@ -191,20 +191,20 @@ describe("CustomListsForBook", () => {
     // custom lists only when they are not already present; the book's own lists
     // are still fetched. Drive the already-loaded case through the unconnected
     // class, since the connected mount always starts from an empty store.
-    const fetchAllCustomLists = jest.fn();
-    const fetchCustomListsForBook = jest.fn();
+    const fetchAllCustomLists = vi.fn();
+    const fetchCustomListsForBook = vi.fn();
     render(
       <UnconnectedCustomListsForBook
         csrfToken="token"
         book={{ id: "id", title: "test title" } as any}
         bookUrl="works/book url"
         library="library"
-        refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
         allCustomLists={allCustomLists as any}
         customListsForBook={listsForBook as any}
         fetchAllCustomLists={fetchAllCustomLists}
         fetchCustomListsForBook={fetchCustomListsForBook}
-        editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
       />,
       // The list creator link needs a router.
       { wrapper: MemoryRouter }
@@ -268,12 +268,12 @@ describe("CustomListsForBook", () => {
         book={{ id: "id", title: "test title" } as any}
         bookUrl="works/book url"
         library="library"
-        refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
         allCustomLists={allCustomLists as any}
         customListsForBook={listsForBook as any}
-        fetchAllCustomLists={jest.fn()}
-        fetchCustomListsForBook={jest.fn()}
-        editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
+        fetchAllCustomLists={vi.fn()}
+        fetchCustomListsForBook={vi.fn()}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
         fetchError={{ status: 400, response: "boom", url: "" } as any}
       />,
       // The list creator link needs a router.
@@ -290,12 +290,12 @@ describe("CustomListsForBook", () => {
         book={{ id: "id", title: "test title" } as any}
         bookUrl="works/book url"
         library="library"
-        refreshCatalog={jest.fn().mockResolvedValue(undefined)}
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
         allCustomLists={allCustomLists as any}
         customListsForBook={listsForBook as any}
-        fetchAllCustomLists={jest.fn()}
-        fetchCustomListsForBook={jest.fn()}
-        editCustomListsForBook={jest.fn().mockResolvedValue(undefined)}
+        fetchAllCustomLists={vi.fn()}
+        fetchCustomListsForBook={vi.fn()}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
         isFetching={true}
       />,
       // The list creator link needs a router.
@@ -309,11 +309,11 @@ describe("CustomListsForBook", () => {
     const commonProps = {
       csrfToken: "token",
       library: "library",
-      refreshCatalog: jest.fn().mockResolvedValue(undefined),
+      refreshCatalog: vi.fn().mockResolvedValue(undefined),
       allCustomLists: allCustomLists as any,
-      fetchAllCustomLists: jest.fn(),
-      fetchCustomListsForBook: jest.fn(),
-      editCustomListsForBook: jest.fn().mockResolvedValue(undefined),
+      fetchAllCustomLists: vi.fn(),
+      fetchCustomListsForBook: vi.fn(),
+      editCustomListsForBook: vi.fn().mockResolvedValue(undefined),
     };
     const { rerender } = render(
       <UnconnectedCustomListsForBook

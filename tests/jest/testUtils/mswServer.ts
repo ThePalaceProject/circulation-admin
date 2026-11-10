@@ -40,7 +40,7 @@ export function setupMswServer(...handlers: RequestHandler[]): MswServer {
     // init as no init. MSW 2.7 throws a TypeError on either null before it
     // looks for a handler (it reads `.headers` on each), so the check above
     // would never see the request. Convert both, as a browser does. The
-    // `Request` polyfill in jest.polyfills.js converts any other input that is
+    // `Request` polyfill in vitest-polyfills.js converts any other input that is
     // not a `Request`.
     mswFetch = globalThis.fetch;
     globalThis.fetch = (input, init) =>
@@ -52,7 +52,7 @@ export function setupMswServer(...handlers: RequestHandler[]): MswServer {
   const failOnUnhandled = () => {
     const missed = unhandled.splice(0);
     if (missed.length) {
-      // Jest reports this against the current test, so say that the request
+      // Vitest reports this against the current test, so say that the request
       // may have come from an earlier one.
       throw new Error(
         `Unhandled requests (from this test, or sent late by an earlier one): ${missed.join(", ")}`

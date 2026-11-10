@@ -1,9 +1,8 @@
 // Need to manually mock DataFetcher before importing NoCacheDataFetcher
-const mockSuperFetch = jest.fn();
+const mockSuperFetch = vi.fn();
 
 // Mock the DataFetcher module
-jest.mock("@thepalaceproject/web-opds-client/lib/DataFetcher", () => ({
-  __esModule: true,
+vi.mock("@thepalaceproject/web-opds-client/lib/DataFetcher", () => ({
   default: class MockDataFetcher {
     fetch(url: string, options?: any) {
       return mockSuperFetch(url, options);

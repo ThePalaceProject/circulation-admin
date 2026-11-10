@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event";
 
 import LibraryRegistration from "../../../src/components/LibraryRegistration";
 // The reusable-components `Form` builds `new FormData(formElement)` on
-// submit, which the unit jsdom env's undici FormData rejects; install the
-// shared shim that reads the form's successful controls.
+// submit. Install the shared shim, so the payload holds only the form's
+// successful controls, as a browser sends them.
 installFormDataShim();
 const protocol = "protocol 1";
 const serviceData = { id: 1, protocol };
@@ -52,12 +52,12 @@ const renderReg = ({
   registerLibrary,
   ...props
 }: Record<string, any> = {}) => {
-  const register = registerLibrary ?? jest.fn();
+  const register = registerLibrary ?? vi.fn();
   const result = render(
     <LibraryRegistration
       disabled={false}
       data={(data ?? makeData()) as any}
-      save={jest.fn()}
+      save={vi.fn()}
       urlBase="url base"
       listDataKey="discovery_services"
       registerLibrary={register}
@@ -310,7 +310,7 @@ describe("LibraryRegistration", () => {
   describe("behavior", () => {
     it("registers a library", async () => {
       const user = userEvent.setup();
-      const registerLibrary = jest.fn();
+      const registerLibrary = vi.fn();
       const { container } = renderReg({ item: serviceData, registerLibrary });
       const libs = libraries(container);
       expect(registerLibrary).not.toHaveBeenCalled();
@@ -341,7 +341,7 @@ describe("LibraryRegistration", () => {
 
     it("registers each library with the stage selected from its own dropdown", async () => {
       const user = userEvent.setup();
-      const registerLibrary = jest.fn();
+      const registerLibrary = vi.fn();
       const { container } = renderReg({ item: serviceData, registerLibrary });
       const [, bpl, qpl] = registrationInfos(container);
 

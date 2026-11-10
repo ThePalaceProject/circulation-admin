@@ -1,6 +1,7 @@
-// The unit jsdom environment installs undici's `FormData`, which throws on
-// `new FormData(formElement)`. The reusable-components `Form` builds FormData
-// that way on submit, so tests that assert a submitted payload need a stand-in.
+// The reusable-components `Form` builds FormData with
+// `new FormData(formElement)` on submit. Use this stand-in in a test that
+// submits a form. For a file input, jsdom's own FormData puts a jsdom `File`
+// in the payload, and Node's `fetch` rejects that object.
 //
 // This shim mirrors the browser's `new FormData(form)`: it serializes only
 // "successful controls" — named, non-disabled controls, with checkboxes and
@@ -9,10 +10,11 @@
 // that records *every* named control can make a payload assertion pass while the
 // real browser omits a disabled or unchecked field.
 //
-// The shim returns a real `FormData` (Node's, from the test environment), so
-// `fetch` sends it as form data and a mock server can read its fields. It is a
-// function, not a class, because tests compile to ES5, and ES5 code cannot
-// extend a built-in class. `new FormDataShim(form)` still works.
+// The shim returns a real `FormData` from the test environment, so `fetch`
+// sends it as form data and a mock server can read its fields. Keep it a
+// function, not a class: the `prototype` assignment below makes `instanceof`
+// work, and a class does not let you change its `prototype`.
+// `new FormDataShim(form)` still works.
 const BaseFormData = globalThis.FormData;
 
 export type FormDataShim = FormData;

@@ -7,13 +7,9 @@ import { renderWithProviders } from "../testUtils/withProviders";
 // container's job is to pull the "Formats" facets out and hand them to
 // `EntryPointsTabs`. Mock Collection to a marker so we can render the real
 // EntryPointsTabs and assert the tabs it produces.
-jest.mock(
-  "@thepalaceproject/web-opds-client/lib/components/Collection",
-  () => ({
-    __esModule: true,
-    default: () => <div data-testid="collection" />,
-  })
-);
+vi.mock("@thepalaceproject/web-opds-client/lib/components/Collection", () => ({
+  default: () => <div data-testid="collection" />,
+}));
 
 import EntryPointsContainer from "../../../src/components/EntryPointsContainer";
 

@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -8,7 +9,7 @@ import {
 } from "../../../src/components/TabContainer";
 
 describe("TabContainer", () => {
-  let handleSelectSpy: jest.Mock;
+  let handleSelectSpy: Mock;
 
   // A concrete subclass of the abstract TabContainer, mirroring the legacy test's
   // MockTabContainer: it supplies two trivial tabs and records the selected tab
@@ -33,7 +34,7 @@ describe("TabContainer", () => {
     );
 
   beforeEach(() => {
-    handleSelectSpy = jest.fn();
+    handleSelectSpy = vi.fn();
   });
 
   it("shows nav tabs", () => {

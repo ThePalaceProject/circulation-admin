@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -35,13 +36,13 @@ function renderButton(overrides: Partial<CollectionReapButtonProps> = {}) {
   const defaultProps: CollectionReapButtonProps = {
     collection: savedCollection,
     protocols: [protocolWithReap, protocolWithoutReap],
-    reapCollection: jest.fn().mockResolvedValue(undefined),
+    reapCollection: vi.fn().mockResolvedValue(undefined),
     disabled: false,
     ...overrides,
   };
   return {
     ...render(<CollectionReapButton {...defaultProps} />),
-    reapCollection: defaultProps.reapCollection as jest.Mock,
+    reapCollection: defaultProps.reapCollection as Mock,
   };
 }
 
@@ -164,7 +165,7 @@ describe("CollectionReapButton", () => {
 
   it("shows error feedback with alert-danger styling on failure", async () => {
     const user = userEvent.setup();
-    const mockReap = jest
+    const mockReap = vi
       .fn()
       .mockRejectedValue({ response: "Something went wrong" });
     renderButton({ reapCollection: mockReap });
@@ -224,7 +225,7 @@ describe("CollectionReapButton", () => {
     const pendingReap = new Promise<void>((resolve) => {
       resolveReap = resolve;
     });
-    const mockReap = jest.fn().mockReturnValue(pendingReap);
+    const mockReap = vi.fn().mockReturnValue(pendingReap);
     renderButton({ reapCollection: mockReap });
     await expandPanel(user);
 

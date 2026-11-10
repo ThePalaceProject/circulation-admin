@@ -48,7 +48,7 @@ describe("PasswordInput", () => {
   });
 
   it("passes through standard input props", () => {
-    const handleChange = jest.fn();
+    const handleChange = vi.fn();
     const { getByLabelText } = render(
       <label>
         PIN

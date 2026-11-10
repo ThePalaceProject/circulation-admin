@@ -18,8 +18,7 @@ import * as navigate from "../../../src/utils/navigate";
 // can drive the parent's filtering and custom-list-selection behavior without the
 // real drag-and-drop editor.
 
-jest.mock("../../../src/components/LaneCustomListsEditor", () => ({
-  __esModule: true,
+vi.mock("../../../src/components/LaneCustomListsEditor", () => ({
   default: class MockLaneCustomListsEditor extends React.Component<any> {
     getCustomListIds() {
       return this.props.customListIds;
@@ -61,15 +60,15 @@ const customListsData = [
   { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
 ];
 
-const editLane = jest
+const editLane = vi
   .fn()
   .mockReturnValue(new Promise<void>((resolve) => resolve()));
 
-const deleteLane = jest
+const deleteLane = vi
   .fn()
   .mockReturnValue(new Promise<void>((resolve) => resolve()));
 
-const toggleLaneVisibility = jest.fn();
+const toggleLaneVisibility = vi.fn();
 
 function createLaneData(displayName: string, isAutomated: boolean): LaneData {
   return {
@@ -107,7 +106,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={jest.fn().mockReturnValue(laneData)}
+          findParentOfLane={vi.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -142,7 +141,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={jest.fn().mockReturnValue(laneData)}
+          findParentOfLane={vi.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -180,7 +179,7 @@ describe("LaneEditor", () => {
         editOrCreate="edit"
         editLane={editLane}
         deleteLane={deleteLane}
-        findParentOfLane={jest.fn().mockReturnValue(laneData)}
+        findParentOfLane={vi.fn().mockReturnValue(laneData)}
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
@@ -199,10 +198,10 @@ describe("LaneEditor — name, list editing, and actions", () => {
     { id: 2, name: "list 2", entries: [], is_owner: false, is_shared: true },
   ];
 
-  const resolved = () => jest.fn().mockResolvedValue(undefined);
+  const resolved = () => vi.fn().mockResolvedValue(undefined);
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("shows the lane name, id, and visible status", () => {
@@ -449,7 +448,7 @@ describe("LaneEditor — name, list editing, and actions", () => {
   it("navigates to the edit page after creating a new lane", async () => {
     const user = userEvent.setup();
     const editLane = resolved();
-    const navSpy = jest
+    const navSpy = vi
       .spyOn(navigate, "navigateTo")
       .mockImplementation(() => undefined);
     const editorProps = {
@@ -479,7 +478,7 @@ describe("LaneEditor — name, list editing, and actions", () => {
   it("navigates only after this editor saves a new lane", async () => {
     const user = userEvent.setup();
     const editLane = resolved();
-    const navSpy = jest
+    const navSpy = vi
       .spyOn(navigate, "navigateTo")
       .mockImplementation(() => undefined);
     const editorProps = {

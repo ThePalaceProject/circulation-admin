@@ -50,10 +50,10 @@ describe("CustomListSearch", () => {
         languages={languages}
         library={library}
         listId="123"
-        search={jest.fn()}
+        search={vi.fn()}
         searchParams={searchParams}
-        updateAutoUpdate={jest.fn()}
-        updateSearchParam={jest.fn()}
+        updateAutoUpdate={vi.fn()}
+        updateSearchParam={vi.fn()}
         {...overrides}
       />
     );
@@ -101,7 +101,7 @@ describe("CustomListSearch", () => {
 
   it("calls updateSearchParam when an entry point radio button is changed", async () => {
     const user = userEvent.setup();
-    const updateSearchParam = jest.fn();
+    const updateSearchParam = vi.fn();
     const { container } = renderSearch({ updateSearchParam });
     const entryPointsSection =
       container.querySelector<HTMLElement>(".entry-points");
@@ -153,7 +153,7 @@ describe("CustomListSearch", () => {
 
   it("calls updateSearchParam when a sort radio button is changed", async () => {
     const user = userEvent.setup();
-    const updateSearchParam = jest.fn();
+    const updateSearchParam = vi.fn();
     const { container } = renderSearch({ updateSearchParam });
     const sortSection = container.querySelector<HTMLElement>(".search-options");
 
@@ -166,8 +166,8 @@ describe("CustomListSearch", () => {
   });
 
   it("calls addAdvSearchQuery and search when mounted if there is a startingTitle", () => {
-    const addAdvSearchQuery = jest.fn();
-    const search = jest.fn();
+    const addAdvSearchQuery = vi.fn();
+    const search = vi.fn();
 
     renderSearch({ startingTitle: "test", addAdvSearchQuery, search });
 
@@ -243,7 +243,7 @@ describe("CustomListSearch", () => {
     it("calls updateAutoUpdate when an auto update radio button is changed", async () => {
       const user = userEvent.setup();
       // Clicking the currently-unchecked "on" radio reports true.
-      const updateAutoUpdateOn = jest.fn();
+      const updateAutoUpdateOn = vi.fn();
       const { unmount } = renderSearch({
         showAutoUpdate: true,
         listId: null,
@@ -258,7 +258,7 @@ describe("CustomListSearch", () => {
       unmount();
 
       // Clicking the currently-unchecked "off" radio reports false.
-      const updateAutoUpdateOff = jest.fn();
+      const updateAutoUpdateOff = vi.fn();
       renderSearch({
         showAutoUpdate: true,
         listId: null,
