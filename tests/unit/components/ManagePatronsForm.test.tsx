@@ -31,13 +31,13 @@ const patron: PatronData = {
 const renderForm = (props: Record<string, unknown> = {}) =>
   renderWithProviders(
     <ManagePatronsForm
-      store={buildStore()}
       csrfToken="token"
       library="nypl"
       patronLookup={vi.fn()}
       clearPatronData={vi.fn()}
       {...props}
-    />
+    />,
+    { reduxProviderProps: { store: buildStore() } }
   );
 
 describe("ManagePatronsForm", () => {
@@ -97,7 +97,6 @@ describe("ManagePatronsForm", () => {
 
       rerender(
         <ManagePatronsForm
-          store={buildStore()}
           csrfToken="token"
           library="nypl"
           patronLookup={vi.fn()}
@@ -123,7 +122,6 @@ describe("ManagePatronsForm", () => {
 
       rerender(
         <ManagePatronsForm
-          store={buildStore()}
           csrfToken="token"
           library="nypl"
           patronLookup={vi.fn()}
@@ -143,7 +141,6 @@ describe("ManagePatronsForm", () => {
 
       rerender(
         <ManagePatronsForm
-          store={buildStore()}
           csrfToken="token"
           library="nypl"
           patronLookup={vi.fn()}
@@ -165,7 +162,6 @@ describe("ManagePatronsForm", () => {
 
       rerender(
         <ManagePatronsForm
-          store={buildStore()}
           csrfToken="token"
           library="nypl"
           patronLookup={vi.fn()}

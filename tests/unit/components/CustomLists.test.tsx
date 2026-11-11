@@ -10,9 +10,20 @@ import CustomLists, {
 import * as CustomListEditorModule from "../../../src/components/CustomListEditor";
 import * as navigate from "../../../src/utils/navigate";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
 import buildStore from "../../../src/store";
 import { ConfigurationSettings, LaneData } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+
+// CustomLists is connected, so give each render a fresh store.
+const renderWithFreshStore = (
+  ui: React.ReactElement,
+  appConfigSettings: Partial<ConfigurationSettings>
+) =>
+  renderWithProviders(ui, {
+    appConfigSettings,
+    reduxProviderProps: { store: buildStore() },
+  });
 
 // Render react-router's Link as a marker div so the sidebar's edit/create
 // targets can be asserted via `data-to` without a Router in the test. Only
@@ -62,13 +73,8 @@ describe("CustomLists", () => {
       roles: [{ role: "system" }],
     };
 
-    renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+    renderWithFreshStore(
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -102,13 +108,8 @@ describe("CustomLists", () => {
       roles: [{ role: "system" }],
     };
 
-    renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+    renderWithFreshStore(
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -154,13 +155,8 @@ describe("CustomLists", () => {
       roles: [{ role: "system" }],
     };
 
-    renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+    renderWithFreshStore(
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -198,13 +194,8 @@ describe("CustomLists", () => {
       roles: [{ role: "system" }],
     };
 
-    renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+    renderWithFreshStore(
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -260,14 +251,11 @@ describe("CustomLists", () => {
     vi.spyOn(navigate, "navigateTo").mockImplementation(() => undefined);
     const user = userEvent.setup();
 
-    renderWithContext(
-      <CustomLists csrfToken="" library="testlib" store={buildStore()} />,
-      {
-        csrfToken: "",
-        featureFlags: defaultFeatureFlags,
-        roles: [{ role: "manager", library: "testlib" }],
-      }
-    );
+    renderWithFreshStore(<CustomLists csrfToken="" library="testlib" />, {
+      csrfToken: "",
+      featureFlags: defaultFeatureFlags,
+      roles: [{ role: "manager", library: "testlib" }],
+    });
 
     const listItem = (await screen.findByText("z list")).closest("li");
     await user.click(within(listItem).getByRole("button", { name: /Delete/ }));

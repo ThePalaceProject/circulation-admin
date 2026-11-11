@@ -1,11 +1,8 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import IndividualAdmins from "./IndividualAdmins";
-import { RootState } from "../store";
 
 export interface SetupPageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -19,14 +16,12 @@ export default class SetupPage extends React.Component<object> {
   context: SetupPageContext;
 
   static contextTypes: React.ValidationMap<SetupPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
   render(): JSX.Element {
     return (
       <IndividualAdmins
-        store={this.context.editorStore}
         csrfToken={this.context.csrfToken}
         settingUp={true}
         editOrCreate="create"

@@ -3,8 +3,6 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import buildStore from "../../../src/store";
-
 // The active tab renders DiagnosticsServiceType, which recurses into the service
 // tab machinery. The legacy test only asserted the `type`/`services` props it
 // received, so mock it to a marker that echoes those.
@@ -45,7 +43,6 @@ describe("DiagnosticsTabContainer", () => {
     const props = {
       goToTab,
       tab: "coverage_provider",
-      store: buildStore(),
       fetchDiagnostics,
       diagnostics: { coverage_provider: [] },
       isLoaded: true,

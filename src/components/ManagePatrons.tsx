@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { RootState } from "../store";
 import Header from "./Header";
 import Footer from "./Footer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
@@ -14,7 +12,6 @@ export interface ManagePatronsProps {
 }
 
 export interface ManagePatronsContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -22,7 +19,6 @@ export class ManagePatrons extends React.Component<ManagePatronsProps> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -44,7 +40,6 @@ export class ManagePatrons extends React.Component<ManagePatronsProps> {
           <h2>Patron Manager</h2>
           <ManagePatronsTabContainer
             tab={this.props.params.tab}
-            store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
             library={this.props.params.library}
           />

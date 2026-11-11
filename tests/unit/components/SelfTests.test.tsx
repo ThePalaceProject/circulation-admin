@@ -176,7 +176,6 @@ describe("SelfTests", () => {
     });
     const utils = renderWithProviders(
       <SelfTests
-        store={store}
         type="collection"
         csrfToken="token"
         sortByCollection={false}
@@ -328,7 +327,6 @@ describe("SelfTests", () => {
     // The new item has a more recent start time, so it becomes the most recent.
     rerender(
       <SelfTests
-        store={store}
         type="collection"
         csrfToken="token"
         sortByCollection={false}
@@ -343,7 +341,6 @@ describe("SelfTests", () => {
     // This item is older, so the most recent result is unchanged.
     rerender(
       <SelfTests
-        store={store}
         type="collection"
         csrfToken="token"
         sortByCollection={false}

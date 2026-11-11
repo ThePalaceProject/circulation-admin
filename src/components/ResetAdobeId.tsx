@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { PatronData } from "../interfaces";
@@ -21,7 +19,6 @@ export interface ResetAdobeIdDispatchProps {
 }
 
 export interface ResetAdobeIdOwnProps {
-  store?: Store<RootState>;
   csrfToken?: string;
   library: string;
 }
@@ -71,7 +68,6 @@ export class ResetAdobeId extends React.Component<
           Adobe ID.
         </p>
         <ManagePatronsForm
-          store={this.props.store}
           csrfToken={this.props.csrfToken}
           library={this.props.library}
         />

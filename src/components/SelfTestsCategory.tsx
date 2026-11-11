@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import SelfTests from "./SelfTests";
 import {
   CollectionData,
@@ -14,12 +12,9 @@ export interface SelfTestsCategoryProps {
   linkName: string;
   csrfToken: string;
   items: CollectionData[] | PatronAuthServiceData[];
-  store: Store<RootState>;
 }
 
-export default class SelfTestsCategory extends React.Component<
-  SelfTestsCategoryProps
-> {
+export default class SelfTestsCategory extends React.Component<SelfTestsCategoryProps> {
   handleUnnamed(): CollectionData[] | PatronAuthServiceData[] {
     // It's possible for older systems to have services in which the name
     // property is null, which will block the page from loading.  We check for
@@ -65,7 +60,6 @@ export default class SelfTestsCategory extends React.Component<
     const selfTests = (item: ServiceData): JSX.Element => (
       <SelfTests
         key={item.name}
-        store={this.props.store}
         type={this.props.type}
         item={item}
         csrfToken={this.props.csrfToken}

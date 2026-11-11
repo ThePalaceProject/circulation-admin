@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 
 import buildStore from "../../../src/store";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -9,25 +11,31 @@ import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // tab panels on render (the metadata editor, classifications, cover, and lists
 // editors), each of which fetches over the network on mount. That machinery is
 // incidental to what BookDetailsContainer composes, so mock it to a marker that
-// echoes the props it receives and renders the book child it is handed.
-vi.mock("../../../src/components/BookDetailsTabContainer", () => ({
-  default: (props: any) => (
+// echoes the props it receives and renders the book child it is handed. It also
+// reports whether the store it can reach is ours: only our store has an
+// `editor` slice.
+vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
+  const { useStore } =
+    await vi.importActual<typeof import("react-redux")>("react-redux");
+  const TabContainerMock = (props: any) => (
     <div
       data-testid="book-details-tab-container"
       data-book-url={props.bookUrl}
       data-collection-url={props.collectionUrl}
       data-csrf-token={props.csrfToken}
-      data-has-store={String(!!props.store)}
+      data-has-our-store={String(!!useStore().getState().editor)}
       data-has-library={String(!!props.library)}
       data-has-refresh-catalog={String(!!props.refreshCatalog)}
     >
       {props.children}
     </div>
-  ),
-}));
+  );
+  return { default: TabContainerMock };
+});
 
 import BookDetailsContainer from "../../../src/components/BookDetailsContainer";
 import BookDetails from "../../../src/components/BookDetails";
+import { AppStoreProvider } from "../../../src/context/appStoreContext";
 
 // BookDetailsContainer reads its configuration from the legacy React context that
 // the OPDS web client supplies in production. `renderWithProviders` does not supply
@@ -38,7 +46,6 @@ class LegacyContextProvider extends React.Component<{
   children: React.ReactNode;
 }> {
   static childContextTypes = {
-    editorStore: PropTypes.object,
     csrfToken: PropTypes.string,
     tab: PropTypes.string,
     library: PropTypes.func,
@@ -68,25 +75,33 @@ describe("BookDetailsContainer", () => {
     store = buildStore();
     refreshCatalog = vi.fn();
     context = {
-      editorStore: store,
       csrfToken: "token",
       library: vi.fn(),
       admin: { isLibraryManager: () => true },
     };
   });
 
+  // As in the catalog: our store is in our store context, and react-redux's
+  // Provider holds web-opds-client's catalog store, which has no `editor` slice.
+  const catalogStore = configureStore({
+    reducer: { catalog: (state = {}) => state },
+  });
   const renderContainer = () =>
     render(
-      <LegacyContextProvider context={context}>
-        <BookDetailsContainer
-          book={bookData}
-          bookUrl="book url"
-          collectionUrl="collection url"
-          refreshCatalog={refreshCatalog}
-        >
-          <BookDetails book={bookData} updateBook={vi.fn()} />
-        </BookDetailsContainer>
-      </LegacyContextProvider>
+      <AppStoreProvider value={store}>
+        <Provider store={catalogStore}>
+          <LegacyContextProvider context={context}>
+            <BookDetailsContainer
+              book={bookData}
+              bookUrl="book url"
+              collectionUrl="collection url"
+              refreshCatalog={refreshCatalog}
+            >
+              <BookDetails book={bookData} updateBook={vi.fn()} />
+            </BookDetailsContainer>
+          </LegacyContextProvider>
+        </Provider>
+      </AppStoreProvider>
     );
 
   it("renders BookDetails with its child's props", () => {
@@ -108,11 +123,18 @@ describe("BookDetailsContainer", () => {
       "collection url"
     );
     expect(tabContainer).toHaveAttribute("data-csrf-token", "token");
-    // The library function, redux store, and refreshCatalog callback are forwarded
-    // from context/props; they are not serializable to the DOM, so assert they were
+    // The library function and refreshCatalog callback are forwarded from
+    // context/props; they are not serializable to the DOM, so assert they were
     // passed through.
-    expect(tabContainer).toHaveAttribute("data-has-store", "true");
     expect(tabContainer).toHaveAttribute("data-has-library", "true");
     expect(tabContainer).toHaveAttribute("data-has-refresh-catalog", "true");
+  });
+
+  it("connects the tab container to our store, not the catalog store", () => {
+    renderContainer();
+    expect(screen.getByTestId("book-details-tab-container")).toHaveAttribute(
+      "data-has-our-store",
+      "true"
+    );
   });
 });

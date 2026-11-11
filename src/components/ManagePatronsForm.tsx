@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { PatronData } from "../interfaces";
@@ -21,13 +19,13 @@ export interface ManagePatronsFormDispatchProps {
 }
 
 export interface ManagePatronsFormOwnProps {
-  store?: Store<RootState>;
   csrfToken?: string;
   library: string;
 }
 
 export interface ManagePatronsFormProps
-  extends ManagePatronsFormStateProps,
+  extends
+    ManagePatronsFormStateProps,
     ManagePatronsFormDispatchProps,
     ManagePatronsFormOwnProps {}
 

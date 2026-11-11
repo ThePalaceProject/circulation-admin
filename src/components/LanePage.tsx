@@ -1,10 +1,8 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import Lanes from "./Lanes";
-import { RootState } from "../store";
 
 export interface LanePageProps {
   params: {
@@ -15,7 +13,6 @@ export interface LanePageProps {
 }
 
 export interface LanePageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -26,7 +23,6 @@ export default class LanePage extends React.Component<
   context: LanePageContext;
 
   static contextTypes: React.ValidationMap<LanePageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -48,7 +44,6 @@ export default class LanePage extends React.Component<
           library={this.props.params.library}
           editOrCreate={this.props.params.editOrCreate}
           identifier={this.props.params.identifier}
-          store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
         />
         <Footer />

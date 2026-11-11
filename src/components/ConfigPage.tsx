@@ -1,10 +1,8 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import ConfigTabContainer from "./ConfigTabContainer";
-import { RootState } from "../store";
 import title from "../utils/title";
 
 export interface ConfigPageProps {
@@ -16,7 +14,6 @@ export interface ConfigPageProps {
 }
 
 export interface ConfigPageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -26,7 +23,6 @@ export default class ConfigPage extends React.Component<ConfigPageProps> {
   context: ConfigPageContext;
 
   static contextTypes: React.ValidationMap<ConfigPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -39,7 +35,6 @@ export default class ConfigPage extends React.Component<ConfigPageProps> {
             tab={this.props.params.tab}
             editOrCreate={this.props.params.editOrCreate}
             identifier={this.props.params.identifier}
-            store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
             class="clearfix"
           />

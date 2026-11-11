@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -8,7 +7,6 @@ import ComplaintForm from "./ComplaintForm";
 import { Button } from "library-simplified-reusable-components";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { RootState } from "../store";
 import { formatString } from "../utils/sharedFunctions";
 import UpdatingLoader from "./UpdatingLoader";
 
@@ -27,15 +25,12 @@ export interface ComplaintsDispatchProps {
 export interface ComplaintsOwnProps {
   bookUrl: string;
   book: BookData;
-  store?: Store<RootState>;
   csrfToken: string;
   refreshCatalog: () => Promise<any>;
 }
 
 export interface ComplaintsProps
-  extends ComplaintsStateProps,
-    ComplaintsDispatchProps,
-    ComplaintsOwnProps {}
+  extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {}
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
