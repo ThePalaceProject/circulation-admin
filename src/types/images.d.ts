@@ -2,7 +2,7 @@
 
 declare module "*.svg" {
   const src: string;
-  export = src;
+  export default src;
 }
 
 declare module "*.md" {

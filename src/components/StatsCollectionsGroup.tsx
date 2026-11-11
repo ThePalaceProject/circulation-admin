@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from "react";
 import StatsGroup from "./StatsGroup";
 import { CollectionInventory } from "../interfaces";
 import StatsCollectionsBarChart from "./StatsCollectionsBarChart";

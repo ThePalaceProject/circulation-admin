@@ -1,0 +1,94 @@
+import * as React from "react";
+import { screen, within } from "@testing-library/react";
+import MetadataServicesConnected, {
+  MetadataServices,
+} from "../../../src/components/MetadataServices";
+import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
+
+describe("MetadataServices", () => {
+  const data = {
+    metadata_services: [
+      {
+        id: 2,
+        protocol: "test protocol",
+        name: "sample name",
+        settings: {
+          test_setting: "test setting",
+        },
+        libraries: [{ short_name: "nypl" }],
+      },
+    ],
+    protocols: [
+      {
+        name: "test protocol",
+        label: "test protocol label",
+        sitewide: false,
+        settings: [],
+      },
+    ],
+    allLibraries: [
+      {
+        short_name: "nypl",
+      },
+    ],
+  };
+
+  const config = { csrfToken: "token", featureFlags: defaultFeatureFlags };
+
+  it("shows metadata service list", () => {
+    renderWithContext(
+      <MetadataServices
+        data={data}
+        fetchData={vi.fn()}
+        editItem={vi.fn().mockResolvedValue(undefined)}
+        csrfToken="token"
+        isFetching={false}
+      />,
+      config
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items).toHaveLength(1);
+    expect(items[0]).toHaveTextContent("sample name: test protocol");
+
+    const editLink = within(items[0]).getByRole("link");
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/metadata/edit/2"
+    );
+  });
+});
+
+describe("MetadataServices - connected wiring", () => {
+  setupMswServer(
+    http.get("*/admin/metadata_services", () =>
+      HttpResponse.json({
+        metadata_services: [
+          { id: 2, protocol: "test protocol", name: "Test Metadata" },
+        ],
+        protocols: [{ name: "test protocol", label: "TP", settings: [] }],
+      })
+    ),
+    http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+  );
+
+  it("wires mapStateToProps/mapDispatchToProps and renders the fetched list", async () => {
+    renderWithProviders(<MetadataServicesConnected csrfToken="token" />, {
+      reduxProviderProps: { store: buildStore() },
+      appConfigSettings: { roles: [{ role: "system" }] },
+    });
+
+    // The edit link only appears once the on-mount fetch resolves and
+    // mapStateToProps feeds the fetched service back in as props.
+    const editLink = await screen.findByRole("link", { name: /edit/i });
+    expect(editLink).toHaveAttribute(
+      "href",
+      "/admin/web/config/metadata/edit/2"
+    );
+  });
+});

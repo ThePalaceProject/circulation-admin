@@ -1,0 +1,347 @@
+import * as React from "react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { renderWithProviders } from "../testUtils/withProviders";
+import buildStore from "../../../src/store";
+import { http, HttpResponse } from "msw";
+import { setupMswServer } from "../testUtils/mswServer";
+import { MemoryRouter, useLocation } from "react-router";
+
+// Render the CONNECTED default export so that mapStateToProps / mapDispatchToProps
+// are exercised. The book's lists and all available lists are fetched on mount
+// and fed back in through the Redux store; book/bookUrl/library/refreshCatalog
+// are own props.
+import CustomListsForBook, {
+  CustomListsForBook as UnconnectedCustomListsForBook,
+} from "../../../src/components/CustomListsForBook";
+
+const allCustomLists = [
+  { id: "1", name: "list 1", is_owner: true, is_shared: false },
+  { id: "2", name: "list 2", is_owner: true, is_shared: false },
+  { id: "3", name: "list 3", is_owner: true, is_shared: false },
+];
+const listsForBook = [
+  { id: "2", name: "list 2", is_owner: true, is_shared: false },
+];
+
+// Shows where the list creator link goes, and the state it carries.
+const CurrentLocation = () => {
+  const { pathname, state } = useLocation();
+  return (
+    <div data-testid="location">
+      {pathname} {JSON.stringify(state)}
+    </div>
+  );
+};
+
+const renderConnected = () => {
+  const store = buildStore();
+  const refreshCatalog = vi.fn().mockResolvedValue(undefined);
+  const result = renderWithProviders(
+    <>
+      <CustomListsForBook
+        csrfToken="token"
+        book={{ id: "id", title: "test title" } as any}
+        bookUrl="works/book url"
+        library="library"
+        refreshCatalog={refreshCatalog}
+      />
+      <CurrentLocation />
+    </>,
+    // The list creator link needs a router.
+    { reduxProviderProps: { store }, route: "/admin/web" }
+  );
+  return { ...result, refreshCatalog };
+};
+
+describe("CustomListsForBook", () => {
+  const bookListsPath = "/admin/works/book%20url/lists";
+  const { server, requests } = setupMswServer();
+
+  // Serves the "all custom lists" endpoint and the per-book "/lists" endpoint from
+  // the supplied fixtures; answers POSTs (edit) with success.
+  const stubLists = (allLists: unknown[], forBook: unknown[]) =>
+    server.use(
+      http.get("*/library/admin/custom_lists", () =>
+        HttpResponse.json({ custom_lists: allLists })
+      ),
+      http.get(`*${bookListsPath}`, () =>
+        HttpResponse.json({ custom_lists: forBook })
+      ),
+      http.post(`*${bookListsPath}`, () => HttpResponse.text("success"))
+    );
+
+  it("shows the book title and the book's current lists", async () => {
+    stubLists(allCustomLists, listsForBook);
+    const { container } = renderConnected();
+
+    expect(
+      await screen.findByRole("heading", { level: 2, name: "test title" })
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Current Lists" })
+    ).toBeInTheDocument();
+
+    const link = await screen.findByRole("link", { name: "list 2" });
+    expect(link).toHaveAttribute("href", "/admin/web/lists/library/edit/2");
+    // Exactly one current list is shown.
+    expect(container.querySelectorAll(".with-remove-button")).toHaveLength(1);
+  });
+
+  it("builds the current-list URL from the list's id, not its name", async () => {
+    // A list named "new" whose id is "42" proves the URL uses the id.
+    const newList = { id: "42", name: "new", is_owner: true, is_shared: false };
+    stubLists([...allCustomLists, newList], [newList]);
+    renderConnected();
+
+    const link = await screen.findByRole("link", { name: "new" });
+    expect(link).toHaveAttribute("href", "/admin/web/lists/library/edit/42");
+  });
+
+  it("shows a menu of the lists the book is not yet on", async () => {
+    stubLists(allCustomLists, listsForBook);
+    const { container } = renderConnected();
+
+    await screen.findByRole("link", { name: "list 2" });
+
+    const select = container.querySelector("select");
+    expect(select).not.toBeNull();
+    const optionValues = Array.from(select.querySelectorAll("option")).map(
+      (o) => o.getAttribute("value")
+    );
+    // "list 2" is excluded because the book is already on it.
+    expect(optionValues).toStrictEqual(["list 1", "list 3"]);
+    expect(screen.getByText(/Select an existing list/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+  });
+
+  it("shows placeholder text when the book is not on any list", async () => {
+    stubLists(allCustomLists, []);
+    const { container } = renderConnected();
+
+    expect(
+      await screen.findByText("This book is not currently on any lists.")
+    ).toBeInTheDocument();
+    // With no current lists there is no "Current Lists" heading.
+    expect(
+      screen.queryByRole("heading", { name: "Current Lists" })
+    ).not.toBeInTheDocument();
+    expect(container.querySelector(".with-remove-button")).toBeNull();
+  });
+
+  it("hides the menu once the book is on every available list", async () => {
+    stubLists(allCustomLists, allCustomLists);
+    const { container } = renderConnected();
+
+    expect(
+      await screen.findByText(
+        "This book has been added to all the available lists."
+      )
+    ).toBeInTheDocument();
+    expect(container.querySelector("select")).toBeNull();
+  });
+
+  it("shows a message instead of the input list when no lists exist", async () => {
+    stubLists([], []);
+    renderConnected();
+
+    expect(
+      await screen.findByText("There are no available lists.")
+    ).toBeInTheDocument();
+  });
+
+  it("shows a link to the list creator that carries the book title", async () => {
+    stubLists(allCustomLists, listsForBook);
+    renderConnected();
+
+    await screen.findByRole("link", { name: "list 2" });
+
+    const creatorLink = screen.getByRole("link", { name: "Create a new list" });
+    expect(creatorLink).toHaveAttribute(
+      "href",
+      "/admin/web/lists/library/create"
+    );
+    // The list creator page reads the title from the location state.
+    await userEvent.setup().click(creatorLink);
+    expect(screen.getByTestId("location")).toHaveTextContent(
+      '/admin/web/lists/library/create {"bookTitle":"test title"}'
+    );
+    expect(
+      screen.getByText(
+        "(The book title will be automatically copied and searched on the list creator page.)"
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("fetches the book's lists and all custom lists on mount, without refreshing the catalog", async () => {
+    stubLists(allCustomLists, listsForBook);
+    const { refreshCatalog } = renderConnected();
+
+    await screen.findByRole("link", { name: "list 2" });
+
+    const paths = requests.map((r) => new URL(r.url).pathname);
+    expect(paths).toContain(bookListsPath);
+    expect(paths.some((p) => p.includes("custom_lists"))).toBe(true);
+    expect(refreshCatalog).not.toHaveBeenCalled();
+  });
+
+  it("does not re-fetch all custom lists on mount when they are already loaded", () => {
+    // The mount guard (CustomListsForBook.tsx:158) fetches the full list of
+    // custom lists only when they are not already present; the book's own lists
+    // are still fetched. Drive the already-loaded case through the unconnected
+    // class, since the connected mount always starts from an empty store.
+    const fetchAllCustomLists = vi.fn();
+    const fetchCustomListsForBook = vi.fn();
+    render(
+      <UnconnectedCustomListsForBook
+        csrfToken="token"
+        book={{ id: "id", title: "test title" } as any}
+        bookUrl="works/book url"
+        library="library"
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
+        allCustomLists={allCustomLists as any}
+        customListsForBook={listsForBook as any}
+        fetchAllCustomLists={fetchAllCustomLists}
+        fetchCustomListsForBook={fetchCustomListsForBook}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
+    );
+
+    expect(fetchCustomListsForBook).toHaveBeenCalledTimes(1);
+    expect(fetchAllCustomLists).not.toHaveBeenCalled();
+  });
+
+  it("adds a list and posts the updated set of lists", async () => {
+    const user = userEvent.setup();
+    stubLists(allCustomLists, listsForBook);
+    const { container, refreshCatalog } = renderConnected();
+
+    await screen.findByRole("link", { name: "list 2" });
+
+    await user.selectOptions(
+      container.querySelector("select") as HTMLSelectElement,
+      "list 1"
+    );
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    await waitFor(() => expect(refreshCatalog).toHaveBeenCalled());
+
+    const postRequest = requests.find((r) => r.method === "POST");
+    expect(new URL(postRequest.url).pathname).toBe(bookListsPath);
+    const lists = JSON.parse(
+      (await postRequest.formData()).get("lists") as string
+    );
+    expect(lists).toStrictEqual([
+      { id: "2", name: "list 2", is_owner: true, is_shared: false },
+      { id: "1", name: "list 1", is_owner: true, is_shared: false },
+    ]);
+  });
+
+  it("removes a list and posts the emptied set of lists", async () => {
+    const user = userEvent.setup();
+    stubLists(allCustomLists, listsForBook);
+    const { refreshCatalog } = renderConnected();
+
+    await screen.findByRole("link", { name: "list 2" });
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+
+    await waitFor(() => expect(refreshCatalog).toHaveBeenCalled());
+
+    const postRequest = requests.find((r) => r.method === "POST");
+    expect(new URL(postRequest.url).pathname).toBe(bookListsPath);
+    const lists = JSON.parse(
+      (await postRequest.formData()).get("lists") as string
+    );
+    expect(lists).toStrictEqual([]);
+  });
+
+  it("shows an error message", () => {
+    // A mount-time fetch failure would reject the (uncaught) fetch promise and
+    // crash the worker, so drive the error through the prop connect derives.
+    render(
+      <UnconnectedCustomListsForBook
+        csrfToken="token"
+        book={{ id: "id", title: "test title" } as any}
+        bookUrl="works/book url"
+        library="library"
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
+        allCustomLists={allCustomLists as any}
+        customListsForBook={listsForBook as any}
+        fetchAllCustomLists={vi.fn()}
+        fetchCustomListsForBook={vi.fn()}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
+        fetchError={{ status: 400, response: "boom", url: "" } as any}
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
+    );
+    expect(screen.getByText(/Error: boom/)).toBeInTheDocument();
+  });
+
+  it("disables the remove and add controls while fetching", () => {
+    // isFetching is a connect-derived prop; inject it via the unconnected class.
+    render(
+      <UnconnectedCustomListsForBook
+        csrfToken="token"
+        book={{ id: "id", title: "test title" } as any}
+        bookUrl="works/book url"
+        library="library"
+        refreshCatalog={vi.fn().mockResolvedValue(undefined)}
+        allCustomLists={allCustomLists as any}
+        customListsForBook={listsForBook as any}
+        fetchAllCustomLists={vi.fn()}
+        fetchCustomListsForBook={vi.fn()}
+        editCustomListsForBook={vi.fn().mockResolvedValue(undefined)}
+        isFetching={true}
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
+    );
+    expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
+  });
+
+  it("shows the new book's lists when it is rerendered for another book", () => {
+    const commonProps = {
+      csrfToken: "token",
+      library: "library",
+      refreshCatalog: vi.fn().mockResolvedValue(undefined),
+      allCustomLists: allCustomLists as any,
+      fetchAllCustomLists: vi.fn(),
+      fetchCustomListsForBook: vi.fn(),
+      editCustomListsForBook: vi.fn().mockResolvedValue(undefined),
+    };
+    const { rerender } = render(
+      <UnconnectedCustomListsForBook
+        {...commonProps}
+        book={{ id: "a", title: "Book A" } as any}
+        bookUrl="works/book-a"
+        customListsForBook={listsForBook as any}
+      />,
+      // The list creator link needs a router.
+      { wrapper: MemoryRouter }
+    );
+    // list 2 (the book's only list) is in the current column, which renders
+    // each list as a link; the add-menu renders options instead.
+    expect(screen.getByRole("link", { name: "list 2" })).toBeInTheDocument();
+
+    // The current column renders straight from customListsForBook, so a new
+    // book's lists replace the old ones on rerender.
+    rerender(
+      <UnconnectedCustomListsForBook
+        {...commonProps}
+        book={{ id: "b", title: "Book B" } as any}
+        bookUrl="works/book-b"
+        customListsForBook={[allCustomLists[0]] as any}
+      />
+    );
+    expect(screen.getByRole("link", { name: "list 1" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "list 2" })
+    ).not.toBeInTheDocument();
+  });
+});

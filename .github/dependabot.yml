@@ -10,11 +10,22 @@ updates:
     versioning-strategy: increase-if-necessary
     cooldown:
       default-days: 4
+    groups:
+      # The `@vitest/*` packages need the same exact version as `vitest`, so
+      # update them in one PR.
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
     ignore:
       # We currently support only v3 of Bootstrap. Prevent PRs for v4.0.0 or higher.
       # See https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/configure-version-updates
       - dependency-name: "bootstrap"
         versions: [">= 4.0.0"]
+      # jsdom 27 and higher change the accessible names that some tests match.
+      # Upgrade it by hand. See "Environment" under "Testing" in CLAUDE.md.
+      - dependency-name: "jsdom"
+        versions: [">= 27.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

@@ -28,6 +28,10 @@ jobs:
       - name: Lint (ESLint) 🧹
         run: npm run lint:js
 
+      # Vitest does not check types, so this is the type check.
+      - name: Type check 🔎
+        run: npm run typecheck
+
       - name: Test 🧪
         env:
           TZ: America/New_York
@@ -37,19 +41,19 @@ jobs:
       # than a build failure.
       - name: Check coverage report was written 🔍
         run: |
-          if [ ! -s coverage/jest/lcov.info ]; then
-            echo "::error::coverage/jest/lcov.info is missing or empty"
+          if [ ! -s coverage/unit/lcov.info ]; then
+            echo "::error::coverage/unit/lcov.info is missing or empty"
             exit 1
           fi
 
       # `disable_search` is required: without it, `files` is *added* to the
       # coverage files the CLI discovers on its own.
-      - name: Upload jest coverage to Codecov 📊
+      - name: Upload coverage to Codecov 📊
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/jest/lcov.info
+          files: ./coverage/unit/lcov.info
           disable_search: true
-          flags: jest
-          name: jest-node-${{ matrix.node-version }}
+          flags: unit
+          name: unit-node-${{ matrix.node-version }}
           verbose: true

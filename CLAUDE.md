@@ -16,13 +16,14 @@ npm run dev-server -- --env=backend=https://your-cm-url  # Dev server against re
 npm run prod                   # Production build
 npm run lint                   # Run ESLint (lint:js) + sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
-npm test                       # Full jest suite
-npm run test-jest-file <path>  # Single test: npm run test-jest-file tests/jest/components/MyTest.test.tsx
-npm run coverage               # Test suite with coverage (what CI runs); writes coverage/jest/lcov.info
+npm run typecheck              # Check types with tsc (Vitest does not check types)
+npm test                       # Full Vitest suite
+npm run test-file <path>       # Single test: npm run test-file tests/unit/components/MyTest.test.tsx
+npm run coverage               # Test suite with coverage (what CI runs); writes coverage/unit/lcov.info
 npm run dev-test-axe           # Dev build with react-axe accessibility checking (output in browser console)
 ```
 
-Run a single file with `npx jest --testPathPattern='components/MyTest\.test'`.
+Run a single file with `npx vitest run tests/unit/components/MyTest.test.tsx`.
 
 The dev server can also read the backend URL from `.env` or `.env.local` with `BACKEND=https://...`.
 
@@ -68,16 +69,16 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 ## Testing
 
-Every test runs under one jest config (`jest.config.js`). Tests live in `tests/jest/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `testMatch` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/jest/fixtures/`. The `tests/jest/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
+Every test runs under one Vitest config (`vitest.config.mts`). Tests live in `tests/unit/`, mirroring the `src/` tree, and are named `*.test.{ts,tsx}` — `include` only picks up that directory, so `src/` holds no test code. Shared fixture data (`genreData`, `classificationsData`) is in `tests/unit/fixtures/`. The `tests/unit/testUtils/mswServerFixtures/*.fixture.ts` files are not data. They are test files that only `mswServer.test.ts` runs (see `mswServer.ts` below).
 
-Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/jest/jest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
+Tests are written with React Testing Library (+ `@testing-library/user-event`); `@testing-library/jest-dom` matchers are registered globally in `tests/unit/vitest-setup.ts`. Mock the network with MSW through `setupMswServer()` (below). Do not stub `fetch` by hand.
 
-Helpers in `tests/jest/testUtils/`:
+Helpers in `tests/unit/testUtils/`:
 
 - `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store. Pass `route` (for example `{ route: "/admin/web" }`) to also render inside a React Router `MemoryRouter` with `LegacyRouterBridge`, so links and navigation work.
 - `renderWithContext.tsx` — lighter: app Context only.
-- `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Jest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
-- `formDataShim.ts` — `installFormDataShim()`; the reusable `<Form>` submit path needs it because undici's `FormData` rejects form elements. The shim returns a real `FormData`, so MSW can read the submitted fields.
+- `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Vitest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
+- `formDataShim.ts` — `installFormDataShim()`; install it in a test that submits the reusable `<Form>`. It sends only the form's successful controls, as a browser does, and leaves out file inputs. For a file input, jsdom's own FormData puts a jsdom `File` in the payload, and Node's `fetch` rejects that object. The shim returns a real `FormData`, so MSW can read the submitted fields.
 
 **Writing tests — the traps that actually bite:**
 
@@ -88,14 +89,19 @@ Helpers in `tests/jest/testUtils/`:
   - Use the `route` option of `renderWithProviders` for a component that reads the legacy `router` context: web-opds-client's `CatalogLink`, the tab containers, and `Header`. It includes `LegacyRouterBridge`. Without the bridge, `CatalogLink` throws `router.createHref is not a function`.
   - Use a bare `MemoryRouter` wrapper only for a component that renders just React Router's own `Link`, such as `Lane`.
   - A mock of `react-router` does not reach `CatalogLink`, because it uses web-opds-client's own react-router v3.
-- If you must mock `Link`, mock it as a `<div>`, not an `<a>` (jsx-a11y). Mock default exports as `{__esModule: true, default: ...}`.
+- If you must mock `Link`, mock it as a `<div>`, not an `<a>` (jsx-a11y). Mock a default export as `{ default: ... }`. A `vi.mock` factory needs the `default` key, and Vitest does not need `__esModule`.
 
-**Environment:** `jest-fixed-jsdom` restores Node's `fetch`, `Request`, `Response`, `Headers`, and `FormData` globals so MSW can intercept them. `jest.polyfills.js` runs first via `setupFiles`. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `testEnvironmentOptions.customExportConditions: [""]` keeps jsdom's default `["browser"]` condition from resolving ESM-only dependency bundles that ts-jest cannot transform. `moduleNameMapper` stubs asset, style, and markdown imports out to `tests/__mocks__/`.
+**Environment:** tests run in jsdom, with `describe`, `it`, `expect`, and `vi` as globals. `tests/unit/vitest-polyfills.js` runs first. It makes `Request` resolve a relative URL against the page URL, as a browser does, because RTK Query builds requests from relative URLs. `resolve.alias` in `vitest.config.mts` stubs asset and markdown imports out to `tests/__mocks__/fileMock.js`. `jsdom` is on 26 on purpose: a later version loses the space before a `<span>` in the accessible names that `getByRole` matches, and that needs test changes.
 
-**Coverage:** `npm run coverage` writes `coverage/jest/lcov.info`, uploaded to Codecov under the `jest` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. Two config constraints, both of which silently inflate the number if broken:
+**Vitest differences that matter here:**
 
-- `collectCoverageFrom` must stay at the _top level_ of `jest.config.js`; jest reads it off the global config, so nesting it leaves it globally undefined and every executed file gets instrumented, `tests/` helpers included.
-- `roots` must keep `<rootDir>/src` so `collectCoverageFrom` can discover source files no test imports. Otherwise they are omitted from the report rather than counted as uncovered.
+- Vitest does not check types. Run `npm run typecheck`; CI runs it too.
+- `vi.mock` calls run before the rest of the file, so a factory cannot use a `const` from the file. Use a function declaration or `vi.hoisted`.
+- `vi.spyOn` works on an export of our own `src/` modules, not on an export of a package. Use `vi.mock` for a package.
+- In `src/`, use `import`, not `require`, for anything a test mocks and for assets. `vi.mock` and `resolve.alias` do not apply to `require`. Do not write `import React = require("react")` in a `.tsx` file: the import is removed as unused and `React` is undefined at run time.
+- `sequence.hooks` is `"list"`, so `afterEach` and `afterAll` hooks run in the order they are defined, as in Jest.
+
+**Coverage:** `npm run coverage` writes `coverage/unit/lcov.info`, uploaded to Codecov under the `unit` flag (`threshold: 0.2%`). There is no local coverage gate — Codecov and review are the enforcement. `coverage.include` in `vitest.config.mts` must keep listing `src`, so that source files no test imports are counted as uncovered instead of being left out of the report.
 
 **End-to-end:** Nightwatch/selenium tests live in `tests/browser/` (config: `nightwatch.json`, run via `npm run test-browser`). They need credentials and a selenium install, are not part of `npm test`, and do not run in CI; see `tests/browser/README.md`.
 

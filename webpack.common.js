@@ -14,6 +14,8 @@ module.exports = {
     filename: "circulation-admin.js",
     library: "CirculationAdmin",
     libraryTarget: "umd",
+    // Make the global the class itself, not `{ default: ... }`.
+    libraryExport: "default",
   },
   plugins: [
     new CleanWebpackPlugin(),

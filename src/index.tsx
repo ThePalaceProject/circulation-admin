@@ -69,4 +69,4 @@ class CirculationAdmin {
   }
 }
 
-export = CirculationAdmin;
+export default CirculationAdmin;

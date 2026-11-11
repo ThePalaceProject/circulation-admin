@@ -1,0 +1,41 @@
+import * as React from "react";
+import { render, screen } from "@testing-library/react";
+
+// Header reads the legacy `router` context and fetches on mount, and both
+// Header and Footer are page chrome with no behavior worth exercising here.
+// Mock them to markers so the test stays about what WelcomePage composes.
+vi.mock("../../../src/components/Header", () => ({
+  default: () => <div data-testid="header" />,
+}));
+vi.mock("../../../src/components/Footer", () => ({
+  default: () => <div data-testid="footer" />,
+}));
+
+import WelcomePage from "../../../src/components/WelcomePage";
+
+describe("WelcomePage", () => {
+  it("shows the header", () => {
+    render(<WelcomePage />);
+    expect(screen.getByTestId("header")).toBeInTheDocument();
+  });
+
+  it("shows the welcome message", () => {
+    render(<WelcomePage />);
+    expect(
+      screen.getByRole("heading", {
+        name: "Welcome to the Circulation Admin Interface!",
+      })
+    ).toBeInTheDocument();
+  });
+
+  it("shows a link to the library create form", () => {
+    render(<WelcomePage />);
+    const link = screen.getByRole("link", { name: /create a new library/i });
+    expect(link).toHaveAttribute("href", "/admin/web/config/libraries/create");
+  });
+
+  it("shows the footer", () => {
+    render(<WelcomePage />);
+    expect(screen.getByTestId("footer")).toBeInTheDocument();
+  });
+});
