@@ -128,8 +128,8 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,mts}": "eslint --cache --fix",
-    "*.{js,jsx,ts,tsx,mts,css,md}": "prettier --write",
+    "*.{js,jsx,mjs,ts,tsx,mts}": "eslint --cache --fix",
+    "*.{js,jsx,mjs,ts,tsx,mts,css,md}": "prettier --write",
     "*.{js,css,md}": "prettier --write"
   },
   "overrides": {
