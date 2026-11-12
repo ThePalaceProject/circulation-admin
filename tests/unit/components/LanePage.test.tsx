@@ -13,9 +13,17 @@ import * as navigate from "../../../src/utils/navigate";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-vi.mock("../../../src/components/Header", () => ({
-  default: () => <div data-testid="header" />,
-}));
+// The Header marker shows the library that the page gives through the page
+// context.
+vi.mock("../../../src/components/Header", async () => {
+  const { usePageLibrary } = await vi.importActual<
+    typeof import("../../../src/context/pageContext")
+  >("../../../src/context/pageContext");
+  const HeaderMock = () => (
+    <div data-testid="header" data-library={usePageLibrary()} />
+  );
+  return { default: HeaderMock };
+});
 vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
@@ -55,8 +63,12 @@ describe("LanePage", () => {
 
     const { container } = renderWithProviders(<LanePage params={params} />);
 
-    // Header and Footer chrome are composed around the body.
-    expect(screen.getByTestId("header")).toBeInTheDocument();
+    // Header and Footer chrome are composed around the body. The page gives
+    // the header its library.
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-library",
+      "library"
+    );
     expect(screen.getByTestId("footer")).toBeInTheDocument();
 
     // The real Lanes child renders its container...

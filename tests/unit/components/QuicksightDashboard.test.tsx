@@ -45,7 +45,7 @@ describe("QuicksightDashboard", () => {
   });
 
   it("header renders without navigation links ", async () => {
-    renderWithProviders(<QuicksightDashboardPage params={{ library: null }} />);
+    renderWithProviders(<QuicksightDashboardPage />);
 
     // Make sure we see the QuicksSight iFrame.
     expect(screen.getByTitle("Library Dashboard")).toBeInTheDocument();

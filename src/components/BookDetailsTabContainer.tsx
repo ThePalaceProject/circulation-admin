@@ -14,7 +14,7 @@ interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
   collectionUrl: string;
   refreshCatalog: () => Promise<any>;
-  library: (collectionUrl, bookUrl) => string;
+  library: string;
   canSuppress: boolean;
   // extended from TabContainerProps in superclass
   //   csrfToken?: string;
@@ -85,10 +85,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}
         refreshCatalog={this.props.refreshCatalog}
-        library={this.props.library(
-          this.props.collectionUrl,
-          this.props.bookUrl
-        )}
+        library={this.props.library}
       />
     );
     return tabs;

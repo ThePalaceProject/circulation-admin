@@ -2,7 +2,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import OPDSCatalogComponent from "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog";
-import * as PropTypes from "prop-types";
 import { ActionsProvider } from "@thepalaceproject/web-opds-client/lib/components/context/ActionsContext";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
@@ -14,6 +13,7 @@ import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionsCreator from "@thepalaceproject/web-opds-client/lib/actions";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import title from "../utils/title";
+import { PageContextProvider } from "../context/pageContext";
 import NoCacheDataFetcher from "../utils/NoCacheDataFetcher";
 
 // web-opds-client's props type leaves out some props that it accepts.
@@ -30,28 +30,12 @@ export interface CatalogPageProps {
 /** Extracts URL parameters and renders the OPDS Web Client for the appropriate catalog
     and book, using the admin interface header and book details wrapper with extra tabs. */
 export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
-  static childContextTypes: React.ValidationMap<any> = {
-    tab: PropTypes.string,
-    library: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      tab: this.props.params.tab,
-      library: () =>
-        this.getLibrary(
-          this.props.params.collectionUrl,
-          this.props.params.bookUrl
-        ),
-    };
-  }
-
   render(): JSX.Element {
-    if (!this.hasLibrary()) {
+    let { collectionUrl, bookUrl } = this.props.params;
+    const library = this.getLibrary(collectionUrl, bookUrl);
+    if (!library) {
       return <WelcomePage />;
     }
-
-    let { collectionUrl, bookUrl } = this.props.params;
 
     collectionUrl = this.expandCollectionUrl(collectionUrl) || null;
     bookUrl = this.expandBookUrl(bookUrl) || null;
@@ -64,7 +48,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
     const fetcher = new NoCacheDataFetcher({ adapter });
     const actions = new ActionsCreator(fetcher);
     return (
-      <>
+      <PageContextProvider value={{ library, tab: this.props.params.tab }}>
         <ActionsProvider actions={actions} fetcher={fetcher}>
           <OPDSCatalog
             collectionUrl={collectionUrl}
@@ -79,7 +63,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
           />
         </ActionsProvider>
         <Footer />
-      </>
+      </PageContextProvider>
     );
   }
 
@@ -97,14 +81,6 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
       }
     }
     return null;
-  }
-
-  hasLibrary(): boolean {
-    let library = this.getLibrary(
-      this.props.params.collectionUrl,
-      this.props.params.bookUrl
-    );
-    return !!library;
   }
 
   expandCollectionUrl(url: string): string {
