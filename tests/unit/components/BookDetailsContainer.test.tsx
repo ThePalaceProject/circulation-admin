@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -7,6 +6,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import buildStore from "../../../src/store";
 import { AdminRoleData } from "../../../src/interfaces";
 import { renderWithProviders } from "../testUtils/withProviders";
+import { PageContextProvider } from "../../../src/context/pageContext";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 // BookDetailsTabContainer is a connected TabContainer that mounts every one of its
@@ -27,7 +27,8 @@ vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
       data-csrf-token={props.csrfToken}
       data-can-suppress={String(props.canSuppress)}
       data-has-our-store={String(!!useStore().getState().editor)}
-      data-has-library={String(!!props.library)}
+      data-library={props.library}
+      data-tab={props.tab}
       data-has-refresh-catalog={String(!!props.refreshCatalog)}
     >
       {props.children}
@@ -39,25 +40,6 @@ vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
 import BookDetailsContainer from "../../../src/components/BookDetailsContainer";
 import BookDetails from "../../../src/components/BookDetails";
 
-// BookDetailsContainer reads `library` and `tab` from legacy React context.
-// Supply them through a small legacy context provider. It reads `admin` and
-// `csrfToken` from the app context, which `renderWithProviders` supplies.
-class LegacyContextProvider extends React.Component<{
-  context: any;
-  children: React.ReactNode;
-}> {
-  static childContextTypes = {
-    tab: PropTypes.string,
-    library: PropTypes.func,
-  };
-  getChildContext() {
-    return this.props.context;
-  }
-  render() {
-    return this.props.children;
-  }
-}
-
 const bookData: BookData = {
   id: "book id",
   url: "book url",
@@ -67,17 +49,17 @@ const bookData: BookData = {
 
 describe("BookDetailsContainer", () => {
   let store;
-  let context;
   let refreshCatalog;
 
   beforeEach(() => {
     store = buildStore();
     refreshCatalog = vi.fn();
-    context = { library: vi.fn(() => "nypl") };
   });
 
   // As in the catalog: our store is in our store context, and react-redux's
   // Provider holds web-opds-client's catalog store, which has no `editor` slice.
+  // As in the catalog page, give `library` and `tab` through the page context.
+  // `renderWithProviders` gives `admin` and `csrfToken` through the app context.
   const catalogStore = configureStore({
     reducer: { catalog: (state = {}) => state },
   });
@@ -86,7 +68,7 @@ describe("BookDetailsContainer", () => {
   ) =>
     renderWithProviders(
       <Provider store={catalogStore}>
-        <LegacyContextProvider context={context}>
+        <PageContextProvider value={{ library: "nypl", tab: "edit" }}>
           <BookDetailsContainer
             book={bookData}
             bookUrl="book url"
@@ -95,7 +77,7 @@ describe("BookDetailsContainer", () => {
           >
             <BookDetails book={bookData} updateBook={vi.fn()} />
           </BookDetailsContainer>
-        </LegacyContextProvider>
+        </PageContextProvider>
       </Provider>,
       {
         reduxProviderProps: { store },
@@ -122,10 +104,10 @@ describe("BookDetailsContainer", () => {
       "collection url"
     );
     expect(tabContainer).toHaveAttribute("data-csrf-token", "token");
-    // The library function and refreshCatalog callback are forwarded from
-    // context/props; they are not serializable to the DOM, so assert they were
-    // passed through.
-    expect(tabContainer).toHaveAttribute("data-has-library", "true");
+    expect(tabContainer).toHaveAttribute("data-library", "nypl");
+    expect(tabContainer).toHaveAttribute("data-tab", "edit");
+    // The refreshCatalog callback is not serializable to the DOM, so assert it
+    // was passed through.
     expect(tabContainer).toHaveAttribute("data-has-refresh-catalog", "true");
   });
 
@@ -137,10 +119,6 @@ describe("BookDetailsContainer", () => {
     "lets a manager of the book's library suppress it ($roles.0.role of $roles.0.library: $canSuppress)",
     ({ roles, canSuppress }) => {
       renderContainer(roles);
-      expect(context.library).toHaveBeenCalledWith(
-        "collection url",
-        "book url"
-      );
       expect(screen.getByTestId("book-details-tab-container")).toHaveAttribute(
         "data-can-suppress",
         canSuppress

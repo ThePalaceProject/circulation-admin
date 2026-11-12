@@ -13,6 +13,7 @@ import buildStore from "../../../src/store";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
 import { renderWithProviders } from "../testUtils/withProviders";
+import { PageContextProvider } from "../../../src/context/pageContext";
 
 // Render react-router's Link as a marker `<div>` so we can read its target
 // (`data-to`) and text without a real Router in context. (A bare `<a>` without an
@@ -26,14 +27,13 @@ vi.mock("react-router", async () => ({
   ),
 }));
 
-// Header reads `library` and `router` from legacy React context. Supply them
-// through a small legacy context provider.
+// Header reads `router` from legacy React context. Supply it through a small
+// legacy context provider.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
 }> {
   static childContextTypes = {
-    library: PropTypes.func,
     router: PropTypes.object,
   };
   getChildContext() {
@@ -61,24 +61,24 @@ const librarian = new Admin([{ role: "librarian", library: "nypl" }]);
 const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
 
 type RenderHeaderOptions = {
-  // Pass `null` to model an absent `library` in context (a destructuring default
-  // cannot distinguish an omitted key from an explicit `undefined`, so `null` is
-  // the sentinel for "no library selected"). Header treats null/undefined alike.
-  library?: (() => string) | null;
+  // Pass `null` for "no library selected". A destructuring default cannot tell
+  // an omitted key from an explicit `undefined`, so `null` is the marker.
+  // Header treats null and undefined alike.
+  library?: string | null;
   admin?: Admin;
   router?: ReturnType<typeof makeRouter>;
   props?: Record<string, unknown>;
 };
 
 const renderHeader = ({
-  library = () => "nypl",
+  library = "nypl",
   admin = libraryManager,
   router = makeRouter(),
   props = {},
 }: RenderHeaderOptions = {}) =>
   render(
-    <LegacyContextProvider context={{ library, router }}>
-      <Header admin={admin} {...props} />
+    <LegacyContextProvider context={{ router }}>
+      <Header admin={admin} library={library} {...props} />
     </LegacyContextProvider>
   );
 
@@ -124,7 +124,7 @@ describe("Header", () => {
         { short_name: "nypl", name: "NYPL" },
         { short_name: "bpl" },
       ];
-      renderHeader({ library: () => "bpl", props: { libraries } });
+      renderHeader({ library: "bpl", props: { libraries } });
       expect(screen.getByRole("combobox")).toHaveValue("bpl");
     });
 
@@ -401,11 +401,11 @@ describe("Header", () => {
 
       renderWithProviders(
         <Provider store={catalogStore}>
-          <LegacyContextProvider
-            context={{ library: () => "nypl", router: makeRouter() }}
-          >
-            <HeaderWithStore />
-          </LegacyContextProvider>
+          <PageContextProvider value={{ library: "nypl" }}>
+            <LegacyContextProvider context={{ router: makeRouter() }}>
+              <HeaderWithStore />
+            </LegacyContextProvider>
+          </PageContextProvider>
         </Provider>,
         {
           reduxProviderProps: { store },
@@ -425,10 +425,33 @@ describe("Header", () => {
       expect(
         await screen.findByRole("option", { name: "NYPL" })
       ).toBeInTheDocument();
-      // The admin from the app config reached the header: the email shows, and
-      // the Lanes link, which only a library manager sees, is there.
+      // The admin from the app config and the library from the page context
+      // reached the header: the email shows, and so does the Lanes link, which
+      // only a manager of the page's library sees.
       expect(screen.getByText("admin@nypl.org")).toBeInTheDocument();
       expect(screen.getByText("Lanes")).toBeInTheDocument();
+    });
+
+    it("shows the site-wide header on a page with no page context", async () => {
+      // Render with no page context, as a page that is not for one library
+      // (such as the config page) should. Then the header has no library.
+      renderWithProviders(
+        <LegacyContextProvider context={{ router: makeRouter() }}>
+          <HeaderWithStore />
+        </LegacyContextProvider>,
+        {
+          reduxProviderProps: { store: buildStore() },
+          appConfigSettings: { roles: [{ role: "manager", library: "nypl" }] },
+        }
+      );
+
+      expect(
+        await screen.findByRole("option", { name: "NYPL" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("option", { name: "Select a library" })
+      ).toBeInTheDocument();
+      expect(screen.queryByText("Lanes")).not.toBeInTheDocument();
     });
   });
 });

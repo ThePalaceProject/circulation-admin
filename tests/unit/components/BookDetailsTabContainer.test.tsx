@@ -88,7 +88,7 @@ describe("BookDetailsTabContainer", () => {
           collectionUrl={TEST_COLLECTION_URL}
           csrfToken="token"
           refreshCatalog={vi.fn()}
-          library={() => "library"}
+          library="library"
           canSuppress={true}
           complaintsCount={0}
           bookData={bookData}
@@ -191,7 +191,7 @@ describe("BookDetailsTabContainer", () => {
             collectionUrl={TEST_COLLECTION_URL}
             csrfToken="token"
             refreshCatalog={vi.fn()}
-            library={() => "library"}
+            library="library"
             canSuppress={true}
             tab={null}
           >
