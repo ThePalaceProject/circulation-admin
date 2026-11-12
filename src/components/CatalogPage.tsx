@@ -31,12 +31,11 @@ export interface CatalogPageProps {
     and book, using the admin interface header and book details wrapper with extra tabs. */
 export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   render(): JSX.Element {
-    if (!this.hasLibrary()) {
-      return <WelcomePage />;
-    }
-
     let { collectionUrl, bookUrl } = this.props.params;
     const library = this.getLibrary(collectionUrl, bookUrl);
+    if (!library) {
+      return <WelcomePage />;
+    }
 
     collectionUrl = this.expandCollectionUrl(collectionUrl) || null;
     bookUrl = this.expandBookUrl(bookUrl) || null;
@@ -82,14 +81,6 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
       }
     }
     return null;
-  }
-
-  hasLibrary(): boolean {
-    let library = this.getLibrary(
-      this.props.params.collectionUrl,
-      this.props.params.bookUrl
-    );
-    return !!library;
   }
 
   expandCollectionUrl(url: string): string {
