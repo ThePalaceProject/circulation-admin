@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import { Provider } from "react-redux";
 import buildStore, { RootState } from "../store";
 import { ConfigurationSettings, PathFor } from "../interfaces";
@@ -80,22 +79,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     } else {
       return url;
     }
-  }
-
-  static childContextTypes: React.ValidationMap<object> = {
-    csrfToken: PropTypes.string.isRequired,
-    settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired,
-    featureFlags: PropTypes.object.isRequired,
-  };
-
-  getChildContext() {
-    return {
-      csrfToken: this.appConfig.csrfToken,
-      settingUp: this.appConfig.settingUp || false,
-      admin: this.admin,
-      featureFlags: this.appConfig.featureFlags,
-    };
   }
 
   render() {

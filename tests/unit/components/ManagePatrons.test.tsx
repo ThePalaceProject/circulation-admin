@@ -1,7 +1,10 @@
 import * as React from "react";
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { http, HttpResponse } from "msw";
 
 import { renderWithProviders } from "../testUtils/withProviders";
+import { setupMswServer } from "../testUtils/mswServer";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
@@ -15,6 +18,12 @@ vi.mock("../../../src/components/Footer", () => ({
 import ManagePatrons from "../../../src/components/ManagePatrons";
 
 describe("ManagePatrons", () => {
+  const { requests } = setupMswServer(
+    http.post("*/NYPL/admin/manage_patrons", () =>
+      HttpResponse.json({ authorization_identifier: "1234" })
+    )
+  );
+
   it("shows Header", () => {
     renderWithProviders(<ManagePatrons params={{ library: "", tab: "" }} />);
 
@@ -67,5 +76,28 @@ describe("ManagePatrons", () => {
     renderWithProviders(<ManagePatrons params={{ library: "", tab: "" }} />);
 
     expect(screen.getByTestId("footer")).toBeInTheDocument();
+  });
+
+  it("sends the CSRF token from the app config with a patron lookup", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <ManagePatrons params={{ library: "NYPL", tab: "resetAdobeId" }} />,
+      {
+        appConfigSettings: {
+          csrfToken: "token",
+          roles: [{ role: "manager", library: "NYPL" }],
+        },
+      }
+    );
+
+    await user.type(
+      screen.getByRole("textbox", { name: /Identifier/i }),
+      "1234"
+    );
+    await user.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(await screen.findByText(/Patron found: 1234/)).toBeInTheDocument();
+    expect(requests).toHaveLength(1);
+    expect(requests[0].headers.get("X-CSRF-Token")).toBe("token");
   });
 });

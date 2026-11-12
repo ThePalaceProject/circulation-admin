@@ -1,9 +1,15 @@
 import * as React from "react";
-import { screen, waitForElementToBeRemoved } from "@testing-library/react";
+import {
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 import { setupMswServer } from "../testUtils/mswServer";
+import * as navigate from "../../../src/utils/navigate";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
@@ -26,12 +32,19 @@ import LanePage from "../../../src/components/LanePage";
 
 describe("LanePage", () => {
   // Lanes fetches lanes and custom lists on mount.
-  setupMswServer(
+  const { requests } = setupMswServer(
     http.get("*/:library/admin/lanes", () => HttpResponse.json({ lanes: [] })),
     http.get("*/:library/admin/custom_lists", () =>
       HttpResponse.json({ custom_lists: [] })
+    ),
+    http.post("*/:library/admin/lanes", () =>
+      HttpResponse.text("77", { status: 201 })
     )
   );
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
   it("shows lanes with info from params", async () => {
     const params = {
@@ -57,5 +70,34 @@ describe("LanePage", () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByRole("dialog", { name: "Loading" })
     );
+  });
+
+  it("sends the CSRF token from the app config when it saves a lane", async () => {
+    // After a save, LaneEditor goes to the new lane's page, which jsdom cannot
+    // do. The spy stops that and shows when the app has handled the response.
+    const navigateTo = vi
+      .spyOn(navigate, "navigateTo")
+      .mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    renderWithProviders(
+      <LanePage params={{ library: "library", editOrCreate: "create" }} />,
+      { appConfigSettings: { csrfToken: "token" } }
+    );
+
+    await user.type(
+      await screen.findByRole("textbox", { name: /name for this lane/i }),
+      "new lane"
+    );
+    await user.click(screen.getByRole("button", { name: /save lane/i }));
+
+    await waitFor(() =>
+      expect(navigateTo).toHaveBeenCalledWith(
+        "/admin/web/lanes/library/edit/77"
+      )
+    );
+    const posts = requests.filter((r) => r.method === "POST");
+    expect(posts).toHaveLength(1);
+    const post = posts[0];
+    expect(post.headers.get("X-CSRF-Token")).toBe("token");
   });
 });

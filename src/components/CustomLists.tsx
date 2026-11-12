@@ -1,6 +1,6 @@
 import * as React from "react";
+import { AppContext, AppContextType } from "../context/appContext";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
@@ -15,7 +15,6 @@ import {
   LanesData,
   LanguagesData,
 } from "../interfaces";
-import Admin from "../models/Admin";
 import {
   CustomListEditorProperties,
   CustomListEditorEntriesData,
@@ -132,11 +131,8 @@ export class CustomLists extends React.Component<
   CustomListsProps,
   CustomListsState
 > {
-  context: { admin: Admin };
-
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   constructor(props) {
     super(props);

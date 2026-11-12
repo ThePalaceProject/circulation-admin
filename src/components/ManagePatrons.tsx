@@ -1,4 +1,5 @@
 import * as React from "react";
+import { AppContext, AppContextType } from "../context/appContext";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -11,16 +12,9 @@ export interface ManagePatronsProps {
   };
 }
 
-export interface ManagePatronsContext {
-  csrfToken: string;
-}
-
 export class ManagePatrons extends React.Component<ManagePatronsProps> {
-  context: ManagePatronsContext;
-
-  static contextTypes: React.ValidationMap<ManagePatronsContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   static childContextTypes: React.ValidationMap<{ library: () => string }> = {
     library: PropTypes.func,

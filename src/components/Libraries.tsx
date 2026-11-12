@@ -5,10 +5,8 @@ import {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { LibrariesData, LibraryData, LanguagesData } from "../interfaces";
-import Admin from "../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
 import { libraryLabel } from "../utils/sharedFunctions";
 
@@ -41,11 +39,6 @@ export class Libraries extends GenericEditableConfigList<
   urlBase = "/admin/web/config/libraries/";
   identifierKey = "uuid";
   labelKey = "name";
-
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
 
   componentDidMount() {
     super.componentDidMount();
