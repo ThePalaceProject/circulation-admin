@@ -1,10 +1,12 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 import buildStore from "../../../src/store";
+import { AdminRoleData } from "../../../src/interfaces";
+import { renderWithProviders } from "../testUtils/withProviders";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 // BookDetailsTabContainer is a connected TabContainer that mounts every one of its
@@ -23,6 +25,7 @@ vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
       data-book-url={props.bookUrl}
       data-collection-url={props.collectionUrl}
       data-csrf-token={props.csrfToken}
+      data-can-suppress={String(props.canSuppress)}
       data-has-our-store={String(!!useStore().getState().editor)}
       data-has-library={String(!!props.library)}
       data-has-refresh-catalog={String(!!props.refreshCatalog)}
@@ -35,21 +38,17 @@ vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
 
 import BookDetailsContainer from "../../../src/components/BookDetailsContainer";
 import BookDetails from "../../../src/components/BookDetails";
-import { AppStoreProvider } from "../../../src/context/appStoreContext";
 
-// BookDetailsContainer reads its configuration from the legacy React context that
-// the OPDS web client supplies in production. `renderWithProviders` does not supply
-// the `library` (nor `tab`) keys it reads, so wrap it in a small legacy context
-// provider that hands it everything it needs.
+// BookDetailsContainer reads `library` and `tab` from legacy React context.
+// Supply them through a small legacy context provider. It reads `admin` and
+// `csrfToken` from the app context, which `renderWithProviders` supplies.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
 }> {
   static childContextTypes = {
-    csrfToken: PropTypes.string,
     tab: PropTypes.string,
     library: PropTypes.func,
-    admin: PropTypes.object,
   };
   getChildContext() {
     return this.props.context;
@@ -74,11 +73,7 @@ describe("BookDetailsContainer", () => {
   beforeEach(() => {
     store = buildStore();
     refreshCatalog = vi.fn();
-    context = {
-      csrfToken: "token",
-      library: vi.fn(),
-      admin: { isLibraryManager: () => true },
-    };
+    context = { library: vi.fn(() => "nypl") };
   });
 
   // As in the catalog: our store is in our store context, and react-redux's
@@ -86,22 +81,26 @@ describe("BookDetailsContainer", () => {
   const catalogStore = configureStore({
     reducer: { catalog: (state = {}) => state },
   });
-  const renderContainer = () =>
-    render(
-      <AppStoreProvider value={store}>
-        <Provider store={catalogStore}>
-          <LegacyContextProvider context={context}>
-            <BookDetailsContainer
-              book={bookData}
-              bookUrl="book url"
-              collectionUrl="collection url"
-              refreshCatalog={refreshCatalog}
-            >
-              <BookDetails book={bookData} updateBook={vi.fn()} />
-            </BookDetailsContainer>
-          </LegacyContextProvider>
-        </Provider>
-      </AppStoreProvider>
+  const renderContainer = (
+    roles: AdminRoleData[] = [{ role: "manager", library: "nypl" }]
+  ) =>
+    renderWithProviders(
+      <Provider store={catalogStore}>
+        <LegacyContextProvider context={context}>
+          <BookDetailsContainer
+            book={bookData}
+            bookUrl="book url"
+            collectionUrl="collection url"
+            refreshCatalog={refreshCatalog}
+          >
+            <BookDetails book={bookData} updateBook={vi.fn()} />
+          </BookDetailsContainer>
+        </LegacyContextProvider>
+      </Provider>,
+      {
+        reduxProviderProps: { store },
+        appConfigSettings: { csrfToken: "token", roles },
+      }
     );
 
   it("renders BookDetails with its child's props", () => {
@@ -129,6 +128,25 @@ describe("BookDetailsContainer", () => {
     expect(tabContainer).toHaveAttribute("data-has-library", "true");
     expect(tabContainer).toHaveAttribute("data-has-refresh-catalog", "true");
   });
+
+  it.each<{ roles: AdminRoleData[]; canSuppress: string }>([
+    { roles: [{ role: "manager", library: "nypl" }], canSuppress: "true" },
+    { roles: [{ role: "librarian", library: "nypl" }], canSuppress: "false" },
+    { roles: [{ role: "manager", library: "other" }], canSuppress: "false" },
+  ])(
+    "lets a manager of the book's library suppress it ($roles.0.role of $roles.0.library: $canSuppress)",
+    ({ roles, canSuppress }) => {
+      renderContainer(roles);
+      expect(context.library).toHaveBeenCalledWith(
+        "collection url",
+        "book url"
+      );
+      expect(screen.getByTestId("book-details-tab-container")).toHaveAttribute(
+        "data-can-suppress",
+        canSuppress
+      );
+    }
+  );
 
   it("connects the tab container to our store, not the catalog store", () => {
     renderContainer();

@@ -1,10 +1,11 @@
 import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Admin from "../../../src/models/Admin";
+import { renderWithProviders } from "../testUtils/withProviders";
 
 // Both tab panels fetch on mount (ResetAdobeId is a connected component; Debug
 // Authentication uses react-query). They're incidental to a tab-navigation test,
@@ -20,9 +21,9 @@ vi.mock("../../../src/components/DebugAuthentication", () => ({
 
 import ManagePatronsTabContainer from "../../../src/components/ManagePatronsTabContainer";
 
-// ManagePatronsTabContainer reads `admin`, `router`, and `pathFor` from the legacy
-// React context the app supplies in production. Wrap it in a small provider that
-// hands it those.
+// ManagePatronsTabContainer reads `router` and `pathFor` from legacy React context. Supply them
+// through a small legacy context provider. It reads `admin` from the app
+// context, which `renderWithProviders` builds from the configured roles.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
@@ -30,7 +31,6 @@ class LegacyContextProvider extends React.Component<{
   static childContextTypes = {
     router: PropTypes.object,
     pathFor: PropTypes.func,
-    admin: PropTypes.object,
   };
   getChildContext() {
     return this.props.context;
@@ -47,15 +47,16 @@ describe("ManagePatronsTabContainer", () => {
   const librarian = new Admin([{ role: "librarian", library: "NYPL" }]);
 
   const renderWithAdmin = (admin: Admin, push: Mock = vi.fn()) => {
-    const context = { router: { push }, pathFor: vi.fn(), admin };
-    const result = render(
+    const context = { router: { push }, pathFor: vi.fn() };
+    const result = renderWithProviders(
       <LegacyContextProvider context={context}>
         <ManagePatronsTabContainer
           tab={null}
           csrfToken="token"
           library="NYPL"
         />
-      </LegacyContextProvider>
+      </LegacyContextProvider>,
+      { appConfigSettings: { roles: admin.roles } }
     );
     return { ...result, push };
   };

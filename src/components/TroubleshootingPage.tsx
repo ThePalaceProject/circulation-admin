@@ -1,13 +1,9 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import Header from "./Header";
 import Footer from "./Footer";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 import title from "../utils/title";
-
-export interface TroubleshootingPageContext {
-  csrfToken: string;
-}
 
 export interface TroubleshootingPageState {
   tab: string;
@@ -25,11 +21,8 @@ export default class TroubleshootingPage extends React.Component<
   TroubleshootingPageProps,
   TroubleshootingPageState
 > {
-  context: TroubleshootingPageContext;
-
-  static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   CATEGORIES = {
     diagnostics: ["coverage_provider", "script", "monitor", "other"],
