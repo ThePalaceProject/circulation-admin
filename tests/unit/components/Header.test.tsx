@@ -26,10 +26,8 @@ vi.mock("react-router", async () => ({
   ),
 }));
 
-// Header reads `library`, `router`, and `admin` from the legacy React context that
-// the OPDS web client supplies in production. Supply them via a small legacy
-// context provider (also carrying the `csrfToken` the connected default export
-// needs).
+// Header reads `library`, `router`, and `admin` from legacy React context.
+// Supply them through a small legacy context provider.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
@@ -38,7 +36,6 @@ class LegacyContextProvider extends React.Component<{
     library: PropTypes.func,
     router: PropTypes.object,
     admin: PropTypes.object,
-    csrfToken: PropTypes.string,
   };
   getChildContext() {
     return this.props.context;
@@ -408,7 +405,6 @@ describe("Header", () => {
           <Provider store={catalogStore}>
             <LegacyContextProvider
               context={{
-                csrfToken: "token",
                 library: () => "nypl",
                 admin: libraryManager,
                 router: makeRouter(),
