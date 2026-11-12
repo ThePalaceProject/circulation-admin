@@ -14,6 +14,7 @@ import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../utils/title";
 import { AppReduxProvider } from "../context/appStoreContext";
 import { useAppAdmin } from "../context/appContext";
+import { usePageLibrary } from "../context/pageContext";
 import palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 
 export interface HeaderStateProps {
@@ -27,6 +28,8 @@ export interface HeaderDispatchProps {
 
 export interface HeaderOwnProps {
   admin: Admin;
+  /** The short name of the page's library, if the page is for one. */
+  library?: string;
   logoOnly?: boolean;
 }
 
@@ -50,10 +53,9 @@ export interface HeaderNavItem {
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
-  context: { library: () => string; router: HeaderRouter };
+  context: { router: HeaderRouter };
 
   static contextTypes = {
-    library: PropTypes.func,
     router: PropTypes.object.isRequired,
   };
   private libraryRef = React.createRef<EditableInput>();
@@ -91,10 +93,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         this.context.router.getCurrentLocation() &&
         this.context.router.getCurrentLocation().pathname) ||
       "";
-    let currentLibrary = this.context.library && this.context.library();
+    let currentLibrary = this.props.library;
     let isLibraryManager = this.props.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.props.admin.isSystemAdmin();
-    let isSiteWide = !this.context.library || !currentLibrary;
+    let isSiteWide = !currentLibrary;
     let isSomeLibraryManager = this.props.admin.isLibraryManagerOfSomeLibrary();
 
     // Dashboard link that will be rendered in a Link router component.
@@ -143,7 +145,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     onChange={this.changeLibrary}
                     aria-label="Select a library"
                   >
-                    {(!this.context.library || !currentLibrary) && (
+                    {!currentLibrary && (
                       <option aria-selected={false}>Select a library</option>
                     )}
                     {this.props.libraries.map((library) => (
@@ -344,14 +346,15 @@ type HeaderWithStoreProps = {
 /** Connects the header to our store, even where react-redux's context holds
     another store (as in web-opds-client's catalog). Everything under
     `AppReduxProvider` reads our store, so do not render a part that needs the
-    catalog store there. It also gives the header `admin`. The header reads
-    `library` and `router` from legacy context, so it cannot also use
-    `static contextType`. */
+    catalog store there. It also gives the header `admin` and the page's
+    `library`. The header reads `router` from legacy context, so it cannot also
+    use `static contextType`. */
 const HeaderWithStore = ({ logoOnly }: HeaderWithStoreProps) => {
   const admin = useAppAdmin();
+  const library = usePageLibrary();
   return (
     <AppReduxProvider>
-      <ConnectedHeader admin={admin} logoOnly={logoOnly} />
+      <ConnectedHeader admin={admin} library={library} logoOnly={logoOnly} />
     </AppReduxProvider>
   );
 };

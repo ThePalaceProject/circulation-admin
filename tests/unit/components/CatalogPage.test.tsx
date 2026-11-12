@@ -4,39 +4,40 @@ import { screen } from "@testing-library/react";
 import { renderWithProviders } from "../testUtils/withProviders";
 import title from "../../../src/utils/title";
 
-// CatalogPage mounts the OPDS Web Client, a heavy third-party render target that fetches on mount. Replace it
-// with a marker that echoes the props CatalogPage hands it and the legacy
-// `tab`/`library` child context CatalogPage supplies (read via `contextTypes`), so
-// we can assert the wiring without the real catalog.
-vi.mock("@thepalaceproject/web-opds-client/lib/components/OPDSCatalog", () => {
-  const React = require("react");
-  const PropTypes = require("prop-types");
-  const OPDSCatalogMock = (props, context) => (
-    <div
-      data-testid="opds-catalog"
-      data-collection-url={props.collectionUrl}
-      data-book-url={props.bookUrl}
-      data-tab={context.tab}
-      data-library={context.library && context.library()}
-      data-header-name={props.Header && props.Header.name}
-      data-book-details-container-name={
-        props.BookDetailsContainer && props.BookDetailsContainer.name
-      }
-      data-has-compute-breadcrumbs={String(!!props.computeBreadcrumbs)}
-      data-title-book={
-        props.pageTitleTemplate && props.pageTitleTemplate("Collection", "Book")
-      }
-      data-title-collection={
-        props.pageTitleTemplate && props.pageTitleTemplate("Collection", null)
-      }
-    />
-  );
-  OPDSCatalogMock.contextTypes = {
-    tab: PropTypes.string,
-    library: PropTypes.func,
-  };
-  return { default: OPDSCatalogMock };
-});
+// CatalogPage mounts the OPDS Web Client, a heavy third-party render target that
+// fetches on mount. Replace it with a marker that echoes the props CatalogPage
+// hands it and the `library` and `tab` that CatalogPage gives through the page
+// context, so we can assert the wiring without the real catalog.
+vi.mock(
+  "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog",
+  async () => {
+    const { usePageLibrary, usePageTab } = await vi.importActual<
+      typeof import("../../../src/context/pageContext")
+    >("../../../src/context/pageContext");
+    const OPDSCatalogMock = (props) => (
+      <div
+        data-testid="opds-catalog"
+        data-collection-url={props.collectionUrl}
+        data-book-url={props.bookUrl}
+        data-tab={usePageTab()}
+        data-library={usePageLibrary()}
+        data-header-name={props.Header && props.Header.name}
+        data-book-details-container-name={
+          props.BookDetailsContainer && props.BookDetailsContainer.name
+        }
+        data-has-compute-breadcrumbs={String(!!props.computeBreadcrumbs)}
+        data-title-book={
+          props.pageTitleTemplate &&
+          props.pageTitleTemplate("Collection", "Book")
+        }
+        data-title-collection={
+          props.pageTitleTemplate && props.pageTitleTemplate("Collection", null)
+        }
+      />
+    );
+    return { default: OPDSCatalogMock };
+  }
+);
 
 // When there is no library, CatalogPage renders WelcomePage, which mounts the real
 // Header, which reads the legacy `router` context (see LegacyRouterBridge) and
@@ -111,7 +112,7 @@ describe("CatalogPage", () => {
     );
   });
 
-  it("puts the tab into the child context", () => {
+  it("puts the tab into the page context", () => {
     renderWithProviders(<CatalogPage params={baseParams} />);
     expect(screen.getByTestId("opds-catalog")).toHaveAttribute(
       "data-tab",
@@ -119,7 +120,7 @@ describe("CatalogPage", () => {
     );
   });
 
-  it("derives the child-context library from the collection URL", () => {
+  it("derives the page context library from the collection URL", () => {
     renderWithProviders(<CatalogPage params={baseParams} />);
     expect(screen.getByTestId("opds-catalog")).toHaveAttribute(
       "data-library",
@@ -127,7 +128,7 @@ describe("CatalogPage", () => {
     );
   });
 
-  it("derives the child-context library from the book URL when there is no collection URL", () => {
+  it("derives the page context library from the book URL when there is no collection URL", () => {
     renderWithProviders(
       <CatalogPage params={{ ...baseParams, collectionUrl: null }} />
     );

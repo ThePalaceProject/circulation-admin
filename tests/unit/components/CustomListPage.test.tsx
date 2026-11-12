@@ -5,9 +5,17 @@ import { renderWithProviders } from "../testUtils/withProviders";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-vi.mock("../../../src/components/Header", () => ({
-  default: () => <div data-testid="header" />,
-}));
+// The Header marker shows the library that the page gives through the page
+// context.
+vi.mock("../../../src/components/Header", async () => {
+  const { usePageLibrary } = await vi.importActual<
+    typeof import("../../../src/context/pageContext")
+  >("../../../src/context/pageContext");
+  const HeaderMock = () => (
+    <div data-testid="header" data-library={usePageLibrary()} />
+  );
+  return { default: HeaderMock };
+});
 vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
@@ -42,6 +50,10 @@ describe("CustomListPage", () => {
       appConfigSettings: { csrfToken: "token" },
     });
 
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-library",
+      "library"
+    );
     const customLists = screen.getByTestId("custom-lists");
     expect(customLists).toHaveAttribute("data-library", "library");
     expect(customLists).toHaveAttribute("data-edit-or-create", "edit");

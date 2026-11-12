@@ -8,9 +8,17 @@ import { setupMswServer } from "../testUtils/mswServer";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-vi.mock("../../../src/components/Header", () => ({
-  default: () => <div data-testid="header" />,
-}));
+// The Header marker shows the library that the page gives through the page
+// context.
+vi.mock("../../../src/components/Header", async () => {
+  const { usePageLibrary } = await vi.importActual<
+    typeof import("../../../src/context/pageContext")
+  >("../../../src/context/pageContext");
+  const HeaderMock = () => (
+    <div data-testid="header" data-library={usePageLibrary()} />
+  );
+  return { default: HeaderMock };
+});
 vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
@@ -54,6 +62,10 @@ describe("ManagePatrons", () => {
       { appConfigSettings: { roles: [{ role: "manager", library: "NYPL" }] } }
     );
 
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-library",
+      "NYPL"
+    );
     const tabContainer = container.querySelector(".tab-container");
     expect(tabContainer).toBeInTheDocument();
 

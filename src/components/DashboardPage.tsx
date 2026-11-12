@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { PageContextProvider } from "../context/pageContext";
 import Header from "./Header";
 import Footer from "./Footer";
 import Stats from "./Stats";
@@ -15,27 +15,19 @@ export interface DashboardPageProps {
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
 export default class DashboardPage extends React.Component<DashboardPageProps> {
-  static childContextTypes: React.ValidationMap<object> = {
-    library: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      library: () => this.props.params.library,
-    };
-  }
-
   render(): JSX.Element {
     const { library } = this.props.params;
     return (
-      <div className="dashboard">
-        <Header />
-        <main className="body">
-          <Stats library={library} />
-          <CirculationEventsDownload library={library} />
-        </main>
-        <Footer />
-      </div>
+      <PageContextProvider value={{ library }}>
+        <div className="dashboard">
+          <Header />
+          <main className="body">
+            <Stats library={library} />
+            <CirculationEventsDownload library={library} />
+          </main>
+          <Footer />
+        </div>
+      </PageContextProvider>
     );
   }
 
