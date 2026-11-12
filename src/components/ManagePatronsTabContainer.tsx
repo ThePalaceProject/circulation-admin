@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { RootState } from "../store";
 import {
   TabContainer,
   TabContainerProps,
@@ -12,7 +10,6 @@ import DebugAuthentication from "./DebugAuthentication";
 import ResetAdobeId from "./ResetAdobeId";
 
 export interface ManagePatronsTabContainerProps extends TabContainerProps {
-  store: Store<RootState>;
   csrfToken: string;
   library: string;
   tab: string;
@@ -24,9 +21,7 @@ export interface ManagePatronsTabContainerContext extends TabContainerContext {
 
 /** Body of the Patron Manager page, with a tab for each type of
     action that can be performed on a patron. */
-export default class ManagePatronsTabContainer extends TabContainer<
-  ManagePatronsTabContainerProps
-> {
+export default class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabContainerProps> {
   context: ManagePatronsTabContainerContext;
   static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
     router: PropTypes.object.isRequired,
@@ -42,7 +37,6 @@ export default class ManagePatronsTabContainer extends TabContainer<
     if (isLibraryManager) {
       tabs["resetAdobeId"] = (
         <ResetAdobeId
-          store={this.props.store}
           csrfToken={this.props.csrfToken}
           library={this.props.library}
         />

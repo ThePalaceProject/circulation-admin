@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -14,7 +13,6 @@ import { getBookData } from "../features/book/bookEditorSlice";
 
 export interface ClassificationsOwnProps {
   // from parent
-  store: Store<RootState>;
   csrfToken: string;
   bookUrl: string;
   book: BookData;

@@ -1,9 +1,7 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { DiagnosticsData } from "../interfaces";
-import { RootState } from "../store";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -15,7 +13,6 @@ export interface DiagnosticsTabContainerDispatchProps {
 }
 
 export interface DiagnosticsTabContainerOwnProps extends TabContainerProps {
-  store: Store<RootState>;
   goToTab: (tabName: string) => void;
 }
 
@@ -26,13 +23,12 @@ export interface DiagnosticsTabContainerStateProps {
 }
 
 export interface DiagnosticsTabContainerProps
-  extends DiagnosticsTabContainerDispatchProps,
+  extends
+    DiagnosticsTabContainerDispatchProps,
     DiagnosticsTabContainerStateProps,
     DiagnosticsTabContainerOwnProps {}
 
-export class DiagnosticsTabContainer extends TabContainer<
-  DiagnosticsTabContainerProps
-> {
+export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContainerProps> {
   DISPLAY_NAMES = {
     coverage_provider: "Coverage Providers",
     monitor: "Monitors",

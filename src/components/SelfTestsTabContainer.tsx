@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { CollectionsData, PatronAuthServicesData } from "../interfaces";
-import { RootState } from "../store";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -21,7 +19,6 @@ export interface SelfTestsTabContainerDispatchProps {
 }
 
 export interface SelfTestsTabContainerOwnProps extends TabContainerProps {
-  store: Store<RootState>;
   goToTab: (tabName: string) => void;
 }
 
@@ -32,14 +29,13 @@ export interface SelfTestsTabContainerStateProps {
 }
 
 export interface SelfTestsTabContainerProps
-  extends SelfTestsTabContainerDispatchProps,
+  extends
+    SelfTestsTabContainerDispatchProps,
     SelfTestsTabContainerStateProps,
     SelfTestsTabContainerOwnProps {}
 export interface SelfTestsTabContainerContext extends TabContainerContext {}
 
-export class SelfTestsTabContainer extends TabContainer<
-  SelfTestsTabContainerProps
-> {
+export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerProps> {
   context: SelfTestsTabContainerContext;
   static contextTypes: React.ValidationMap<SelfTestsTabContainerContext> = {
     router: PropTypes.object.isRequired,
@@ -101,7 +97,6 @@ export class SelfTestsTabContainer extends TabContainer<
       } else if (this.props.items && this.props.items[keyName]) {
         component = (
           <SelfTestsCategory
-            store={this.props.store}
             linkName={linkName}
             type={typeName}
             csrfToken={this.props.csrfToken}

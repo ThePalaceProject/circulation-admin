@@ -128,7 +128,7 @@ In order to run the app with `react-axe`, run `npm run dev-test-axe`. This will 
 
 Like the codebase, the unit tests are written in Typescript. They cover React components as well as redux and utility functions. Tests run under [Vitest](https://vitest.dev/) and live in the `tests/unit` directory, whose structure mirrors `src`; each file is named `*.test.ts` / `*.test.tsx`, and shared fixture data lives in `tests/unit/fixtures`.
 
-Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), which drives components the way a user does — query by role and text, not by internal structure. `tests/unit/testUtils` has helpers for the common setup: `renderWithProviders()` wraps a component in the Redux store, app context, and QueryClient, and `renderWithContext()` does app context alone. Network calls are mocked with [MSW](https://mswjs.io/) through `setupMswServer()` in `tests/unit/testUtils/mswServer.ts`, which also records each request so a test can check it.
+Components are tested with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/), which drives components the way a user does — query by role and text, not by internal structure. `tests/unit/testUtils` has helpers for the common setup: `renderWithProviders()` wraps a component in the Redux store, app context, and QueryClient, and `renderWithContext()` does app context and its own Redux store, without React Query or a router. Network calls are mocked with [MSW](https://mswjs.io/) through `setupMswServer()` in `tests/unit/testUtils/mswServer.ts`, which also records each request so a test can check it.
 
 ```bash
 npm test                       # the whole suite

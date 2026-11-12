@@ -3,6 +3,8 @@ import * as PropTypes from "prop-types";
 import { render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { AppStoreProvider } from "../../../src/context/appStoreContext";
 
 import { Header } from "../../../src/components/Header";
 import HeaderWithStore from "../../../src/components/Header";
@@ -24,10 +26,8 @@ vi.mock("react-router", async () => ({
   ),
 }));
 
-// Header reads `library`, `router`, and `admin` from the legacy React context that
-// the OPDS web client supplies in production. Supply them via a small legacy
-// context provider (also carrying the `editorStore`/`csrfToken` the connected
-// default export needs).
+// Header reads `library`, `router`, and `admin` from legacy React context.
+// Supply them through a small legacy context provider.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
@@ -36,8 +36,6 @@ class LegacyContextProvider extends React.Component<{
     library: PropTypes.func,
     router: PropTypes.object,
     admin: PropTypes.object,
-    editorStore: PropTypes.object,
-    csrfToken: PropTypes.string,
   };
   getChildContext() {
     return this.props.context;
@@ -385,30 +383,37 @@ describe("Header", () => {
 
   describe("connected (default export)", () => {
     const { requests } = setupMswServer(
-      http.get("*/admin/libraries", () => HttpResponse.json({ libraries: [] }))
+      http.get("*/admin/libraries", () =>
+        HttpResponse.json({ libraries: [{ short_name: "nypl", name: "NYPL" }] })
+      )
     );
 
-    it("wires libraries from the store and fetches them on mount", async () => {
+    it("wires libraries from our store and fetches them on mount", async () => {
       // The connected default export reads `libraries`/`isFetchingLibraries` from
       // the redux store and dispatches `fetchLibraries` on mount, which hits the
       // network. The mock server answers it so mounting settles without a real
       // request.
       const store = buildStore();
+      // As in the catalog: react-redux's Provider holds web-opds-client's catalog
+      // store, which has no `editor` slice. The header must still use ours.
+      const catalogStore = configureStore({
+        reducer: { catalog: (state = {}) => state },
+      });
 
       render(
-        <Provider store={store}>
-          <LegacyContextProvider
-            context={{
-              editorStore: store,
-              csrfToken: "token",
-              library: () => "nypl",
-              admin: libraryManager,
-              router: makeRouter(),
-            }}
-          >
-            <HeaderWithStore />
-          </LegacyContextProvider>
-        </Provider>
+        <AppStoreProvider value={store}>
+          <Provider store={catalogStore}>
+            <LegacyContextProvider
+              context={{
+                library: () => "nypl",
+                admin: libraryManager,
+                router: makeRouter(),
+              }}
+            >
+              <HeaderWithStore />
+            </LegacyContextProvider>
+          </Provider>
+        </AppStoreProvider>
       );
 
       expect(
@@ -416,6 +421,10 @@ describe("Header", () => {
       ).toHaveTextContent(title());
       await waitFor(() => expect(requests).toHaveLength(1));
       expect(new URL(requests[0].url).pathname).toBe("/admin/libraries");
+      // The fetched library reached the menu, so the header read our store.
+      expect(
+        await screen.findByRole("option", { name: "NYPL" })
+      ).toBeInTheDocument();
     });
   });
 });

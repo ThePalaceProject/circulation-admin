@@ -4,7 +4,6 @@ import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import buildStore from "../../../src/store";
 import Admin from "../../../src/models/Admin";
 
 // Both tab panels fetch on mount (ResetAdobeId is a connected component; Debug
@@ -54,7 +53,6 @@ describe("ManagePatronsTabContainer", () => {
         <ManagePatronsTabContainer
           tab={null}
           csrfToken="token"
-          store={buildStore()}
           library="NYPL"
         />
       </LegacyContextProvider>

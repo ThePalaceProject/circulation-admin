@@ -4,7 +4,6 @@ import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import buildStore from "../../../src/store";
 import Admin from "../../../src/models/Admin";
 
 // Every configuration tab panel is a connected component that fetches on mount.
@@ -79,7 +78,6 @@ describe("ConfigTabContainer", () => {
         <ConfigTabContainer
           tab={null}
           csrfToken="token"
-          store={buildStore()}
           editOrCreate="edit"
           identifier="identifier"
         />

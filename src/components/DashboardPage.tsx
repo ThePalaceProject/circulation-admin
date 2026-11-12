@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -14,19 +12,9 @@ export interface DashboardPageProps {
   };
 }
 
-export interface DashboardPageContext {
-  editorStore: Store<RootState>;
-}
-
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
 export default class DashboardPage extends React.Component<DashboardPageProps> {
-  context: DashboardPageContext;
-
-  static contextTypes: React.ValidationMap<DashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-  };
-
   static childContextTypes: React.ValidationMap<object> = {
     library: PropTypes.func,
   };

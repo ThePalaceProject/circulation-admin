@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData, SelfTestsResult } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
@@ -23,7 +21,6 @@ export interface SelfTestsDispatchProps {
 
 export interface SelfTestsOwnProps {
   item?: ServiceData;
-  store?: Store<RootState>;
   type: string;
   sortByCollection: boolean;
   csrfToken?: string;

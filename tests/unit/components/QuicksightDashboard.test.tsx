@@ -32,9 +32,9 @@ describe("QuicksightDashboard", () => {
   );
 
   it("embed url is retrieved and set in iframe", async () => {
-    renderWithProviders(
-      <QuicksightDashboard dashboardId={dashboardId} store={buildStore()} />
-    );
+    renderWithProviders(<QuicksightDashboard dashboardId={dashboardId} />, {
+      reduxProviderProps: { store: buildStore() },
+    });
 
     await waitFor(() => {
       expect(screen.getAllByTitle("Library Dashboard")[0]).toHaveAttribute(

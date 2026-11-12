@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { RootState } from "../store";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
@@ -19,12 +17,12 @@ export interface ChangePasswordFormDispatchProps {
 }
 
 export interface ChangePasswordFormOwnProps {
-  store?: Store<RootState>;
   csrfToken: string;
 }
 
 export interface ChangePasswordFormProps
-  extends ChangePasswordFormStateProps,
+  extends
+    ChangePasswordFormStateProps,
     ChangePasswordFormDispatchProps,
     ChangePasswordFormOwnProps {}
 
