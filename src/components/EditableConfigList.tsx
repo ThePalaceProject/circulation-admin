@@ -1,4 +1,5 @@
 import * as React from "react";
+import { AppContext, AppContextType } from "../context/appContext";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { LibraryData, SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
@@ -9,8 +10,6 @@ import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 import VisibleIcon from "./icons/VisibleIcon";
 import DisclosureIcon from "./icons/DisclosureIcon";
-import Admin from "../models/Admin";
-import * as PropTypes from "prop-types";
 import { navigateTo } from "../utils/navigate";
 import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 import LibrariesRefreshWarning from "./LibrariesRefreshWarning";
@@ -95,10 +94,8 @@ export abstract class GenericEditableConfigList<
   U,
   V extends EditableConfigListProps<T>,
 > extends React.Component<V, EditableConfigListState> {
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
   abstract EditForm: new (
     props: EditFormProps<T, U>
   ) => React.Component<EditFormProps<T, U>, any>;

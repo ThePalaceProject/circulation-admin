@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import Libraries from "./Libraries";
 import Collections from "./Collections";
 import IndividualAdmins from "./IndividualAdmins";
@@ -8,12 +7,9 @@ import SitewideAnnouncements from "./SitewideAnnouncements";
 import MetadataServices from "./MetadataServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
-import {
-  TabContainer,
-  TabContainerProps,
-  TabContainerContext,
-} from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
 import Admin from "../models/Admin";
+import { useAppAdmin } from "../context/appContext";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
   editOrCreate?: string;
@@ -21,20 +17,11 @@ export interface ConfigTabContainerProps extends TabContainerProps {
   class?: string;
 }
 
-export interface ConfigTabContainerContext extends TabContainerContext {
-  admin: Admin;
-}
-
 /** Body of the system configuration page, with a tab for each type of
-    service that can be configured. */
-export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
-  context: ConfigTabContainerContext;
-  static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
-
+    service that can be configured. The default export gives it `admin`. */
+export class ConfigTabContainer extends TabContainer<
+  ConfigTabContainerProps & { admin: Admin }
+> {
   COMPONENT_CLASSES = {
     libraries: Libraries,
     individualAdmins: IndividualAdmins,
@@ -72,9 +59,9 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       }
     };
     let tabNames;
-    if (this.context.admin.isSystemAdmin()) {
+    if (this.props.admin.isSystemAdmin()) {
       tabNames = this.SYSTEM_ADMIN_TABS;
-    } else if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
+    } else if (this.props.admin.isLibraryManagerOfSomeLibrary()) {
       tabNames = this.LIBRARY_MANAGER_TABS;
     } else {
       tabNames = this.LIBRARIAN_TABS;
@@ -102,3 +89,12 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     return "libraries";
   }
 }
+
+// `ConfigTabContainer` reads `router` from legacy context, so it cannot also use
+// `static contextType`. This wrapper reads `admin` with a hook instead.
+const ConfigTabContainerWithAdmin = (props: ConfigTabContainerProps) => {
+  const admin = useAppAdmin();
+  return <ConfigTabContainer {...props} admin={admin} />;
+};
+
+export default ConfigTabContainerWithAdmin;

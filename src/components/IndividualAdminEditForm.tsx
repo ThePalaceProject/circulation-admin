@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import EditableInput from "./EditableInput";
 import { clearForm, libraryLabel } from "../utils/sharedFunctions";
 import {
@@ -30,22 +30,13 @@ export interface IndividualAdminEditFormState {
   admin: Admin;
 }
 
-export interface IndividualAdminEditFormContext {
-  settingUp: boolean;
-  admin: Admin;
-}
-
 /** Form for editing an individual admin from the individual admin configuration page. */
 export default class IndividualAdminEditForm extends React.Component<
   IndividualAdminEditFormProps,
   IndividualAdminEditFormState
 > {
-  context: IndividualAdminEditFormContext;
-
-  static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
-    settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
   private emailRef = React.createRef<EditableInput>();
   private passwordRef = React.createRef<EditableInput>();
   private systemRef = React.createRef<EditableInput>();

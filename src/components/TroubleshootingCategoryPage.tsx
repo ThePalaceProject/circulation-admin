@@ -1,11 +1,7 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
 import SelfTestsTabContainer from "./SelfTestsTabContainer";
-
-export interface TroubleshootingCategoryPageContext {
-  csrfToken: string;
-}
 
 export interface TroubleshootingCategoryPageState {
   tab: string;
@@ -20,12 +16,8 @@ export default class TroubleshootingCategoryPage extends React.Component<
   TroubleshootingCategoryPageProps,
   TroubleshootingCategoryPageState
 > {
-  context: TroubleshootingCategoryPageContext;
-
-  static contextTypes: React.ValidationMap<TroubleshootingCategoryPageContext> =
-    {
-      csrfToken: PropTypes.string.isRequired,
-    };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   CATEGORIES = {
     diagnostics: [

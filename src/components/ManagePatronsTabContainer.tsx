@@ -1,11 +1,7 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
-import {
-  TabContainer,
-  TabContainerProps,
-  TabContainerContext,
-} from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
 import Admin from "../models/Admin";
+import { useAppAdmin } from "../context/appContext";
 import DebugAuthentication from "./DebugAuthentication";
 import ResetAdobeId from "./ResetAdobeId";
 
@@ -15,24 +11,16 @@ export interface ManagePatronsTabContainerProps extends TabContainerProps {
   tab: string;
 }
 
-export interface ManagePatronsTabContainerContext extends TabContainerContext {
-  admin: Admin;
-}
-
 /** Body of the Patron Manager page, with a tab for each type of
-    action that can be performed on a patron. */
-export default class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabContainerProps> {
-  context: ManagePatronsTabContainerContext;
-  static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
-
+    action that can be performed on a patron. The default export gives it
+    `admin`. */
+export class ManagePatronsTabContainer extends TabContainer<
+  ManagePatronsTabContainerProps & { admin: Admin }
+> {
   tabs() {
     const isLibraryManager =
       this.props.library &&
-      this.context.admin.isLibraryManager(this.props.library);
+      this.props.admin.isLibraryManager(this.props.library);
     const tabs = {};
     if (isLibraryManager) {
       tabs["resetAdobeId"] = (
@@ -73,3 +61,14 @@ export default class ManagePatronsTabContainer extends TabContainer<ManagePatron
     return "resetAdobeId";
   }
 }
+
+// `ManagePatronsTabContainer` reads `router` from legacy context, so it cannot
+// also use `static contextType`. This wrapper reads `admin` with a hook instead.
+const ManagePatronsTabContainerWithAdmin = (
+  props: ManagePatronsTabContainerProps
+) => {
+  const admin = useAppAdmin();
+  return <ManagePatronsTabContainer {...props} admin={admin} />;
+};
+
+export default ManagePatronsTabContainerWithAdmin;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import Header from "./Header";
 import Footer from "./Footer";
 import ConfigTabContainer from "./ConfigTabContainer";
@@ -13,18 +13,11 @@ export interface ConfigPageProps {
   };
 }
 
-export interface ConfigPageContext {
-  csrfToken: string;
-}
-
 /** System configuration page. Extracts parameters from its context
     and passes them to `ConfigTabContainer` as props. */
 export default class ConfigPage extends React.Component<ConfigPageProps> {
-  context: ConfigPageContext;
-
-  static contextTypes: React.ValidationMap<ConfigPageContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   render(): JSX.Element {
     return (

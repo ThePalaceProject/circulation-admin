@@ -1,21 +1,14 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import ChangePasswordForm from "./ChangePasswordForm";
 import Header from "./Header";
 import Footer from "./Footer";
 import title from "../utils/title";
 
-export interface AccountPageContext {
-  csrfToken: string;
-}
-
 /** Page for configuring account settings. */
 export default class AccountPage extends React.Component<object, object> {
-  context: AccountPageContext;
-
-  static contextTypes: React.ValidationMap<AccountPageContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   render(): JSX.Element {
     return (

@@ -29,8 +29,10 @@ export type SupportContactLink = {
 
 export const DEFAULT_SUPPORT_CONTACT_TEXT = "Contact support.";
 
-// Don't export this, since we always want the error handling behavior of our hook.
-const AppContext = createContext<AppContextType | undefined>(undefined);
+// In a function component, use `useAppContext()` or the hooks below, not this,
+// because the hooks give a clear error when there is no provider. A class
+// component can read it with `static contextType = AppContext`.
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const useAppContext = (): AppContextType => {
   const context = useContext(AppContext);

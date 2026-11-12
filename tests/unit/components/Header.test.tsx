@@ -4,7 +4,6 @@ import { render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { AppStoreProvider } from "../../../src/context/appStoreContext";
 
 import { Header } from "../../../src/components/Header";
 import HeaderWithStore from "../../../src/components/Header";
@@ -13,6 +12,7 @@ import title from "../../../src/utils/title";
 import buildStore from "../../../src/store";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
+import { renderWithProviders } from "../testUtils/withProviders";
 
 // Render react-router's Link as a marker `<div>` so we can read its target
 // (`data-to`) and text without a real Router in context. (A bare `<a>` without an
@@ -26,8 +26,8 @@ vi.mock("react-router", async () => ({
   ),
 }));
 
-// Header reads `library`, `router`, and `admin` from legacy React context.
-// Supply them through a small legacy context provider.
+// Header reads `library` and `router` from legacy React context. Supply them
+// through a small legacy context provider.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
@@ -35,7 +35,6 @@ class LegacyContextProvider extends React.Component<{
   static childContextTypes = {
     library: PropTypes.func,
     router: PropTypes.object,
-    admin: PropTypes.object,
   };
   getChildContext() {
     return this.props.context;
@@ -78,8 +77,8 @@ const renderHeader = ({
   props = {},
 }: RenderHeaderOptions = {}) =>
   render(
-    <LegacyContextProvider context={{ library, admin, router }}>
-      <Header {...props} />
+    <LegacyContextProvider context={{ library, router }}>
+      <Header admin={admin} {...props} />
     </LegacyContextProvider>
   );
 
@@ -400,20 +399,21 @@ describe("Header", () => {
         reducer: { catalog: (state = {}) => state },
       });
 
-      render(
-        <AppStoreProvider value={store}>
-          <Provider store={catalogStore}>
-            <LegacyContextProvider
-              context={{
-                library: () => "nypl",
-                admin: libraryManager,
-                router: makeRouter(),
-              }}
-            >
-              <HeaderWithStore />
-            </LegacyContextProvider>
-          </Provider>
-        </AppStoreProvider>
+      renderWithProviders(
+        <Provider store={catalogStore}>
+          <LegacyContextProvider
+            context={{ library: () => "nypl", router: makeRouter() }}
+          >
+            <HeaderWithStore />
+          </LegacyContextProvider>
+        </Provider>,
+        {
+          reduxProviderProps: { store },
+          appConfigSettings: {
+            roles: [{ role: "manager", library: "nypl" }],
+            email: "admin@nypl.org",
+          },
+        }
       );
 
       expect(
@@ -425,6 +425,10 @@ describe("Header", () => {
       expect(
         await screen.findByRole("option", { name: "NYPL" })
       ).toBeInTheDocument();
+      // The admin from the app config reached the header: the email shows, and
+      // the Lanes link, which only a library manager sees, is there.
+      expect(screen.getByText("admin@nypl.org")).toBeInTheDocument();
+      expect(screen.getByText("Lanes")).toBeInTheDocument();
     });
   });
 });

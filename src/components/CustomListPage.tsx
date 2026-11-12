@@ -1,4 +1,5 @@
 import * as React from "react";
+import { AppContext, AppContextType } from "../context/appContext";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -13,20 +14,10 @@ export interface CustomListPageProps {
   location?: { [key: string]: string | { [key: string]: string } };
 }
 
-export interface CustomListPageContext {
-  csrfToken: string;
-}
-
 /** Page that shows all lists for a library and allows creating and editing lists. */
-export default class CustomListPage extends React.Component<
-  CustomListPageProps,
-  CustomListPageContext
-> {
-  context: CustomListPageContext;
-
-  static contextTypes: React.ValidationMap<CustomListPageContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+export default class CustomListPage extends React.Component<CustomListPageProps> {
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   static childContextTypes: React.ValidationMap<any> = {
     library: PropTypes.func,
