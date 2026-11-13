@@ -412,7 +412,7 @@ export interface CollectionData extends ServiceData {
   marked_for_deletion?: boolean;
 }
 
-export interface CollectionsData extends ServicesWithRegistrationsData {
+export interface CollectionsData extends ServicesData {
   collections: CollectionData[];
 }
 

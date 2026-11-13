@@ -16,22 +16,16 @@ import {
 import {
   CollectionsData,
   CollectionData,
-  LibraryData,
   LibraryWithSettingsData,
-  LibraryRegistrationsData,
 } from "../interfaces";
 import CollectionImportButton from "./CollectionImportButton";
 import CollectionReapButton from "./CollectionReapButton";
-import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
-export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
-  isFetchingLibraryRegistrations?: boolean;
-}
+export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {}
 
 export interface CollectionsDispatchProps extends EditableConfigListDispatchProps<CollectionsData> {
-  registerLibrary: (data: FormData) => Promise<void>;
-  fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
   importCollection: (
     collectionId: string | number,
     force: boolean
@@ -45,8 +39,8 @@ export interface CollectionsProps
     CollectionsDispatchProps,
     EditableConfigListOwnProps {}
 
-export class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {
-  context: ServiceWithRegistrationsEditForm<CollectionsData>["context"] & {
+export class CollectionEditForm extends ServiceEditForm<CollectionsData> {
+  context: {
     importCollection: (
       collectionId: string | number,
       force: boolean
@@ -55,7 +49,6 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<Collect
   };
 
   static contextTypes = {
-    ...ServiceWithRegistrationsEditForm.contextTypes,
     importCollection: PropTypes.func,
     reapCollection: PropTypes.func,
   };
@@ -102,8 +95,6 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<Collect
  * Right panel for collections on the system configuration page.
  * Shows a list of current collections and allows creating a new
  * collection or editing or deleting an existing collection.
- * Also allows registering libraries with the collection when
- * the collection supports it.
  * ```
  * <Collections />
  * ```
@@ -123,25 +114,12 @@ export class Collections extends GenericEditableConfigList<
   links = this.renderLinks();
 
   static childContextTypes: React.ValidationMap<any> = {
-    registerLibrary: PropTypes.func,
     importCollection: PropTypes.func,
     reapCollection: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      registerLibrary: (library: LibraryData) => {
-        if (this.itemToEdit()) {
-          const data = new FormData();
-          data.append("library_short_name", library.short_name);
-          data.append("collection_id", String(this.itemToEdit().id));
-          this.props.registerLibrary(data).then(() => {
-            if (this.props.fetchLibraryRegistrations) {
-              this.props.fetchLibraryRegistrations();
-            }
-          });
-        }
-      },
       importCollection: this.props.importCollection,
       reapCollection: this.props.reapCollection,
     };
@@ -149,13 +127,6 @@ export class Collections extends GenericEditableConfigList<
 
   protected getAllLibraries() {
     return this.props.data.allLibraries;
-  }
-
-  componentDidMount() {
-    super.componentDidMount();
-    if (this.props.fetchLibraryRegistrations) {
-      this.props.fetchLibraryRegistrations();
-    }
   }
 
   renderLinks(): { [key: string]: JSX.Element } {
@@ -243,9 +214,8 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 const ConnectedCollections = connect<
-  EditableConfigListStateProps<CollectionsData>,
-  EditableConfigListDispatchProps<CollectionsData> &
-    Pick<CollectionsDispatchProps, "importCollection" | "reapCollection">,
+  CollectionsStateProps,
+  CollectionsDispatchProps,
   EditableConfigListOwnProps
 >(
   mapStateToProps,
