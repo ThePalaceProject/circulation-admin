@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { DiscoveryServicesData } from "../../../src/interfaces";
 import ServiceWithRegistrationsEditForm from "../../../src/components/ServiceWithRegistrationsEditForm";
@@ -43,15 +44,16 @@ const servicesData: any = {
   libraryRegistrations: libraryRegistrationsData,
 };
 
-const renderForm = (save = vi.fn()) =>
+const renderForm = (registerLibrary = vi.fn()) =>
   render(
     <DiscoveryServiceEditForm
       disabled={false}
       data={servicesData}
       item={serviceData as any}
-      save={save}
+      save={vi.fn()}
       urlBase="url base"
       listDataKey="discovery_services"
+      registerLibrary={registerLibrary}
     />
   );
 
@@ -126,5 +128,20 @@ describe("ServiceWithRegistrationsEditForm", () => {
     expect(updateButton).not.toBeDisabled();
     expect(retryButton).not.toBeDisabled();
     expect(registerButton).not.toBeDisabled();
+  });
+
+  it("calls the registerLibrary prop with the library and stage when Register is clicked", async () => {
+    const user = userEvent.setup();
+    const registerLibrary = vi.fn();
+    renderForm(registerLibrary);
+
+    // Only qpl has no registration, so its button is "Register".
+    await user.click(screen.getByRole("button", { name: "Register" }));
+
+    expect(registerLibrary).toHaveBeenCalledTimes(1);
+    expect(registerLibrary).toHaveBeenCalledWith(
+      expect.objectContaining({ short_name: "qpl" }),
+      "testing"
+    );
   });
 });

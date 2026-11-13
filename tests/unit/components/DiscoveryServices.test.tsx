@@ -614,8 +614,8 @@ describe("DiscoveryServices - registered library disclosure", () => {
 
 // These exercise behavior the disclosure tests above do not: the connect()
 // wiring (mapStateToProps / mapDispatchToProps, which only run when the CONNECTED
-// default export mounts) and the getChildContext().registerLibrary closure
-// (which only runs when a library is registered from the edit form).
+// default export mounts) and the registerLibrary callback that the list gives
+// the edit form (which only runs when a library is registered from the form).
 
 describe("DiscoveryServices - connected wiring and registration", () => {
   const allLibraries = [
@@ -689,7 +689,7 @@ describe("DiscoveryServices - connected wiring and registration", () => {
     });
   });
 
-  describe("registerLibrary child context (edit mode)", () => {
+  describe("registering a library (edit mode)", () => {
     // The reusable-components `Form` builds `new FormData(formElement)` on
     // submit. Install the shared shim, so the payload holds only the form's
     // successful controls, as a browser sends them.
@@ -735,8 +735,8 @@ describe("DiscoveryServices - connected wiring and registration", () => {
       const fetchLibraryRegistrations = vi.fn().mockResolvedValue(undefined);
       renderEditMode(registerLibrary, fetchLibraryRegistrations);
 
-      // getChildContext supplies registerLibrary to the edit form; the edit form
-      // surfaces a "Register" button for each library.
+      // The list gives the edit form its registerLibrary callback. The edit
+      // form shows a "Register" button for each library.
       expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(1);
       expect(registerLibrary).not.toHaveBeenCalled();
 
@@ -748,7 +748,8 @@ describe("DiscoveryServices - connected wiring and registration", () => {
       expect(formData.get("integration_id")).toBe("2");
       expect(formData.get("registration_stage")).toBe("testing");
 
-      // After a successful registration, the child context refetches.
+      // After a successful registration, the list fetches the registrations
+      // again.
       await waitFor(() =>
         expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(2)
       );

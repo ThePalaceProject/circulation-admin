@@ -235,6 +235,7 @@ export abstract class GenericEditableConfigList<
           <div>
             <h3>{headers["h3"]}</h3>
             <EditForm
+              {...this.editFormExtraProps()}
               ref={this.editFormRef}
               data={this.props.data}
               additionalData={this.props.additionalData}
@@ -258,6 +259,7 @@ export abstract class GenericEditableConfigList<
               {this.label(itemToEdit)}
             </h3>
             <EditForm
+              {...this.editFormExtraProps()}
               item={itemToEdit}
               data={this.props.data}
               additionalData={this.props.additionalData}
@@ -567,6 +569,19 @@ export abstract class GenericEditableConfigList<
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  /** Props to give the edit form in addition to the standard ones. Override
+   *  this to give a subclass's edit form the props it needs, such as
+   *  callbacks. The standard props take precedence over these.
+   *
+   *  This class cannot check that the edit form gets the props that it
+   *  requires, so give all of them here. Name their keys in the return type
+   *  with `Pick`, so that a missing key fails the type check. Return stable
+   *  functions, such as props or arrow function class fields, not new
+   *  closures, because this runs on every render. */
+  editFormExtraProps(): object {
+    return {};
   }
 
   getAdminLevel() {

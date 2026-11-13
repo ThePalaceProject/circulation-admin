@@ -7,7 +7,6 @@ import {
   AssociatedEntry,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import {
   fetchLibrariesIfNeeded,
@@ -20,7 +19,7 @@ import {
 } from "../interfaces";
 import CollectionImportButton from "./CollectionImportButton";
 import CollectionReapButton from "./CollectionReapButton";
-import ServiceEditForm from "./ServiceEditForm";
+import ServiceEditForm, { ServiceEditFormProps } from "./ServiceEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
 export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {}
@@ -39,19 +38,13 @@ export interface CollectionsProps
     CollectionsDispatchProps,
     EditableConfigListOwnProps {}
 
-export class CollectionEditForm extends ServiceEditForm<CollectionsData> {
-  context: {
-    importCollection: (
-      collectionId: string | number,
-      force: boolean
-    ) => Promise<void>;
-    reapCollection: (collectionId: string | number) => Promise<void>;
-  };
+export interface CollectionEditFormProps
+  extends
+    ServiceEditFormProps<CollectionsData>,
+    Pick<CollectionsDispatchProps, "importCollection" | "reapCollection"> {}
 
-  static contextTypes = {
-    importCollection: PropTypes.func,
-    reapCollection: PropTypes.func,
-  };
+export class CollectionEditForm extends ServiceEditForm<CollectionsData> {
+  declare props: Readonly<CollectionEditFormProps>;
 
   /**
    * Override to display a confirmation message before removing a library
@@ -77,14 +70,14 @@ export class CollectionEditForm extends ServiceEditForm<CollectionsData> {
         key="import"
         collection={this.props.item as CollectionData}
         protocols={this.props.data?.protocols || []}
-        importCollection={this.context.importCollection}
+        importCollection={this.props.importCollection}
         disabled={this.props.disabled}
       />,
       <CollectionReapButton
         key="reap"
         collection={this.props.item as CollectionData}
         protocols={this.props.data?.protocols || []}
-        reapCollection={this.context.reapCollection}
+        reapCollection={this.props.reapCollection}
         disabled={this.props.disabled}
       />,
     ];
@@ -113,12 +106,10 @@ export class Collections extends GenericEditableConfigList<
   labelKey = "name";
   links = this.renderLinks();
 
-  static childContextTypes: React.ValidationMap<any> = {
-    importCollection: PropTypes.func,
-    reapCollection: PropTypes.func,
-  };
-
-  getChildContext() {
+  editFormExtraProps(): Pick<
+    CollectionEditFormProps,
+    "importCollection" | "reapCollection"
+  > {
     return {
       importCollection: this.props.importCollection,
       reapCollection: this.props.reapCollection,
