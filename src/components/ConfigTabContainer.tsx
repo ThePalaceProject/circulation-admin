@@ -10,6 +10,7 @@ import DiscoveryServices from "./DiscoveryServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import Admin from "../models/Admin";
 import { useAppAdmin } from "../context/appContext";
+import { useLegacyRouter } from "./LegacyRouterBridge";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
   editOrCreate?: string;
@@ -18,7 +19,8 @@ export interface ConfigTabContainerProps extends TabContainerProps {
 }
 
 /** Body of the system configuration page, with a tab for each type of
-    service that can be configured. The default export gives it `admin`. */
+    service that can be configured. The default export provides it `admin` and
+    `router`. */
 export class ConfigTabContainer extends TabContainer<
   ConfigTabContainerProps & { admin: Admin }
 > {
@@ -72,8 +74,8 @@ export class ConfigTabContainer extends TabContainer<
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push("/admin/web/config/" + tab);
+    if (this.props.router) {
+      this.props.router.push(`/admin/web/config/${tab}`);
     }
   }
 
@@ -90,11 +92,14 @@ export class ConfigTabContainer extends TabContainer<
   }
 }
 
-// `ConfigTabContainer` reads `router` from legacy context, so it cannot also use
-// `static contextType`. This wrapper reads `admin` with a hook instead.
-const ConfigTabContainerWithAdmin = (props: ConfigTabContainerProps) => {
+/** Provides `ConfigTabContainer` the `admin` and `router` that it needs, read
+    with hooks. */
+const ConfigTabContainerWithHooks = (
+  props: Omit<ConfigTabContainerProps, "router">
+) => {
   const admin = useAppAdmin();
-  return <ConfigTabContainer {...props} admin={admin} />;
+  const router = useLegacyRouter();
+  return <ConfigTabContainer {...props} admin={admin} router={router} />;
 };
 
-export default ConfigTabContainerWithAdmin;
+export default ConfigTabContainerWithHooks;

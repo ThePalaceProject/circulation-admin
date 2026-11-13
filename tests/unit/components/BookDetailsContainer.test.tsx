@@ -1,5 +1,6 @@
 import * as React from "react";
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
@@ -7,15 +8,18 @@ import buildStore from "../../../src/store";
 import { AdminRoleData } from "../../../src/interfaces";
 import { renderWithProviders } from "../testUtils/withProviders";
 import { PageContextProvider } from "../../../src/context/pageContext";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
-// BookDetailsTabContainer is a connected TabContainer that mounts every one of its
-// tab panels on render (the metadata editor, classifications, cover, and lists
-// editors), each of which fetches over the network on mount. That machinery is
-// incidental to what BookDetailsContainer composes, so mock it to a marker that
-// echoes the props it receives and renders the book child it is handed. It also
-// reports whether the store it can reach is ours: only our store has an
-// `editor` slice.
+// BookDetailsTabContainer is a connected TabContainer that mounts every one of
+// its tab panels on render (the metadata editor, classifications, cover, and
+// lists editors), each of which fetches over the network on mount. That
+// machinery is incidental to what BookDetailsContainer composes, so mock it to
+// a marker that echoes the props it receives and renders the book child it is
+// handed. It also reports whether the store it can reach is ours (only our
+// store has an `editor` slice). Its button pushes, with the `router` it is
+// handed, the path that `pathFor` builds for the "edit" tab.
 vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
   const { useStore } =
     await vi.importActual<typeof import("react-redux")>("react-redux");
@@ -31,6 +35,15 @@ vi.mock("../../../src/components/BookDetailsTabContainer", async () => {
       data-tab={props.tab}
       data-has-refresh-catalog={String(!!props.refreshCatalog)}
     >
+      <button
+        onClick={() =>
+          props.router.push(
+            props.pathFor(props.collectionUrl, props.bookUrl, "edit")
+          )
+        }
+      >
+        Push edit tab
+      </button>
       {props.children}
     </div>
   );
@@ -56,27 +69,32 @@ describe("BookDetailsContainer", () => {
     refreshCatalog = vi.fn();
   });
 
-  // As in the catalog: our store is in our store context, and react-redux's
-  // Provider holds web-opds-client's catalog store, which has no `editor` slice.
-  // As in the catalog page, give `library` and `tab` through the page context.
-  // `renderWithProviders` gives `admin` and `csrfToken` through the app context.
+  // As in the catalog, our store is in our store context, and react-redux's
+  // Provider holds web-opds-client's catalog store, which has no `editor`
+  // slice. As in the catalog page, provide `library` and `tab` through the page
+  // context. `renderWithProviders` provides `admin` and `csrfToken` through the
+  // app context, and `pathFor` through web-opds-client's context. Provide a
+  // mock `router` through `LegacyRouterContext`, as `LegacyRouterBridge` does.
   const catalogStore = configureStore({
     reducer: { catalog: (state = {}) => state },
   });
   const renderContainer = (
-    roles: AdminRoleData[] = [{ role: "manager", library: "nypl" }]
+    roles: AdminRoleData[] = [{ role: "manager", library: "nypl" }],
+    router = mockLegacyRouter()
   ) =>
     renderWithProviders(
       <Provider store={catalogStore}>
         <PageContextProvider value={{ library: "nypl", tab: "edit" }}>
-          <BookDetailsContainer
-            book={bookData}
-            bookUrl="book url"
-            collectionUrl="collection url"
-            refreshCatalog={refreshCatalog}
-          >
-            <BookDetails book={bookData} updateBook={vi.fn()} />
-          </BookDetailsContainer>
+          <LegacyRouterContext.Provider value={router}>
+            <BookDetailsContainer
+              book={bookData}
+              bookUrl="book url"
+              collectionUrl="collection url"
+              refreshCatalog={refreshCatalog}
+            >
+              <BookDetails book={bookData} updateBook={vi.fn()} />
+            </BookDetailsContainer>
+          </LegacyRouterContext.Provider>
         </PageContextProvider>
       </Provider>,
       {
@@ -109,6 +127,19 @@ describe("BookDetailsContainer", () => {
     // The refreshCatalog callback is not serializable to the DOM, so assert it
     // was passed through.
     expect(tabContainer).toHaveAttribute("data-has-refresh-catalog", "true");
+  });
+
+  it("provides the tab container the router and the app's pathFor", async () => {
+    const user = userEvent.setup();
+    const router = mockLegacyRouter();
+    renderContainer(undefined, router);
+
+    // The mock pushes the path that `pathFor` builds for the "edit" tab.
+    await user.click(screen.getByRole("button", { name: "Push edit tab" }));
+
+    expect(router.push).toHaveBeenCalledWith(
+      "/admin/web/collection/collection%20url/book/book url/tab/edit"
+    );
   });
 
   it.each<{ roles: AdminRoleData[]; canSuppress: string }>([

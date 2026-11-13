@@ -6,6 +6,8 @@ import { AppReduxProvider } from "../context/appStoreContext";
 import { useAppContext } from "../context/appContext";
 import { usePageLibrary, usePageTab } from "../context/pageContext";
 import { BookDetailsContainerProps } from "@thepalaceproject/web-opds-client/lib/components/Root";
+import { usePathFor } from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
+import { useLegacyRouter } from "./LegacyRouterBridge";
 
 const BookDetailsContainer = (
   props: React.PropsWithChildren<BookDetailsContainerProps>
@@ -17,6 +19,8 @@ const BookDetailsContainer = (
   const { admin, csrfToken } = useAppContext();
   const library = usePageLibrary();
   const tab = usePageTab();
+  const router = useLegacyRouter();
+  const pathFor = usePathFor();
 
   // Where react-redux's context holds another store (as in web-opds-client's
   // catalog), the tabs still connect to our store. Everything under
@@ -34,6 +38,8 @@ const BookDetailsContainer = (
           library={library}
           csrfToken={csrfToken}
           canSuppress={admin.isLibraryManager(library)}
+          router={router}
+          pathFor={pathFor}
         >
           {book}
         </BookDetailsTabContainer>

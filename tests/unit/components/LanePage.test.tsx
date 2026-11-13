@@ -11,10 +11,9 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import { setupMswServer } from "../testUtils/mswServer";
 import * as navigate from "../../../src/utils/navigate";
 
-// Header and Footer are page chrome; Header reads the legacy `router` context
-// and fetches on mount. Mock them to markers.
-// The Header marker shows the library that the page gives through the page
-// context.
+// Header and Footer are page chrome; Header reads the router from
+// `LegacyRouterBridge` and fetches on mount. Mock them to markers. The Header
+// marker shows the library that the page provides through the page context.
 vi.mock("../../../src/components/Header", async () => {
   const { usePageLibrary } = await vi.importActual<
     typeof import("../../../src/context/pageContext")

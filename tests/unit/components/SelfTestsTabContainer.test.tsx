@@ -1,10 +1,14 @@
 import type { Mock } from "vitest";
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { render, screen, waitFor } from "@testing-library/react";
+import { http, HttpResponse } from "msw";
 import userEvent from "@testing-library/user-event";
 
 import buildStore from "../../../src/store";
+import { renderWithProviders } from "../testUtils/withProviders";
+import { setupMswServer } from "../testUtils/mswServer";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 
 // Each active tab renders the connected SelfTestsCategory, which fetches on mount
 // and recurses into the self-tests machinery. This container's behavior is which
@@ -26,33 +30,14 @@ vi.mock("../../../src/components/SelfTestsCategory", () => ({
   ),
 }));
 
-import { SelfTestsTabContainer } from "../../../src/components/SelfTestsTabContainer";
-
-// SelfTestsTabContainer reads `router` and `pathFor` from legacy react-router
-// context via static contextTypes (handleSelect calls router.push). Supply them
-// through a tiny legacy-context provider.
-class LegacyContextProvider extends React.Component<{
-  router: { push: Mock };
-  pathFor: Mock;
-  children: React.ReactNode;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object,
-    pathFor: PropTypes.func,
-  };
-  getChildContext() {
-    return { router: this.props.router, pathFor: this.props.pathFor };
-  }
-  render() {
-    return <>{this.props.children}</>;
-  }
-}
+import SelfTestsTabContainerWithRouter, {
+  SelfTestsTabContainer,
+} from "../../../src/components/SelfTestsTabContainer";
 
 describe("SelfTestsTabContainer", () => {
   let goToTab: Mock;
   let fetchItems: Mock;
-  let router: { push: Mock };
-  let pathFor: Mock;
+  let router: ReturnType<typeof mockLegacyRouter>;
   let store;
 
   const collections = [
@@ -83,8 +68,7 @@ describe("SelfTestsTabContainer", () => {
     store = buildStore();
     goToTab = vi.fn();
     fetchItems = vi.fn();
-    router = { push: vi.fn() };
-    pathFor = vi.fn();
+    router = mockLegacyRouter();
   });
 
   const element = (overrides = {}) => {
@@ -96,11 +80,7 @@ describe("SelfTestsTabContainer", () => {
       items: { protocols: [], collections },
       ...overrides,
     };
-    return (
-      <LegacyContextProvider router={router} pathFor={pathFor}>
-        <SelfTestsTabContainer {...props} />
-      </LegacyContextProvider>
-    );
+    return <SelfTestsTabContainer {...props} router={router} />;
   };
 
   const renderContainer = (overrides = {}) => render(element(overrides));
@@ -212,5 +192,42 @@ describe("SelfTestsTabContainer", () => {
     expect(markers[2]).toHaveAttribute("data-type", "metadata_service");
     expect(markers[2]).toHaveAttribute("data-link-name", "metadata");
     expect(markers[2]).toHaveAttribute("data-items", "a metadata service");
+  });
+});
+
+describe("SelfTestsTabContainer default export", () => {
+  const { requests } = setupMswServer(
+    http.get("*/admin/collections", () =>
+      HttpResponse.json({ collections: [], protocols: [] })
+    ),
+    http.get("*/admin/patron_auth_services", () =>
+      HttpResponse.json({ patron_auth_services: [], protocols: [] })
+    ),
+    http.get("*/admin/metadata_services", () =>
+      HttpResponse.json({ metadata_services: [], protocols: [] })
+    )
+  );
+
+  it("provides the container the router, so a tab click pushes its path", async () => {
+    const user = userEvent.setup();
+    const router = mockLegacyRouter();
+    renderWithProviders(
+      <LegacyRouterContext.Provider value={router}>
+        <SelfTestsTabContainerWithRouter tab="collections" goToTab={vi.fn()} />
+      </LegacyRouterContext.Provider>
+    );
+    // Wait until the on-mount fetches were sent, and the collections loaded.
+    await waitFor(() => expect(requests).toHaveLength(3));
+    expect(
+      await screen.findByTestId("self-tests-category")
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("link", { name: "Patron Authentication" })
+    );
+
+    expect(router.push).toHaveBeenCalledWith(
+      "/admin/web/troubleshooting/self-tests/patronAuthServices"
+    );
   });
 });

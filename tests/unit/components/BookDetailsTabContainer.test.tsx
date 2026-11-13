@@ -1,11 +1,11 @@
 import type { Mock } from "vitest";
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import buildStore from "../../../src/store";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 import { getBookData } from "../../../src/features/book/bookEditorSlice";
 
 // Each tab panel is a connected component that fetches over the network on mount.
@@ -45,24 +45,6 @@ import BookDetailsTabContainerConnected, {
   BookDetailsTabContainer,
 } from "../../../src/components/BookDetailsTabContainer";
 
-// The container reads `router` and `pathFor` from the legacy React context the
-// app supplies in production. Wrap it in a small provider that hands it those.
-class LegacyContextProvider extends React.Component<{
-  context: any;
-  children: React.ReactNode;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object,
-    pathFor: PropTypes.func,
-  };
-  getChildContext() {
-    return this.props.context;
-  }
-  render() {
-    return this.props.children;
-  }
-}
-
 const TEST_BOOK_URL = "book url";
 const TEST_COLLECTION_URL = "collection url";
 
@@ -74,37 +56,35 @@ describe("BookDetailsTabContainer", () => {
     bookData?: any;
     bookUrl?: string;
     clearBook?: Mock;
-    push?: Mock;
   };
 
   const renderContainer = (overrides: Overrides = {}) => {
-    const push = overrides.push || vi.fn();
+    const router = mockLegacyRouter();
     const clearBook = overrides.clearBook || vi.fn();
-    const context = { router: { push }, pathFor };
     const element = (bookUrl: string, bookData: any) => (
-      <LegacyContextProvider context={context}>
-        <BookDetailsTabContainer
-          bookUrl={bookUrl}
-          collectionUrl={TEST_COLLECTION_URL}
-          csrfToken="token"
-          refreshCatalog={vi.fn()}
-          library="library"
-          canSuppress={true}
-          complaintsCount={0}
-          bookData={bookData}
-          clearBook={clearBook}
-          tab={null}
-        >
-          <div className="bookDetails">Moby Dick</div>
-        </BookDetailsTabContainer>
-      </LegacyContextProvider>
+      <BookDetailsTabContainer
+        bookUrl={bookUrl}
+        collectionUrl={TEST_COLLECTION_URL}
+        csrfToken="token"
+        refreshCatalog={vi.fn()}
+        library="library"
+        canSuppress={true}
+        complaintsCount={0}
+        bookData={bookData}
+        clearBook={clearBook}
+        tab={null}
+        router={router}
+        pathFor={pathFor}
+      >
+        <div className="bookDetails">Moby Dick</div>
+      </BookDetailsTabContainer>
     );
     const result = render(
       element(overrides.bookUrl ?? TEST_BOOK_URL, overrides.bookData ?? null)
     );
     const rerenderWith = (bookUrl: string, bookData: any = null) =>
       result.rerender(element(bookUrl, bookData));
-    return { ...result, push, clearBook, rerenderWith };
+    return { ...result, push: router.push, clearBook, rerenderWith };
   };
 
   it("shows book details", () => {
@@ -185,19 +165,19 @@ describe("BookDetailsTabContainer", () => {
   const renderConnected = (store = buildStore()) =>
     render(
       <Provider store={store}>
-        <LegacyContextProvider context={{ router: { push: vi.fn() }, pathFor }}>
-          <BookDetailsTabContainerConnected
-            bookUrl={TEST_BOOK_URL}
-            collectionUrl={TEST_COLLECTION_URL}
-            csrfToken="token"
-            refreshCatalog={vi.fn()}
-            library="library"
-            canSuppress={true}
-            tab={null}
-          >
-            <div className="bookDetails">Moby Dick</div>
-          </BookDetailsTabContainerConnected>
-        </LegacyContextProvider>
+        <BookDetailsTabContainerConnected
+          bookUrl={TEST_BOOK_URL}
+          collectionUrl={TEST_COLLECTION_URL}
+          csrfToken="token"
+          refreshCatalog={vi.fn()}
+          library="library"
+          canSuppress={true}
+          tab={null}
+          router={mockLegacyRouter()}
+          pathFor={pathFor}
+        >
+          <div className="bookDetails">Moby Dick</div>
+        </BookDetailsTabContainerConnected>
       </Provider>
     );
 

@@ -39,8 +39,8 @@ const requiredAppConfigSettings: Partial<ConfigurationSettings> = {
  * @param {ConfigurationSettings} options.appConfigSettings
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
  * @param {string} options.route If set, render inside a React Router
- *  `MemoryRouter` at this path, with the legacy `router` context that
- *  `LegacyRouterBridge` provides. Like the app, it does not use transitions.
+ *  `MemoryRouter` at this path, with the router provided by
+ *  `LegacyRouterBridge`. Like the app, it does not use transitions.
  *  Without it, there is no router.
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */

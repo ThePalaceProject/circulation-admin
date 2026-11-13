@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "../testUtils/withProviders";
 import title from "../../../src/utils/title";
 
-// Header reads the legacy `router` context and fetches on mount, and both
-// Header and Footer are page chrome, so mock them to markers.
+// Header reads the router from `LegacyRouterBridge` and fetches on mount, and
+// both Header and Footer are page chrome, so mock them to markers.
 vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
@@ -14,12 +14,12 @@ vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
 
-// The real TroubleshootingTabContainer requires router/pathFor context and
-// mounts self-test/diagnostic pages that fetch on mount. TroubleshootingPage's
-// own behavior is to own the active tab and pass it (and a goToTab callback)
-// down, so mock the container to a marker that exposes its `csrfToken`, `tab`,
-// and `subtab` props and a control that invokes `goToTab`. That is the contract
-// under test.
+// The real TroubleshootingTabContainer reads the router from
+// `LegacyRouterBridge` and mounts self-test/diagnostic pages that fetch on
+// mount. TroubleshootingPage's own behavior is to own the active tab and pass
+// it (and a goToTab callback) down, so mock the container to a marker that
+// exposes its `csrfToken`, `tab`, and `subtab` props and a control that invokes
+// `goToTab`. That is the contract under test.
 vi.mock("../../../src/components/TroubleshootingTabContainer", () => ({
   default: ({
     csrfToken,

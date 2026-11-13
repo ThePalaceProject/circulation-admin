@@ -1,11 +1,11 @@
-import type { Mock } from "vitest";
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Admin from "../../../src/models/Admin";
 import { renderWithProviders } from "../testUtils/withProviders";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 
 // Both tab panels fetch on mount (ResetAdobeId is a connected component; Debug
 // Authentication uses react-query). They're incidental to a tab-navigation test,
@@ -21,44 +21,28 @@ vi.mock("../../../src/components/DebugAuthentication", () => ({
 
 import ManagePatronsTabContainer from "../../../src/components/ManagePatronsTabContainer";
 
-// ManagePatronsTabContainer reads `router` and `pathFor` from legacy React context. Supply them
-// through a small legacy context provider. It reads `admin` from the app
-// context, which `renderWithProviders` builds from the configured roles.
-class LegacyContextProvider extends React.Component<{
-  context: any;
-  children: React.ReactNode;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object,
-    pathFor: PropTypes.func,
-  };
-  getChildContext() {
-    return this.props.context;
-  }
-  render() {
-    return this.props.children;
-  }
-}
-
 describe("ManagePatronsTabContainer", () => {
   const systemAdmin = new Admin([{ role: "system" }]);
   const libraryManagerNYPL = new Admin([{ role: "manager", library: "NYPL" }]);
   const libraryManagerA = new Admin([{ role: "manager", library: "a" }]);
   const librarian = new Admin([{ role: "librarian", library: "NYPL" }]);
 
-  const renderWithAdmin = (admin: Admin, push: Mock = vi.fn()) => {
-    const context = { router: { push }, pathFor: vi.fn() };
+  // The default export reads `router` with `useLegacyRouter()`, so give it a
+  // mock router through `LegacyRouterContext`. It reads `admin` from the app
+  // context, which `renderWithProviders` builds from the configured roles.
+  const renderWithAdmin = (admin: Admin) => {
+    const router = mockLegacyRouter();
     const result = renderWithProviders(
-      <LegacyContextProvider context={context}>
+      <LegacyRouterContext.Provider value={router}>
         <ManagePatronsTabContainer
           tab={null}
           csrfToken="token"
           library="NYPL"
         />
-      </LegacyContextProvider>,
+      </LegacyRouterContext.Provider>,
       { appConfigSettings: { roles: admin.roles } }
     );
-    return { ...result, push };
+    return { ...result, push: router.push };
   };
 
   describe("for system admin", () => {

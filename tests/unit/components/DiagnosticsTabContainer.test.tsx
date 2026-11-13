@@ -1,6 +1,7 @@
 import type { Mock } from "vitest";
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
+import { http, HttpResponse } from "msw";
 import userEvent from "@testing-library/user-event";
 
 // The active tab renders DiagnosticsServiceType, which recurses into the service
@@ -16,7 +17,13 @@ vi.mock("../../../src/components/DiagnosticsServiceType", () => ({
   ),
 }));
 
-import { DiagnosticsTabContainer } from "../../../src/components/DiagnosticsTabContainer";
+import DiagnosticsTabContainerWithRouter, {
+  DiagnosticsTabContainer,
+} from "../../../src/components/DiagnosticsTabContainer";
+import { renderWithProviders } from "../testUtils/withProviders";
+import { setupMswServer } from "../testUtils/mswServer";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 
 describe("DiagnosticsTabContainer", () => {
   let goToTab: Mock;
@@ -128,6 +135,16 @@ describe("DiagnosticsTabContainer", () => {
       expect(goToTab).toHaveBeenCalledWith("monitor");
     });
 
+    it("pushes the tab's path to the router when a tab is clicked", async () => {
+      const user = userEvent.setup();
+      const router = mockLegacyRouter();
+      renderContainer({ diagnostics, router });
+      await user.click(screen.getByRole("link", { name: "Monitors" }));
+      expect(router.push).toHaveBeenCalledWith(
+        "/admin/web/troubleshooting/diagnostics/monitor"
+      );
+    });
+
     it("switches tabs when the tab prop changes", () => {
       const { container, rerender } = renderContainer();
       let tabs = container.querySelectorAll("ul.nav-tabs li");
@@ -140,5 +157,39 @@ describe("DiagnosticsTabContainer", () => {
       expect(tabs[0]).not.toHaveClass("active");
       expect(tabs[1]).toHaveClass("active");
     });
+  });
+});
+
+describe("DiagnosticsTabContainer default export", () => {
+  setupMswServer(
+    http.get("*/admin/diagnostics", () =>
+      HttpResponse.json({
+        coverage_provider: [],
+        monitor: [],
+        script: [],
+        other: [],
+      })
+    )
+  );
+
+  it("provides the container the router, so a tab click pushes its path", async () => {
+    const user = userEvent.setup();
+    const router = mockLegacyRouter();
+    renderWithProviders(
+      <LegacyRouterContext.Provider value={router}>
+        <DiagnosticsTabContainerWithRouter
+          tab="coverage_provider"
+          goToTab={vi.fn()}
+        />
+      </LegacyRouterContext.Provider>
+    );
+    // Wait until the on-mount fetch has settled.
+    expect(await screen.findAllByTestId("service-type")).toHaveLength(4);
+
+    await user.click(screen.getByRole("link", { name: "Monitors" }));
+
+    expect(router.push).toHaveBeenCalledWith(
+      "/admin/web/troubleshooting/diagnostics/monitor"
+    );
   });
 });
