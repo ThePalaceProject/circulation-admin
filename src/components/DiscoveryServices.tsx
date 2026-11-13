@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   GenericEditableConfigList,
   EditableConfigListStateProps,
@@ -6,7 +5,6 @@ import {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import {
   fetchLibrariesIfNeeded,
@@ -19,7 +17,9 @@ import {
   LibraryDataWithStatus,
   LibraryRegistrationsData,
 } from "../interfaces";
-import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
+import ServiceWithRegistrationsEditForm, {
+  ServiceWithRegistrationsEditFormProps,
+} from "./ServiceWithRegistrationsEditForm";
 import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 
 export interface DiscoveryServicesStateProps extends EditableConfigListStateProps<DiscoveryServicesData> {
@@ -55,28 +55,32 @@ export class DiscoveryServices extends GenericEditableConfigList<
   identifierKey = "id";
   labelKey = "name";
 
-  static childContextTypes: React.ValidationMap<any> = {
-    registerLibrary: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      registerLibrary: (library: LibraryData, registration_stage: string) => {
-        const item = this.itemToEdit();
-        if (item) {
-          const data = new FormData();
-          data.append("library_short_name", library.short_name);
-          data.append("registration_stage", registration_stage);
-          data.append("integration_id", String(item.id));
-          this.props.registerLibrary(data).then(() => {
-            if (this.props.fetchLibraryRegistrations) {
-              this.props.fetchLibraryRegistrations();
-            }
-          });
-        }
-      },
-    };
+  editFormExtraProps(): Pick<
+    ServiceWithRegistrationsEditFormProps<DiscoveryServicesData>,
+    "registerLibrary"
+  > {
+    return { registerLibrary: this.registerLibraryWithService };
   }
+
+  /** Registers a library with the discovery service being edited, then
+   *  fetches the registrations again. */
+  registerLibraryWithService = (
+    library: LibraryData,
+    registration_stage: string
+  ): void => {
+    const item = this.itemToEdit();
+    if (item) {
+      const data = new FormData();
+      data.append("library_short_name", library.short_name);
+      data.append("registration_stage", registration_stage);
+      data.append("integration_id", String(item.id));
+      this.props.registerLibrary(data).then(() => {
+        if (this.props.fetchLibraryRegistrations) {
+          this.props.fetchLibraryRegistrations();
+        }
+      });
+    }
+  };
 
   private registeredLibraries(
     item: DiscoveryServiceData

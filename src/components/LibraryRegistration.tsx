@@ -17,7 +17,7 @@ export interface LibraryRegistrationState {
 }
 
 export interface LibraryRegistrationProps extends ServiceEditFormProps<ServicesWithRegistrationsData> {
-  registerLibrary: (library, registration_stage) => void;
+  registerLibrary: (library: LibraryData, registration_stage: string) => void;
   protocol: string;
 }
 
