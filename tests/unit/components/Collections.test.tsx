@@ -1,5 +1,4 @@
 import * as React from "react";
-import { installFormDataShim } from "../testUtils/formDataShim";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Collections } from "../../../src/components/Collections";
@@ -45,7 +44,6 @@ describe("Collections - associated library disclosure", () => {
         fetchData={vi.fn()}
         editItem={vi.fn().mockResolvedValue(undefined)}
         deleteItem={vi.fn().mockResolvedValue(undefined)}
-        registerLibrary={vi.fn().mockResolvedValue(undefined)}
         importCollection={vi.fn().mockResolvedValue(undefined)}
         reapCollection={vi.fn().mockResolvedValue(undefined)}
         csrfToken="token"
@@ -224,11 +222,10 @@ describe("Collections - associated library disclosure", () => {
 // These exercise behavior the disclosure tests above do not: the connect()
 // wiring (mapStateToProps / mapDispatchToProps, which only run when the CONNECTED
 // default export mounts), the marked-for-deletion list item, the
-// confirm-before-disassociating-libraries behavior, the
-// getChildContext().registerLibrary closure, the on-mount registrations fetch,
-// and the delete flow.
+// confirm-before-disassociating-libraries behavior, the collection task panels
+// in the edit form, and the delete flow.
 
-describe("Collections - connected wiring, deletion, and registration", () => {
+describe("Collections - connected wiring, deletion, and edit form", () => {
   const allLibraries = [
     { short_name: "nypl", name: "NYPL", uuid: "uuid-nypl" },
   ];
@@ -311,15 +308,11 @@ describe("Collections - connected wiring, deletion, and registration", () => {
     });
   });
 
-  describe("edit mode: registration and additional content", () => {
-    // The reusable-components `Form` builds `new FormData(formElement)` on
-    // submit. Install the shared shim, so the payload holds only the form's
-    // successful controls, as a browser sends them.
-    installFormDataShim();
-    it("fetches registrations on mount, renders task controls, and registers a library on click", async () => {
+  describe("edit mode: additional content", () => {
+    it("queues import and reap tasks from the task panels of a saved collection", async () => {
       const user = userEvent.setup();
-      const registerLibrary = vi.fn().mockResolvedValue(undefined);
-      const fetchLibraryRegistrations = vi.fn().mockResolvedValue(undefined);
+      const importCollection = vi.fn().mockResolvedValue(undefined);
+      const reapCollection = vi.fn().mockResolvedValue(undefined);
       renderWithContext(
         <Collections
           data={
@@ -335,8 +328,8 @@ describe("Collections - connected wiring, deletion, and registration", () => {
               protocols: [
                 {
                   name: "OPDS Import",
-                  supports_registration: true,
                   supports_import: true,
+                  supports_reap: true,
                   settings: [],
                   library_settings: [],
                 },
@@ -349,34 +342,27 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           fetchData={vi.fn()}
           editItem={vi.fn().mockResolvedValue(undefined)}
           deleteItem={vi.fn().mockResolvedValue(undefined)}
-          registerLibrary={registerLibrary}
-          fetchLibraryRegistrations={fetchLibraryRegistrations}
-          importCollection={vi.fn().mockResolvedValue(undefined)}
-          reapCollection={vi.fn().mockResolvedValue(undefined)}
+          importCollection={importCollection}
+          reapCollection={reapCollection}
           csrfToken="token"
           isFetching={false}
         />,
         sysAdminConfig
       );
 
-      // componentDidMount fetches the registrations once. (CollectionEditForm's
-      // renderAdditionalContent also runs here, since the edited collection has
-      // an id, injecting the import/reap task panels into the form.)
-      expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(1);
+      // The edited collection has an id, so the form shows the task panels.
+      // Each panel starts collapsed. Click its header to open it.
+      await user.click(screen.getByRole("button", { name: "Import" }));
+      await user.click(screen.getByRole("button", { name: "Queue Import" }));
+      expect(
+        await screen.findByText(/^Import task queued/)
+      ).toBeInTheDocument();
+      expect(importCollection).toHaveBeenCalledWith(7, false);
 
-      // Registering a library goes through getChildContext().registerLibrary.
-      expect(registerLibrary).not.toHaveBeenCalled();
-      await user.click(screen.getByRole("button", { name: "Register" }));
-
-      expect(registerLibrary).toHaveBeenCalledTimes(1);
-      const formData = registerLibrary.mock.calls[0][0];
-      expect(formData.get("library_short_name")).toBe("nypl");
-      expect(formData.get("collection_id")).toBe("7");
-
-      // After a successful registration, the child context refetches.
-      await waitFor(() =>
-        expect(fetchLibraryRegistrations).toHaveBeenCalledTimes(2)
-      );
+      await user.click(screen.getByRole("button", { name: "Reap" }));
+      await user.click(screen.getByRole("button", { name: "Queue Reap" }));
+      expect(await screen.findByText(/^Reap task queued/)).toBeInTheDocument();
+      expect(reapCollection).toHaveBeenCalledWith(7);
     });
   });
 
@@ -413,7 +399,6 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           fetchData={vi.fn()}
           editItem={vi.fn().mockResolvedValue(undefined)}
           deleteItem={vi.fn().mockResolvedValue(undefined)}
-          registerLibrary={vi.fn().mockResolvedValue(undefined)}
           importCollection={vi.fn().mockResolvedValue(undefined)}
           reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
@@ -492,7 +477,6 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           fetchData={vi.fn()}
           editItem={vi.fn().mockResolvedValue(undefined)}
           deleteItem={vi.fn().mockResolvedValue(undefined)}
-          registerLibrary={vi.fn().mockResolvedValue(undefined)}
           importCollection={vi.fn().mockResolvedValue(undefined)}
           reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
@@ -525,7 +509,6 @@ describe("Collections - connected wiring, deletion, and registration", () => {
           fetchData={fetchData}
           editItem={vi.fn().mockResolvedValue(undefined)}
           deleteItem={deleteItem}
-          registerLibrary={vi.fn().mockResolvedValue(undefined)}
           importCollection={vi.fn().mockResolvedValue(undefined)}
           reapCollection={vi.fn().mockResolvedValue(undefined)}
           csrfToken="token"
