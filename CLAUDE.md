@@ -57,7 +57,7 @@ Do not add legacy React context (`contextTypes`, `childContextTypes`, `getChildC
 - Mix of class components (legacy) and functional components (newer)
 - React Router 7 (`react-router@^7`), declarative mode. React Router 8 needs React 19.
   - `src/components/AppRoutes.tsx` maps each path to a page. It passes each page the `params` and `location` props that react-router v3 gave, so the pages did not change.
-  - `src/components/LegacyRouterBridge.tsx` provides a v3-style `router` object through legacy context, web-opds-client's router context, and our typed `LegacyRouterContext`. web-opds-client reads it from the first two, because web-opds-client still uses its own copy of react-router v3, whose `Link` also needs `createHref` and `isActive`. Our components read it from `LegacyRouterContext` with `useLegacyRouter()`, and use `push` and `getCurrentLocation`. Use the React Router hooks in new code.
+  - `src/components/LegacyRouterBridge.tsx` provides a v3-style `router` object through legacy context, web-opds-client's `RouterContext`, and our typed `LegacyRouterContext`. web-opds-client reads it from legacy context, because web-opds-client still uses its own copy of react-router v3, whose `Link` also needs `createHref` and `isActive`. Our components read it from `LegacyRouterContext` with `useLegacyRouter()`, and use `push` and `getCurrentLocation`. Use the React Router hooks in new code.
   - `<BrowserRouter useTransitions={false}>` updates on navigation at once, as v3 did, instead of in a React transition. Our class components, with their `UNSAFE_componentWillReceiveProps`, expect that.
 - React 18.3 (mounted with `createRoot`)
   - Hooks are available but many components predate hooks.

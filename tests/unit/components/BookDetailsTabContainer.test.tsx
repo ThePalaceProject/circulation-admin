@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 
 import buildStore from "../../../src/store";
 import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
+import { LegacyRouter } from "../../../src/components/LegacyRouterBridge";
 import { getBookData } from "../../../src/features/book/bookEditorSlice";
 
 // Each tab panel is a connected component that fetches over the network on mount.
@@ -56,10 +57,12 @@ describe("BookDetailsTabContainer", () => {
     bookData?: any;
     bookUrl?: string;
     clearBook?: Mock;
+    router?: LegacyRouter | undefined;
   };
 
   const renderContainer = (overrides: Overrides = {}) => {
-    const router = mockLegacyRouter();
+    const router =
+      "router" in overrides ? overrides.router : mockLegacyRouter();
     const clearBook = overrides.clearBook || vi.fn();
     const element = (bookUrl: string, bookData: any) => (
       <BookDetailsTabContainer
@@ -84,7 +87,7 @@ describe("BookDetailsTabContainer", () => {
     );
     const rerenderWith = (bookUrl: string, bookData: any = null) =>
       result.rerender(element(bookUrl, bookData));
-    return { ...result, push: router.push, clearBook, rerenderWith };
+    return { ...result, push: router?.push, clearBook, rerenderWith };
   };
 
   it("shows book details", () => {
@@ -144,6 +147,11 @@ describe("BookDetailsTabContainer", () => {
     expect(push).toHaveBeenCalledWith(
       pathFor(TEST_COLLECTION_URL, TEST_BOOK_URL, "edit")
     );
+  });
+
+  it("does not throw when a tab is clicked with no router", async () => {
+    renderContainer({ router: undefined });
+    await userEvent.click(screen.getByRole("link", { name: "Edit" }));
   });
 
   it("clears book data when receiving new book url", () => {

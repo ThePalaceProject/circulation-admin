@@ -55,8 +55,8 @@ describe("ConfigTabContainer", () => {
   // The default export reads `router` with `useLegacyRouter()`, so give it a
   // mock router through `LegacyRouterContext`. It reads `admin` from the app
   // context, which `renderWithProviders` builds from the configured roles.
-  const renderWithAdmin = (admin: Admin) => {
-    const router = mockLegacyRouter();
+  const renderWithAdmin = (admin: Admin, { withRouter = true } = {}) => {
+    const router = withRouter ? mockLegacyRouter() : undefined;
     const result = renderWithProviders(
       <LegacyRouterContext.Provider value={router}>
         <ConfigTabContainer
@@ -68,7 +68,7 @@ describe("ConfigTabContainer", () => {
       </LegacyRouterContext.Provider>,
       { appConfigSettings: { roles: admin.roles } }
     );
-    return { ...result, push: router.push };
+    return { ...result, push: router?.push };
   };
 
   const expectPanelProps = (testId: string) => {
@@ -116,6 +116,11 @@ describe("ConfigTabContainer", () => {
       await userEvent.click(screen.getByRole("link", { name: "Collections" }));
       expect(push).toHaveBeenCalledTimes(1);
       expect(push).toHaveBeenCalledWith("/admin/web/config/collections");
+    });
+
+    it("does not throw when a tab is clicked with no router", async () => {
+      renderWithAdmin(systemAdmin, { withRouter: false });
+      await userEvent.click(screen.getByRole("link", { name: "Collections" }));
     });
   });
 

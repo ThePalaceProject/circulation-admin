@@ -32,9 +32,10 @@ const LegacyRouterProvider = RouterProvider as React.ComponentType<
 
 /**
  * Provides a react-router v3 style `router` object, built from React Router 7,
- * through legacy context, web-opds-client's router context, and our typed
- * `LegacyRouterContext`. web-opds-client (which still uses its own react-router
- * v3 `Link`) reads `router` from the first two. Our components read it from
+ * through legacy context, web-opds-client's `RouterContext`, and our typed
+ * `LegacyRouterContext`. web-opds-client's `RouterProvider` provides the first
+ * two. web-opds-client (which still uses its own react-router v3 `Link`) reads
+ * `router` from legacy context. Our components read it from
  * `LegacyRouterContext` with `useLegacyRouter()`. Remove this when
  * web-opds-client no longer reads `router` and nothing calls
  * `useLegacyRouter()`.

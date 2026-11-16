@@ -78,9 +78,10 @@ describe("SelfTestsTabContainer", () => {
       fetchItems,
       tab: "collections",
       items: { protocols: [], collections },
+      router,
       ...overrides,
     };
-    return <SelfTestsTabContainer {...props} router={router} />;
+    return <SelfTestsTabContainer {...props} />;
   };
 
   const renderContainer = (overrides = {}) => render(element(overrides));
@@ -151,6 +152,16 @@ describe("SelfTestsTabContainer", () => {
         "/admin/web/troubleshooting/self-tests/patronAuthServices"
       )
     );
+  });
+
+  it("calls goToTab, and does not throw, when a tab is clicked with no router", async () => {
+    renderContainer({ router: undefined });
+
+    await userEvent.click(
+      screen.getByRole("link", { name: "Patron Authentication" })
+    );
+
+    expect(goToTab).toHaveBeenCalledWith("patronAuthServices");
   });
 
   it("switches tabs when the tab prop changes", () => {
