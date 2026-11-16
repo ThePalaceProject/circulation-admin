@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export interface AnnouncementProps {
   content: string;
@@ -19,11 +19,11 @@ export default class Announcement extends React.Component<
     this.delete = this.delete.bind(this);
     this.edit = this.edit.bind(this);
   }
-  edit(e: Event) {
+  edit(e: React.MouseEvent) {
     e.preventDefault();
     this.props.edit(this.props.id);
   }
-  delete(e: Event) {
+  delete(e: React.MouseEvent) {
     e.preventDefault();
     this.props.delete(this.props.id);
   }

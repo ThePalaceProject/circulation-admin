@@ -6,7 +6,7 @@ import {
 } from "../interfaces";
 
 import { TabContainer, TabContainerProps } from "./TabContainer";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "./compat";
 import Timestamp from "./Timestamp";
 import ToolTip from "./ToolTip";
 
@@ -15,9 +15,7 @@ export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   content: DiagnosticsServiceData[];
 }
 
-export default class DiagnosticsServiceTabs extends TabContainer<
-  DiagnosticsServiceTabsProps
-> {
+export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServiceTabsProps> {
   handleSelect(event) {
     const tab = event.currentTarget.dataset.tabkey;
     this.props.goToTab(tab);

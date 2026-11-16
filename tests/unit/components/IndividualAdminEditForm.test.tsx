@@ -132,9 +132,9 @@ describe("IndividualAdminEditForm", () => {
 // Assertions on props (checked/disabled/value) are made against the rendered
 // checkboxes and inputs; role-change behavior is driven with real clicks.
 describe("IndividualAdminEditForm - rendered inputs and role changes", () => {
-  // The reusable-components `Form` builds `new FormData(formElement)` on
-  // submit. Install the shared shim, so the payload holds only the form's
-  // successful controls, as a browser sends them.
+  // The compat `Form` builds `new FormData(formElement)` on submit. Install the
+  // shared shim, so the payload holds only the form's successful controls, as a
+  // browser sends them.
   installFormDataShim();
   const adminData = { email: "test@nypl.org", password: "password" };
   const allLibraries = [

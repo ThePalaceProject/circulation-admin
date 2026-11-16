@@ -4,7 +4,7 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
-import { Button, Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "./compat";
 import { Alert } from "react-bootstrap";
 
 export interface ClassificationsFormProps {
@@ -67,7 +67,6 @@ export default class ClassificationsForm extends React.Component<
           id="classifications"
           headerText="Classifications"
           collapsible={false}
-          onEnter={this.submit}
           content={
             <div>
               <EditableInput

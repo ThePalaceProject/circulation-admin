@@ -6,7 +6,7 @@ import ShareIcon from "./icons/ShareIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export interface LaneCustomListsEditorProps {
   allCustomLists: CustomListData[];

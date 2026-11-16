@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import { ContributorData, RolesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
 

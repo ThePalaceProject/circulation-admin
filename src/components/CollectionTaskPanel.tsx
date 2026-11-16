@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "./compat";
 
 export interface CollectionTaskPanelProps {
   /** DOM id for the underlying Panel. */

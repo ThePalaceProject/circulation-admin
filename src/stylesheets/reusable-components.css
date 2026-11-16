@@ -1,0 +1,345 @@
+/* Copied from library-simplified-reusable-components 1.3.18
+   (dist/reusable-components.css), without the rules for its Header and Tabs
+   components or for classes that this app does not use. It styles the
+   components in src/components/compat/. Some rules, such as those for `form`,
+   `.btn`, and `.visuallyHidden`, also apply to the rest of the app. */
+.visuallyHidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+}
+.visuallyHidden:focus,
+.visuallyHidden:active {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+.form-control:focus {
+  box-shadow: 1px 1px 1px 1px #082530;
+  outline-color: #0f465c;
+  outline-style: solid;
+  outline-width: 3px;
+}
+button.btn:hover,
+button.btn:active,
+a.btn:hover,
+a.btn:active,
+button.btn.inverted:hover,
+button.btn.inverted:active,
+a.btn.inverted:hover,
+a.btn.inverted:active {
+  background: #54514a;
+  color: #fff;
+  border-color: #54514a;
+}
+button.btn:hover svg,
+button.btn:active svg,
+a.btn:hover svg,
+a.btn:active svg,
+button.btn.inverted:hover svg,
+button.btn.inverted:active svg,
+a.btn.inverted:hover svg,
+a.btn.inverted:active svg {
+  fill: #fff;
+  transition: fill 0.5s;
+}
+button.btn,
+a.btn {
+  display: block;
+  color: #fff;
+  transition:
+    background 0.5s,
+    color 0.5s;
+  background: #1b7fa7;
+  margin: 0.5em;
+  border-radius: 0.25em;
+  font-size: 16px;
+  padding: 6px 12px;
+  font-weight: bold;
+  min-height: 24px;
+}
+button.btn.danger,
+a.btn.danger {
+  background: #d0343a;
+}
+button.btn.danger:hover,
+button.btn.danger:active,
+a.btn.danger:hover,
+a.btn.danger:active {
+  background: #fff;
+  color: #d0343a;
+  border-color: #d0343a;
+}
+button.btn.danger:hover svg,
+button.btn.danger:active svg,
+a.btn.danger:hover svg,
+a.btn.danger:active svg {
+  fill: #d0343a;
+  transition: fill 0.5s;
+}
+button.btn.success,
+a.btn.success {
+  background: #008918;
+}
+button.btn.success:hover,
+button.btn.success:active,
+a.btn.success:hover,
+a.btn.success:active {
+  background: #fff;
+  color: #008918;
+  border-color: #008918;
+}
+button.btn.success:hover svg,
+button.btn.success:active svg,
+a.btn.success:hover svg,
+a.btn.success:active svg {
+  fill: #008918;
+  transition: fill 0.5s;
+}
+button.btn.inverted,
+a.btn.inverted {
+  background: #fff;
+  color: #1b7fa7;
+  border: 1px solid #1b7fa7;
+}
+button.btn.inverted svg,
+a.btn.inverted svg {
+  fill: #1b7fa7;
+}
+button.btn.transparent,
+a.btn.transparent {
+  background-color: transparent;
+  color: #111;
+  font-weight: normal;
+  padding: 0;
+}
+button.btn.transparent svg,
+a.btn.transparent svg {
+  fill: #111;
+  height: 0.7em;
+  width: 0.7em;
+}
+button.btn.transparent:hover,
+button.btn.transparent:active,
+a.btn.transparent:hover,
+a.btn.transparent:active {
+  color: #111;
+  border-color: transparent;
+}
+button.btn:focus,
+a.btn:focus {
+  color: #fff;
+}
+button.btn:focus.inverted,
+button.btn:focus.transparent,
+a.btn:focus.inverted,
+a.btn:focus.transparent {
+  color: #1b7fa7;
+}
+button.btn:disabled,
+a.btn:disabled {
+  pointer-events: none;
+}
+button.btn.left-align,
+a.btn.left-align {
+  margin-left: 0;
+}
+button.btn.right-align,
+a.btn.right-align {
+  margin-right: 0;
+}
+button.btn.top-align,
+a.btn.top-align {
+  margin-top: 0;
+}
+button.btn.bottom-align,
+a.btn.bottom-align {
+  margin-bottom: 0;
+}
+button.btn.inline,
+a.btn.inline {
+  display: inline-block;
+}
+button.btn.squared,
+a.btn.squared {
+  border-radius: 0;
+}
+button.btn.small,
+a.btn.small {
+  font-size: 14px;
+}
+button.btn.small svg,
+a.btn.small svg {
+  height: 0.8em;
+  float: unset;
+  vertical-align: unset;
+  margin-left: 0.5em;
+}
+button.btn svg,
+a.btn svg {
+  fill: #fff;
+  float: right;
+  width: 1.4em;
+  height: 100%;
+  margin-left: 0.8em;
+  vertical-align: middle;
+}
+button.btn span,
+a.btn span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+svg.icon {
+  height: 1em;
+  width: 1em;
+  fill: #080807;
+  transition: fill 0.5s;
+}
+.down-icon {
+  transform: rotate(270deg);
+}
+.up-icon {
+  transform: rotate(90deg);
+}
+form {
+  padding: 1em;
+  border-radius: 0;
+  margin: 20px;
+  width: 55vw;
+}
+form label {
+  margin-right: 10px;
+}
+form input {
+  margin-bottom: 5px;
+}
+form.border {
+  border: 1px solid #1b7fa7;
+}
+form.inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+form.inline .btn {
+  margin: 0;
+  border: 0;
+}
+form.inline .form-group,
+form.inline fieldset {
+  min-width: 50%;
+  flex: 2;
+  margin: 0;
+}
+form.inline .form-group input,
+form.inline fieldset input {
+  display: inline-block;
+  width: 35%;
+  margin-right: 12px;
+  margin-bottom: 0;
+  padding: 6px 12px;
+}
+form.inline .alert-success,
+form.inline .alert-danger,
+form.inline .alert-info {
+  width: 100%;
+  margin-top: 20px;
+}
+form .form-group {
+  margin: 15px 0;
+}
+form .alert h4 {
+  margin-bottom: 0;
+}
+form .alert.alert-danger {
+  background-color: #f6d6d8;
+  color: #080807;
+  font-weight: bold;
+}
+form .alert.alert-loading {
+  background-color: #f5f4f3;
+  color: #080807;
+}
+form .form-title {
+  display: block;
+  text-align: center;
+  width: 80%;
+  margin: 1em auto 2em auto;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #135772;
+}
+.panel {
+  display: block;
+  width: 100%;
+  margin: 0 0 0.5em 0;
+}
+.panel.panel-instruction {
+  border-color: #1b7fa7;
+}
+.panel .panel-heading {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 1em 1.5em;
+  border: 0;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.5s;
+}
+.panel .panel-heading span {
+  color: #111;
+  transition: color 0.5s;
+  font-weight: bold;
+}
+.panel:not(.static-panel) > .panel-heading:hover {
+  cursor: pointer;
+}
+.panel:not(.static-panel) > .panel-heading:hover svg {
+  fill: #fff;
+}
+.panel:not(.static-panel) > .panel-heading:hover span {
+  color: #fff;
+}
+.panel-success .panel-heading {
+  background: #809f69;
+}
+.panel-success:not(.static-panel) > .panel-heading:hover {
+  background: #497629;
+}
+.panel-warning .panel-heading {
+  background: #ffcd61;
+}
+.panel-warning:not(.static-panel) > .panel-heading:hover {
+  background: #9d6b00;
+}
+.panel-danger .panel-heading {
+  background: #da5d62;
+}
+.panel-danger:not(.static-panel) > .panel-heading:hover {
+  background: #aa272c;
+}
+.panel-instruction .panel-heading {
+  background: #acd0df;
+}
+.panel-instruction:not(.static-panel) > .panel-heading:hover {
+  background: #1b7fa7;
+}
+.panel-default:not(.static-panel) > .panel-heading:hover {
+  background: #91887d;
+}
+.panel-body {
+  padding: 1.5em;
+}

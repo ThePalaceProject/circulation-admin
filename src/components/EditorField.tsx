@@ -8,7 +8,7 @@ import {
   compositeDecorator,
 } from "draft-js";
 import { convertToHTML } from "draft-convert";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export interface EditorFieldState {
   editorState: EditorState;

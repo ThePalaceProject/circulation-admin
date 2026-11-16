@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LibraryData, LibraryRegistrationData } from "../interfaces";
 import EditableInput from "./EditableInput";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "./compat";
 
 export interface LibraryRegistrationFormState {
   checked: boolean;
@@ -45,20 +45,14 @@ export default class LibraryRegistrationForm extends React.Component<
         disableButton={disabled}
         onSubmit={() => this.props.register(this.props.library)}
         buttonContent={this.props.buttonText}
-        withoutButton={
-          this.props.registrationData &&
-          this.props.registrationData.access_problem
-        }
+        withoutButton={!!this.props.registrationData?.access_problem}
       />
     );
   }
 
   checkbox(library: LibraryData): JSX.Element {
-    const {
-      access_problem,
-      terms_of_service_html,
-      terms_of_service_link,
-    } = this.props.registrationData;
+    const { access_problem, terms_of_service_html, terms_of_service_link } =
+      this.props.registrationData;
     let element;
     if (access_problem) {
       element = <p className="bg-danger">{access_problem.detail}</p>;

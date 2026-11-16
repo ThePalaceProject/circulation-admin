@@ -11,9 +11,9 @@ import ServiceEditForm, {
 } from "../../../src/components/ServiceEditForm";
 import NeighborhoodAnalyticsForm from "../../../src/components/NeighborhoodAnalyticsForm";
 import { ServicesData } from "../../../src/interfaces";
-// The reusable-components `Form` builds `new FormData(formElement)` on
-// submit. Install the shared shim, so the payload holds only the form's
-// successful controls, as a browser sends them.
+// The compat `Form` builds `new FormData(formElement)` on submit. Install the
+// shared shim, so the payload holds only the form's successful controls, as a
+// browser sends them.
 installFormDataShim();
 describe("ServiceEditForm", () => {
   // ServiceEditForm is a generic class; expose a concrete constructor type so
@@ -722,7 +722,7 @@ describe("ServiceEditForm", () => {
     it("has a save button", () => {
       const { container } = renderForm();
       // The form's submit button (the collapsible panel headers are also
-      // <button>s, so this is the only reusable-components Button).
+      // <button>s, so this is the only compat `Button`).
       expect(
         within(container).getByRole("button", { name: "Submit" })
       ).toBeInTheDocument();
@@ -1096,9 +1096,8 @@ describe("ServiceEditForm", () => {
     });
 
     it("calls save when the form is submitted", async () => {
-      // The reusable Form wires submission solely through its submit button's
-      // onClick, so clicking it is the only way to submit; assert the resulting
-      // save receives the built form data.
+      // The compat `Form` submits only through its submit button's click
+      // handler, so click it and check that save gets the form data.
       const user = userEvent.setup();
       const { container } = renderForm();
 

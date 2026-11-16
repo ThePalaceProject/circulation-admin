@@ -4,9 +4,9 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import LibraryRegistration from "../../../src/components/LibraryRegistration";
-// The reusable-components `Form` builds `new FormData(formElement)` on
-// submit. Install the shared shim, so the payload holds only the form's
-// successful controls, as a browser sends them.
+// The compat `Form` builds `new FormData(formElement)` on submit. Install the
+// shared shim, so the payload holds only the form's successful controls, as a
+// browser sends them.
 installFormDataShim();
 const protocol = "protocol 1";
 const serviceData = { id: 1, protocol };

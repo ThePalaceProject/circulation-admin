@@ -4,7 +4,7 @@ import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { formatString } from "../utils/sharedFunctions";

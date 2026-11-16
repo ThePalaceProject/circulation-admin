@@ -8,7 +8,7 @@ import {
   LibraryData,
 } from "../interfaces";
 import Admin from "../models/Admin";
-import { Panel, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "./compat";
 import { Alert } from "react-bootstrap";
 import LibrariesLoadStatus from "./LibrariesLoadStatus";
 import LibrariesRefreshWarning from "./LibrariesRefreshWarning";
@@ -92,7 +92,6 @@ export default class IndividualAdminEditForm extends React.Component<
             content={this.renderForm()}
             openByDefault={true}
             collapsible={!this.context.settingUp}
-            onEnter={this.submit}
           />,
           !this.context.settingUp && (
             <Panel
@@ -101,7 +100,6 @@ export default class IndividualAdminEditForm extends React.Component<
               key="roles"
               content={this.renderRoleForm()}
               openByDefault={true}
-              onEnter={this.submit}
             />
           ),
         ]}

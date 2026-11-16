@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "./compat";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import {
@@ -158,7 +158,6 @@ export default class ServiceEditForm<
           id={`form-${listDataKey}-instructions`}
           headerText={this.protocolDescription(protocol)}
           style="instruction"
-          onEnter={this.submit}
           content={this.protocolInstructions(protocol)}
         />
       </div>
