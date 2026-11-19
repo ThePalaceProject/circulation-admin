@@ -65,6 +65,10 @@ export interface FeatureFlags {
    option to download a CSV of circulation events. This should be false if
    circulation events are not available for download. */
   showCircEventsDownload?: boolean;
+  /** `showPeriodicals` controls whether the admin interface offers
+   periodicals. The circulation manager does not send this field yet, so an
+   absent value means periodicals stay hidden. */
+  showPeriodicals?: boolean;
 }
 
 export interface Navigate {
