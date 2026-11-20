@@ -6,11 +6,15 @@ import { renderWithProviders } from "../testUtils/withProviders";
 
 // The tab containers are connected components that fetch on mount and require
 // react-router context; TroubleshootingCategoryPage only chooses between them
-// and hands them a `tab` and `goToTab`. Mock them to markers that surface the
-// `tab` they receive and let us drive `goToTab`.
+// and hands them a `csrfToken`, a `tab`, and `goToTab`. Mock them to markers that
+// surface the `csrfToken` and `tab` they receive and let us drive `goToTab`.
 vi.mock("../../../src/components/DiagnosticsTabContainer", () => ({
   default: (props: any) => (
-    <div data-testid="diagnostics-tab-container" data-tab={props.tab}>
+    <div
+      data-testid="diagnostics-tab-container"
+      data-csrf-token={props.csrfToken}
+      data-tab={props.tab}
+    >
       <button type="button" onClick={() => props.goToTab("monitor")}>
         go-to-monitor
       </button>
@@ -19,7 +23,11 @@ vi.mock("../../../src/components/DiagnosticsTabContainer", () => ({
 }));
 vi.mock("../../../src/components/SelfTestsTabContainer", () => ({
   default: (props: any) => (
-    <div data-testid="self-tests-tab-container" data-tab={props.tab} />
+    <div
+      data-testid="self-tests-tab-container"
+      data-csrf-token={props.csrfToken}
+      data-tab={props.tab}
+    />
   ),
 }));
 
@@ -27,9 +35,14 @@ import TroubleshootingCategoryPage from "../../../src/components/Troubleshooting
 
 describe("TroubleshootingCategoryPage", () => {
   it("renders a tab container", () => {
-    renderWithProviders(<TroubleshootingCategoryPage type="diagnostics" />);
+    renderWithProviders(<TroubleshootingCategoryPage type="diagnostics" />, {
+      appConfigSettings: { csrfToken: "token" },
+    });
 
-    expect(screen.getByTestId("diagnostics-tab-container")).toBeInTheDocument();
+    expect(screen.getByTestId("diagnostics-tab-container")).toHaveAttribute(
+      "data-csrf-token",
+      "token"
+    );
     expect(
       screen.queryByTestId("self-tests-tab-container")
     ).not.toBeInTheDocument();
@@ -54,7 +67,8 @@ describe("TroubleshootingCategoryPage", () => {
 
   it("renders a different tab container", () => {
     const { rerender } = renderWithProviders(
-      <TroubleshootingCategoryPage type="diagnostics" />
+      <TroubleshootingCategoryPage type="diagnostics" />,
+      { appConfigSettings: { csrfToken: "token" } }
     );
 
     rerender(<TroubleshootingCategoryPage type="self-tests" />);
@@ -62,6 +76,9 @@ describe("TroubleshootingCategoryPage", () => {
     expect(
       screen.queryByTestId("diagnostics-tab-container")
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId("self-tests-tab-container")).toBeInTheDocument();
+    expect(screen.getByTestId("self-tests-tab-container")).toHaveAttribute(
+      "data-csrf-token",
+      "token"
+    );
   });
 });

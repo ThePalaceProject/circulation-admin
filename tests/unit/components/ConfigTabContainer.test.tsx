@@ -1,10 +1,11 @@
 import type { Mock } from "vitest";
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import Admin from "../../../src/models/Admin";
+import { renderWithProviders } from "../testUtils/withProviders";
 
 // Every configuration tab panel is a connected component that fetches on mount.
 // This container's behavior is the tab SET and tab SWITCHING, not the panels'
@@ -46,9 +47,9 @@ vi.mock("../../../src/components/SitewideAnnouncements", () =>
 
 import ConfigTabContainer from "../../../src/components/ConfigTabContainer";
 
-// ConfigTabContainer reads `router`, `pathFor`, and `admin` from the legacy React
-// context the app supplies in production. Wrap it in a small provider that hands
-// it those.
+// ConfigTabContainer reads `router` and `pathFor` from legacy React context. Supply them
+// through a small legacy context provider. It reads `admin` from the app
+// context, which `renderWithProviders` builds from the configured roles.
 class LegacyContextProvider extends React.Component<{
   context: any;
   children: React.ReactNode;
@@ -56,7 +57,6 @@ class LegacyContextProvider extends React.Component<{
   static childContextTypes = {
     router: PropTypes.object,
     pathFor: PropTypes.func,
-    admin: PropTypes.object,
   };
   getChildContext() {
     return this.props.context;
@@ -72,8 +72,8 @@ describe("ConfigTabContainer", () => {
   const sitewideLibrarian = new Admin([{ role: "librarian-all" }]);
 
   const renderWithAdmin = (admin: Admin, push: Mock = vi.fn()) => {
-    const context = { router: { push }, pathFor: vi.fn(), admin };
-    const result = render(
+    const context = { router: { push }, pathFor: vi.fn() };
+    const result = renderWithProviders(
       <LegacyContextProvider context={context}>
         <ConfigTabContainer
           tab={null}
@@ -81,7 +81,8 @@ describe("ConfigTabContainer", () => {
           editOrCreate="edit"
           identifier="identifier"
         />
-      </LegacyContextProvider>
+      </LegacyContextProvider>,
+      { appConfigSettings: { roles: admin.roles } }
     );
     return { ...result, push };
   };

@@ -4,21 +4,17 @@ import { render, screen } from "@testing-library/react";
 
 import ContextProvider from "../../../src/components/ContextProvider";
 import { useAppStore } from "../../../src/context/appStoreContext";
+import { AppContextType, useAppContext } from "../../../src/context/appContext";
 import buildStore from "../../../src/store";
 import Admin from "../../../src/models/Admin";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { ConfigurationSettings } from "../../../src/interfaces";
 
-// Reads everything ContextProvider puts on the legacy React context — the real
-// contract the app's pages consume — so we can assert on it without reaching for
-// the component instance.
+// Reads `pathFor`, which ContextProvider gives through legacy React context
+// (web-opds-client's `PathForProvider`).
 let captured: any;
 class Capture extends React.Component {
   static contextTypes = {
-    csrfToken: PropTypes.string,
-    settingUp: PropTypes.bool,
-    admin: PropTypes.object,
-    featureFlags: PropTypes.object,
     pathFor: PropTypes.func,
   };
   render() {
@@ -26,6 +22,13 @@ class Capture extends React.Component {
     return <div>child rendered</div>;
   }
 }
+
+// Reads the app context that ContextProvider gives.
+let capturedAppContext: AppContextType;
+const CaptureAppContext = () => {
+  capturedAppContext = useAppContext();
+  return null;
+};
 
 // Reads the store that ContextProvider gives through its store context.
 let capturedStore: ReturnType<typeof useAppStore>;
@@ -39,6 +42,7 @@ const renderWithConfig = (config: Partial<ConfigurationSettings>) =>
     <ContextProvider config={config as ConfigurationSettings}>
       <>
         <Capture />
+        <CaptureAppContext />
         <CaptureStore />
       </>
     </ContextProvider>
@@ -47,10 +51,11 @@ const renderWithConfig = (config: Partial<ConfigurationSettings>) =>
 describe("ContextProvider", () => {
   beforeEach(() => {
     captured = undefined;
+    capturedAppContext = undefined;
     capturedStore = undefined;
   });
 
-  it("provides child context", () => {
+  it("provides the app context and the store", () => {
     renderWithConfig({
       csrfToken: "token",
       featureFlags: defaultFeatureFlags,
@@ -60,11 +65,12 @@ describe("ContextProvider", () => {
 
     expect(capturedStore.getState().editor).toBeTruthy();
     expect(capturedStore.getState().catalog).toBeTruthy();
-    expect(captured.csrfToken).toBe("token");
-    expect(captured.settingUp).toBeFalsy();
-    expect(captured.admin instanceof Admin).toBe(true);
-    expect(captured.admin.isSystemAdmin()).toBe(true);
-    expect(captured.admin.email).toBe("email");
+    expect(capturedAppContext.csrfToken).toBe("token");
+    expect(capturedAppContext.settingUp).toBeFalsy();
+    expect(capturedAppContext.featureFlags).toBe(defaultFeatureFlags);
+    expect(capturedAppContext.admin instanceof Admin).toBe(true);
+    expect(capturedAppContext.admin.isSystemAdmin()).toBe(true);
+    expect(capturedAppContext.admin.email).toBe("email");
   });
 
   it("provides the store it is given", () => {

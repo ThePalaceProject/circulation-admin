@@ -1,4 +1,3 @@
-import * as PropTypes from "prop-types";
 import EditableConfigList, {
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
@@ -16,7 +15,6 @@ import {
   AdminRoleData,
   LibraryData,
 } from "../interfaces";
-import Admin from "../models/Admin";
 import { libraryConfigHref, libraryLabel } from "../utils/sharedFunctions";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
@@ -34,11 +32,6 @@ export class IndividualAdmins extends EditableConfigList<
   urlBase = "/admin/web/config/individualAdmins/";
   identifierKey = "email";
   labelKey = "email";
-
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
 
   private getRolesSummary(
     item: IndividualAdminData,

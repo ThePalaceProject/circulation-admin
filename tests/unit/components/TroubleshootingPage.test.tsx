@@ -17,19 +17,27 @@ vi.mock("../../../src/components/Footer", () => ({
 // The real TroubleshootingTabContainer requires router/pathFor context and
 // mounts self-test/diagnostic pages that fetch on mount. TroubleshootingPage's
 // own behavior is to own the active tab and pass it (and a goToTab callback)
-// down, so mock the container to a marker that exposes its `tab`/`subtab` props
-// and a control that invokes `goToTab` — exactly the contract under test.
+// down, so mock the container to a marker that exposes its `csrfToken`, `tab`,
+// and `subtab` props and a control that invokes `goToTab`. That is the contract
+// under test.
 vi.mock("../../../src/components/TroubleshootingTabContainer", () => ({
   default: ({
+    csrfToken,
     tab,
     subtab,
     goToTab,
   }: {
+    csrfToken: string;
     tab: string;
     subtab: string;
     goToTab: (tab: string) => void;
   }) => (
-    <div data-testid="tab-container" data-tab={tab} data-subtab={subtab}>
+    <div
+      data-testid="tab-container"
+      data-csrf-token={csrfToken}
+      data-tab={tab}
+      data-subtab={subtab}
+    >
       <button type="button" onClick={() => goToTab("self-tests")}>
         Go to self-tests
       </button>
@@ -40,7 +48,12 @@ vi.mock("../../../src/components/TroubleshootingTabContainer", () => ({
 import TroubleshootingPage from "../../../src/components/TroubleshootingPage";
 
 const renderPage = () =>
-  renderWithProviders(<TroubleshootingPage params={{ tab: "", subtab: "" }} />);
+  renderWithProviders(
+    <TroubleshootingPage params={{ tab: "", subtab: "" }} />,
+    {
+      appConfigSettings: { csrfToken: "token" },
+    }
+  );
 
 describe("TroubleshootingPage", () => {
   it("renders a header", () => {
@@ -60,6 +73,7 @@ describe("TroubleshootingPage", () => {
     const tabContainer = screen.getByTestId("tab-container");
     expect(tabContainer).toBeInTheDocument();
     expect(tabContainer).toHaveAttribute("data-tab", "diagnostics");
+    expect(tabContainer).toHaveAttribute("data-csrf-token", "token");
   });
 
   it("switches tabs", async () => {

@@ -1,10 +1,6 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
+import { AppContext, AppContextType } from "../context/appContext";
 import IndividualAdmins from "./IndividualAdmins";
-
-export interface SetupPageContext {
-  csrfToken: string;
-}
 
 /** Page that's displayed the first time the admin interface is opened when
     setting up a new circulation manager. The app knows to show this page based
@@ -13,11 +9,8 @@ export interface SetupPageContext {
     page will automatically refresh so the admin can log in, and after that the
     full interface will show. */
 export default class SetupPage extends React.Component<object> {
-  context: SetupPageContext;
-
-  static contextTypes: React.ValidationMap<SetupPageContext> = {
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextType = AppContext;
+  declare context: AppContextType;
 
   render(): JSX.Element {
     return (
