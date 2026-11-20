@@ -5,9 +5,17 @@ import { renderWithProviders } from "../testUtils/withProviders";
 
 // Header and Footer are page chrome; Header reads the legacy `router` context
 // and fetches on mount. Mock them to markers.
-vi.mock("../../../src/components/Header", () => ({
-  default: () => <div data-testid="header" />,
-}));
+// The Header marker shows the library that the page gives through the page
+// context.
+vi.mock("../../../src/components/Header", async () => {
+  const { usePageLibrary } = await vi.importActual<
+    typeof import("../../../src/context/pageContext")
+  >("../../../src/context/pageContext");
+  const HeaderMock = () => (
+    <div data-testid="header" data-library={usePageLibrary()} />
+  );
+  return { default: HeaderMock };
+});
 vi.mock("../../../src/components/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
@@ -37,9 +45,12 @@ vi.mock("../../../src/components/CirculationEventsDownload", () => ({
 import DashboardPage from "../../../src/components/DashboardPage";
 
 describe("DashboardPage", () => {
-  it("shows Header", () => {
-    renderWithProviders(<DashboardPage params={{}} />);
-    expect(screen.getByTestId("header")).toBeInTheDocument();
+  it("shows Header with the page's library", () => {
+    renderWithProviders(<DashboardPage params={{ library: "NYPL" }} />);
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-library",
+      "NYPL"
+    );
   });
 
   it("shows CirculationEventsDownload", () => {
