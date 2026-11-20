@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export interface AnnouncementFormProps {
   content?: string;
@@ -71,7 +71,7 @@ export default class AnnouncementForm extends React.Component<
   updateEndDate(finish: string) {
     this.setState({ finish });
   }
-  add(e: Event) {
+  add(e: React.MouseEvent) {
     // Add the current announcement to the list of announcements in the parent component (AnnouncementsSection)
     e.preventDefault();
     this.props.add({
@@ -84,7 +84,7 @@ export default class AnnouncementForm extends React.Component<
     const [start, finish] = this.getDefaultDates();
     this.setState({ content: "", start: start, finish: finish });
   }
-  cancel(e: Event) {
+  cancel(e: React.MouseEvent) {
     e.preventDefault();
     // If an existing announcement was being edited, just put it back into the list.
     if (this.props.content) {
@@ -152,13 +152,13 @@ export default class AnnouncementForm extends React.Component<
           description="If no expiration date is chosen, the default expiration date is 2 months from the start date."
         />
         <Button
-          callback={(e: Event) => this.add(e)}
+          callback={(e) => this.add(e)}
           content="Add"
           className="inline left-align"
           disabled={shouldDisable()}
         />
         <Button
-          callback={(e: Event) => this.cancel(e)}
+          callback={(e) => this.cancel(e)}
           content="Cancel"
           className="inline left-align"
         />

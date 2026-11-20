@@ -6,7 +6,7 @@ import editorAdapter from "../editorAdapter";
 import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
 import { AppDispatch, RootState } from "../store";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import UpdatingLoader from "./UpdatingLoader";
 import { getBookData, submitBookData } from "../features/book/bookEditorSlice";
 import BookDetailsEditorSuppression from "./BookDetailsEditorSuppression";

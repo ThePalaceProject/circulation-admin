@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "./compat";
 import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";
 import { CustomListEditorSearchParams } from "../reducers/customListEditor";
 import AdvancedSearchBuilder from "./AdvancedSearchBuilder";
@@ -222,7 +222,6 @@ const CustomListSearch = ({
       headerText="Search for titles"
       id="search-titles"
       openByDefault={true}
-      onEnter={search}
       content={searchForm}
     />
   );

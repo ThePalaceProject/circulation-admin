@@ -15,7 +15,7 @@ import LanesSidebar from "./LanesSidebar";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import ResetIcon from "./icons/ResetIcon";
 
 export interface LanesStateProps {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import { LinkData } from "../interfaces";
 import ConfirmationModalWithOutcome, {
   SHOW_CONFIRMATION,
@@ -43,9 +43,8 @@ const BookDetailsEditorSuppression = ({
   defaultFailureMessage = <p>Something went wrong.</p>,
 }: BookDetailsEditorPerLibraryVisibilityProps) => {
   const [modalState, setModalState] = React.useState<ModalState>(undefined);
-  const [outcomeMessage, setOutcomeMessage] = React.useState<
-    React.ReactElement
-  >(null);
+  const [outcomeMessage, setOutcomeMessage] =
+    React.useState<React.ReactElement>(null);
   const [confirmed, setConfirmed] = React.useState(false);
 
   const reset = () => {

@@ -3,7 +3,7 @@ import { AppContext, AppContextType } from "../context/appContext";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { LibraryData, SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";

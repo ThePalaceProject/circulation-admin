@@ -5,7 +5,7 @@ import ActionCreator from "../actions";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "./compat";
 
 export interface ChangePasswordFormStateProps {
   fetchError?: FetchErrorData;

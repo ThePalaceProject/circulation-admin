@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Modal } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import patronBlockingFunctionsHtml from "../content/patronBlockingFunctionsHtml";
 
 const SIMPLEEVAL_URL = "https://github.com/danthedeckie/simpleeval";

@@ -30,7 +30,7 @@ describe("CirculationEventsDownloadForm", () => {
     ).toBeInTheDocument();
 
     // The modal header's dismiss control is also labeled "Close" (its visible
-    // "×" is aria-hidden), so scope to the footer for the reusable Close button.
+    // "×" is aria-hidden), so scope to the footer for the Close `Button`.
     const footer = document.querySelector<HTMLElement>(".modal-footer");
     const closeButton = within(footer).getByRole("button", { name: "Close" });
     expect(closeButton).toBeInTheDocument();

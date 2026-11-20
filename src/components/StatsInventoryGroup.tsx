@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import StatsGroup from "./StatsGroup";
 import SingleStatListItem from "./SingleStatListItem";
 import { InventoryStatistics } from "../interfaces";

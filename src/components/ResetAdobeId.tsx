@@ -6,7 +6,7 @@ import { PatronData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;

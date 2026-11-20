@@ -1,7 +1,7 @@
-// The reusable-components `Form` builds FormData with
-// `new FormData(formElement)` on submit. Use this stand-in in a test that
-// submits a form. For a file input, jsdom's own FormData puts a jsdom `File`
-// in the payload, and Node's `fetch` rejects that object.
+// The compat `Form` builds FormData with `new FormData(formElement)` on submit.
+// Use this stand-in in a test that submits a form. For a file input, jsdom's
+// own FormData puts a jsdom `File` in the payload, and Node's `fetch` rejects
+// that object.
 //
 // This shim mirrors the browser's `new FormData(form)`: it serializes only
 // "successful controls" — named, non-disabled controls, with checkboxes and

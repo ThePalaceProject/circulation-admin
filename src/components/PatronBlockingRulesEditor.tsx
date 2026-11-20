@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { PatronBlockingRule } from "../interfaces";
 import EditableInput from "./EditableInput";
@@ -206,12 +206,8 @@ const PatronBlockingRulesEditor = React.forwardRef<
     const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
     const [showHelp, setShowHelp] = React.useState(false);
 
-    const {
-      availableFields,
-      fieldsLoading,
-      fieldsError,
-      updateFields,
-    } = useAvailableFields(serviceId, csrfToken);
+    const { availableFields, fieldsLoading, fieldsError, updateFields } =
+      useAvailableFields(serviceId, csrfToken);
 
     // Keep stable refs to the latest callbacks so the useEffects below do not
     // need them as dependencies (avoids extra calls when a class-component parent

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Modal } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 
 export const SHOW_CONFIRMATION = "SHOW_CONFIRMATION";
 export const SHOW_OUTCOME = "SHOW_OUTCOME";

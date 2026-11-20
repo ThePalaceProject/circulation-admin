@@ -14,9 +14,9 @@ import BookCoverEditor from "../../../src/components/BookCoverEditor";
 import { BookData, RightsStatusData } from "../../../src/interfaces";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
-// The reusable-components `Form` builds `new FormData(formElement)` on
-// submit. Install the shared shim, so the payload holds only the form's
-// successful controls, as a browser sends them.
+// The compat `Form` builds `new FormData(formElement)` on submit. Install the
+// shared shim, so the payload holds only the form's successful controls, as a
+// browser sends them.
 installFormDataShim();
 const rightsStatuses: RightsStatusData = {
   "http://creativecommons.org/licenses/by/4.0/": {

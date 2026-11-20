@@ -9,9 +9,9 @@ import ConnectedChangePasswordForm, {
 } from "../../../src/components/ChangePasswordForm";
 import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
-// The reusable-components `Form` builds `new FormData(formElement)` on
-// submit. Install the shared shim, so the payload holds only the form's
-// successful controls, as a browser sends them.
+// The compat `Form` builds `new FormData(formElement)` on submit. Install the
+// shared shim, so the payload holds only the form's successful controls, as a
+// browser sends them.
 installFormDataShim();
 
 // Render the unconnected class so tests can pass a `changePassword` spy and

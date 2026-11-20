@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Modal } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import {
   getInventoryReportInfo,
   requestInventoryReport,
@@ -219,8 +219,8 @@ const reportCollectionsMessage = (
   collections === undefined
     ? UNKNOWN_COLLECTIONS_MESSAGE
     : collections.length === 0
-    ? NO_COLLECTIONS_MESSAGE
-    : SOME_COLLECTIONS_MESSAGE;
+      ? NO_COLLECTIONS_MESSAGE
+      : SOME_COLLECTIONS_MESSAGE;
 const collectionList = (collections: InventoryReportCollectionInfo[]) => {
   return (
     collections?.length > 0 && (

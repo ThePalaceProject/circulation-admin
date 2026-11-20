@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { PatronData } from "../interfaces";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "./compat";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
 import PatronInfo from "./PatronInfo";

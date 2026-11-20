@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import { PencilIcon } from "@nypl/dgx-svg-icons";
 
 export interface WithEditButtonProps {
@@ -32,7 +32,7 @@ export default class WithEditButton extends React.Component<
     );
   }
 
-  onClick(e: Event) {
+  onClick(e: React.MouseEvent) {
     e.preventDefault();
     !this.props.disabled && this.props.onEdit();
   }

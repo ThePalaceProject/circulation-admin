@@ -9,7 +9,7 @@ import {
   SettingData,
   AnnouncementData,
 } from "../interfaces";
-import { Panel, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "./compat";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
 import AnnouncementsSection from "./AnnouncementsSection";
@@ -144,7 +144,6 @@ export default class LibraryEditForm extends React.Component<
         <Panel
           id={`library-form-${name.replace(/\s/g, "-")}`}
           headerText={`${name} (Optional)`}
-          onEnter={this.submit}
           key={name}
           content={this.renderFieldset(categories[name])}
         />

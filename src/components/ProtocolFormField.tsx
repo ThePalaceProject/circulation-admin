@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ColorPicker from "./ColorPicker";
 import JsonField, { JsonFieldHandle } from "./JsonField";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import InputList from "./InputList";
 import { SettingData, CustomListsSetting } from "../interfaces";
 import { MONOSPACE_FONT_STACK } from "../fonts";

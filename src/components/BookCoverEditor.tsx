@@ -7,7 +7,7 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { BookData } from "../interfaces";
 import { AppDispatch, RootState } from "../store";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "./compat";
 import UpdatingLoader from "./UpdatingLoader";
 import { getBookData } from "../features/book/bookEditorSlice";
 
@@ -71,14 +71,12 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
               headerText="Cover Metadata"
               openByDefault={true}
               content={this.renderCoverForm()}
-              onEnter={this.save}
             />
             {this.props.rightsStatuses && (
               <Panel
                 id="rights"
                 headerText="Rights"
                 openByDefault={true}
-                onEnter={this.save}
                 content={this.renderRightsForm()}
               />
             )}

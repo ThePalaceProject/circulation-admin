@@ -8,9 +8,9 @@ import buildStore from "../../../src/store";
 import { ManagePatronsForm } from "../../../src/components/ManagePatronsForm";
 import { PatronData } from "../../../src/interfaces";
 
-// The reusable-components `Form` builds `new FormData(formElement)` on
-// submit. Install the shared shim, so the payload holds only the form's
-// successful controls, as a browser sends them.
+// The compat `Form` builds `new FormData(formElement)` on submit. Install the
+// shared shim, so the payload holds only the form's successful controls, as a
+// browser sends them.
 installFormDataShim();
 
 const patron: PatronData = {

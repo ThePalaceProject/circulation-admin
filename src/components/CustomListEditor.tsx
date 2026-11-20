@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "./compat";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";

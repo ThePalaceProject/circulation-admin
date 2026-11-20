@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "./compat";
 import TrashIcon from "./icons/TrashIcon";
 
 export interface WithRemoveButtonProps {
@@ -37,7 +37,7 @@ export default class WithRemoveButton extends React.Component<
     );
   }
 
-  onClick(e: Event) {
+  onClick(e: React.MouseEvent) {
     e.preventDefault();
 
     // Don't remove if confirmation function is present and returns false.

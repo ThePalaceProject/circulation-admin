@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "./compat";
 import { formatString } from "../utils/sharedFunctions";
 
 export interface ComplaintFormProps {

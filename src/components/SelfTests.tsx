@@ -6,7 +6,7 @@ import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button } from "./compat";
 
 import { CheckSoloIcon, XIcon } from "@nypl/dgx-svg-icons";
 
