@@ -2,6 +2,7 @@ import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";
 import { CustomListEditorSearchParams } from "../reducers/customListEditor";
+import { useOfferedEntryPoints } from "../businessRules/periodicals";
 import AdvancedSearchBuilder from "./AdvancedSearchBuilder";
 import CustomListSearchQueryViewer from "./CustomListSearchQueryViewer";
 import EditableInput from "./EditableInput";
@@ -76,9 +77,11 @@ const CustomListSearch = ({
 
   const readOnly = !isOwner;
 
-  const entryPointsWithAll = entryPoints.includes("All")
-    ? entryPoints
-    : ["All", ...entryPoints];
+  const offeredEntryPoints = useOfferedEntryPoints(entryPoints);
+
+  const entryPointsWithAll = offeredEntryPoints.includes("All")
+    ? offeredEntryPoints
+    : ["All", ...offeredEntryPoints];
 
   const selectedEntryPoint = searchParams.entryPoint.toLowerCase();
 

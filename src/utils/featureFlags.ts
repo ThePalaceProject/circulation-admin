@@ -8,4 +8,5 @@ export const defaultFeatureFlags: FeatureFlags = {
   reportsOnlyForSysadmins: true,
   quicksightOnlyForSysadmins: true,
   showCircEventsDownload: false,
+  showPeriodicals: false,
 };

@@ -1,7 +1,10 @@
 import * as React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomListSearch from "../../../src/components/CustomListSearch";
+import { FeatureFlags } from "../../../src/interfaces";
+import { renderWithProviders } from "../testUtils/withProviders";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 describe("CustomListSearch", () => {
   const library = {
@@ -41,9 +44,10 @@ describe("CustomListSearch", () => {
   };
 
   const renderSearch = (
-    overrides: Partial<React.ComponentProps<typeof CustomListSearch>> = {}
+    overrides: Partial<React.ComponentProps<typeof CustomListSearch>> = {},
+    featureFlags: FeatureFlags = defaultFeatureFlags
   ) =>
-    render(
+    renderWithProviders(
       <CustomListSearch
         entryPoints={entryPoints}
         isOwner={true}
@@ -55,7 +59,8 @@ describe("CustomListSearch", () => {
         updateAutoUpdate={vi.fn()}
         updateSearchParam={vi.fn()}
         {...overrides}
-      />
+      />,
+      { appConfigSettings: { featureFlags } }
     );
 
   it("renders a radio button for each entry point", () => {
@@ -270,6 +275,105 @@ describe("CustomListSearch", () => {
       );
       expect(updateAutoUpdateOff).toHaveBeenCalledTimes(1);
       expect(updateAutoUpdateOff).toHaveBeenCalledWith(false);
+    });
+  });
+  describe("the periodicals entry point", () => {
+    const withPeriodicals = ["All", "Book", "Audio", "Periodical"];
+
+    const entryPointNames = (container: HTMLElement) =>
+      within(container.querySelector<HTMLElement>(".entry-points"))
+        .getAllByRole("radio")
+        .map((radio) => radio.getAttribute("value"));
+
+    it("is hidden when the showPeriodicals flag is off", () => {
+      const { container } = renderSearch(
+        { entryPoints: withPeriodicals },
+        { ...defaultFeatureFlags, showPeriodicals: false }
+      );
+
+      expect(entryPointNames(container)).toEqual(["All", "Book", "Audio"]);
+    });
+
+    it("is hidden when the circulation manager sends no showPeriodicals flag", () => {
+      // This is what the client sees against every circulation manager
+      // running today, since PP-5642 has not added the field yet.
+      const { showPeriodicals, ...flagsWithoutPeriodicals } = {
+        ...defaultFeatureFlags,
+        showPeriodicals: false,
+      };
+
+      const { container } = renderSearch(
+        { entryPoints: withPeriodicals },
+        flagsWithoutPeriodicals
+      );
+
+      expect(entryPointNames(container)).toEqual(["All", "Book", "Audio"]);
+    });
+
+    it("is shown when the showPeriodicals flag is on", () => {
+      const { container } = renderSearch(
+        { entryPoints: withPeriodicals },
+        { ...defaultFeatureFlags, showPeriodicals: true }
+      );
+
+      expect(entryPointNames(container)).toEqual([
+        "All",
+        "Book",
+        "Audio",
+        "Periodical",
+      ]);
+    });
+
+    it("can be selected when it is shown", async () => {
+      const user = userEvent.setup();
+      const updateSearchParam = vi.fn();
+
+      const { container } = renderSearch(
+        { entryPoints: withPeriodicals, updateSearchParam },
+        { ...defaultFeatureFlags, showPeriodicals: true }
+      );
+
+      await user.click(
+        within(container.querySelector<HTMLElement>(".entry-points")).getByRole(
+          "radio",
+          { name: "Periodical" }
+        )
+      );
+
+      expect(updateSearchParam).toHaveBeenCalledWith(
+        "entryPoint",
+        "Periodical"
+      );
+    });
+
+    it("leaves the other entry points alone in either state", async () => {
+      const user = userEvent.setup();
+
+      for (const showPeriodicals of [false, true]) {
+        const updateSearchParam = vi.fn();
+        const { container, unmount } = renderSearch(
+          { entryPoints: withPeriodicals, updateSearchParam },
+          { ...defaultFeatureFlags, showPeriodicals }
+        );
+        const entryPointsSection =
+          container.querySelector<HTMLElement>(".entry-points");
+
+        const book = within(entryPointsSection).getByRole("radio", {
+          name: "Book",
+        });
+        const audio = within(entryPointsSection).getByRole("radio", {
+          name: "Audio",
+        });
+
+        expect(book).toBeEnabled();
+        expect(audio).toBeEnabled();
+
+        await user.click(audio);
+        expect(updateSearchParam).toHaveBeenCalledTimes(1);
+        expect(updateSearchParam).toHaveBeenCalledWith("entryPoint", "Audio");
+
+        unmount();
+      }
     });
   });
 });

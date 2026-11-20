@@ -1,6 +1,7 @@
 import * as React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "../testUtils/withProviders";
 
 import CustomListEditor, {
   CustomListEditorProps,
@@ -117,7 +118,7 @@ describe("CustomListEditor", () => {
 
   const renderEditor = (overrides: Partial<CustomListEditorProps> = {}) => {
     const props = makeProps(overrides);
-    const result = render(<CustomListEditor {...props} />);
+    const result = renderWithProviders(<CustomListEditor {...props} />);
     const rerender = (nextOverrides: Partial<CustomListEditorProps>) =>
       result.rerender(<CustomListEditor {...makeProps(nextOverrides)} />);
     return { ...result, rerender, props };
