@@ -66,8 +66,8 @@ export interface FeatureFlags {
    circulation events are not available for download. */
   showCircEventsDownload?: boolean;
   /** `showPeriodicals` controls whether the admin interface offers
-   periodicals. The circulation manager does not send this field yet, so an
-   absent value means periodicals stay hidden. */
+   periodicals. A circulation manager that predates the setting behind it does
+   not send this field, so an absent value means periodicals stay hidden. */
   showPeriodicals?: boolean;
 }
 
