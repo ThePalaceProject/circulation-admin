@@ -1,12 +1,9 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { RootState } from "../store";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
 import SelfTestsTabContainer from "./SelfTestsTabContainer";
 
 export interface TroubleshootingCategoryPageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -25,12 +22,10 @@ export default class TroubleshootingCategoryPage extends React.Component<
 > {
   context: TroubleshootingCategoryPageContext;
 
-  static contextTypes: React.ValidationMap<
-    TroubleshootingCategoryPageContext
-  > = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
+  static contextTypes: React.ValidationMap<TroubleshootingCategoryPageContext> =
+    {
+      csrfToken: PropTypes.string.isRequired,
+    };
 
   CATEGORIES = {
     diagnostics: [
@@ -57,7 +52,6 @@ export default class TroubleshootingCategoryPage extends React.Component<
       <div className={`${this.props.type}-page`}>
         {React.createElement(tabContainer, {
           class: className,
-          store: this.context.editorStore,
           csrfToken: this.context.csrfToken,
           tab: this.props.subtab || this.state.tab,
           goToTab: this.goToTab,

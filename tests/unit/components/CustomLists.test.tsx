@@ -10,7 +10,6 @@ import CustomLists, {
 import * as CustomListEditorModule from "../../../src/components/CustomListEditor";
 import * as navigate from "../../../src/utils/navigate";
 import renderWithContext from "../testUtils/renderWithContext";
-import buildStore from "../../../src/store";
 import { ConfigurationSettings, LaneData } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
@@ -63,12 +62,7 @@ describe("CustomLists", () => {
     };
 
     renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -103,12 +97,7 @@ describe("CustomLists", () => {
     };
 
     renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -155,12 +144,7 @@ describe("CustomLists", () => {
     };
 
     renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -199,12 +183,7 @@ describe("CustomLists", () => {
     };
 
     renderWithContext(
-      <CustomLists
-        csrfToken=""
-        editOrCreate="create"
-        library="testlib"
-        store={buildStore()}
-      />,
+      <CustomLists csrfToken="" editOrCreate="create" library="testlib" />,
       appConfigSettings
     );
 
@@ -260,14 +239,11 @@ describe("CustomLists", () => {
     vi.spyOn(navigate, "navigateTo").mockImplementation(() => undefined);
     const user = userEvent.setup();
 
-    renderWithContext(
-      <CustomLists csrfToken="" library="testlib" store={buildStore()} />,
-      {
-        csrfToken: "",
-        featureFlags: defaultFeatureFlags,
-        roles: [{ role: "manager", library: "testlib" }],
-      }
-    );
+    renderWithContext(<CustomLists csrfToken="" library="testlib" />, {
+      csrfToken: "",
+      featureFlags: defaultFeatureFlags,
+      roles: [{ role: "manager", library: "testlib" }],
+    });
 
     const listItem = (await screen.findByText("z list")).closest("li");
     await user.click(within(listItem).getByRole("button", { name: /Delete/ }));

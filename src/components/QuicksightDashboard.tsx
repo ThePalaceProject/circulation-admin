@@ -4,8 +4,6 @@ import {
   LibrariesData,
   LibraryData,
 } from "../interfaces";
-import { Store } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 
@@ -23,12 +21,12 @@ export interface QuicksightDashboardDispatchProps {
 }
 
 export interface QuicksightDashboardOwnProps {
-  store?: Store<RootState>;
   dashboardId?: string;
 }
 
 export interface QuicksightDashboardProps
-  extends QuicksightDashboardStateProps,
+  extends
+    QuicksightDashboardStateProps,
     QuicksightDashboardDispatchProps,
     QuicksightDashboardOwnProps {}
 

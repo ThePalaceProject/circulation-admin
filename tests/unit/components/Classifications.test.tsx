@@ -40,7 +40,6 @@ const renderConnected = (
     overrides.refreshCatalog ?? vi.fn().mockResolvedValue(undefined);
   const result = renderWithProviders(
     <Classifications
-      store={store}
       csrfToken="token"
       bookUrl={bookUrl}
       book={bookData as any}
@@ -107,7 +106,6 @@ describe("Classifications", () => {
     // crash the worker, so drive the error through the prop that connect derives.
     render(
       <UnconnectedClassifications
-        store={buildStore() as any}
         csrfToken="token"
         bookUrl={bookUrl}
         book={bookData as any}

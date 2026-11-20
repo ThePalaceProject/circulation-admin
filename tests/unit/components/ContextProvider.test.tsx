@@ -3,6 +3,8 @@ import * as PropTypes from "prop-types";
 import { render, screen } from "@testing-library/react";
 
 import ContextProvider from "../../../src/components/ContextProvider";
+import { useAppStore } from "../../../src/context/appStoreContext";
+import buildStore from "../../../src/store";
 import Admin from "../../../src/models/Admin";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { ConfigurationSettings } from "../../../src/interfaces";
@@ -13,7 +15,6 @@ import { ConfigurationSettings } from "../../../src/interfaces";
 let captured: any;
 class Capture extends React.Component {
   static contextTypes = {
-    editorStore: PropTypes.object,
     csrfToken: PropTypes.string,
     settingUp: PropTypes.bool,
     admin: PropTypes.object,
@@ -26,16 +27,27 @@ class Capture extends React.Component {
   }
 }
 
+// Reads the store that ContextProvider gives through its store context.
+let capturedStore: ReturnType<typeof useAppStore>;
+const CaptureStore = () => {
+  capturedStore = useAppStore();
+  return null;
+};
+
 const renderWithConfig = (config: Partial<ConfigurationSettings>) =>
   render(
     <ContextProvider config={config as ConfigurationSettings}>
-      <Capture />
+      <>
+        <Capture />
+        <CaptureStore />
+      </>
     </ContextProvider>
   );
 
 describe("ContextProvider", () => {
   beforeEach(() => {
     captured = undefined;
+    capturedStore = undefined;
   });
 
   it("provides child context", () => {
@@ -46,13 +58,26 @@ describe("ContextProvider", () => {
       email: "email",
     });
 
-    expect(captured.editorStore.getState().editor).toBeTruthy();
-    expect(captured.editorStore.getState().catalog).toBeTruthy();
+    expect(capturedStore.getState().editor).toBeTruthy();
+    expect(capturedStore.getState().catalog).toBeTruthy();
     expect(captured.csrfToken).toBe("token");
     expect(captured.settingUp).toBeFalsy();
     expect(captured.admin instanceof Admin).toBe(true);
     expect(captured.admin.isSystemAdmin()).toBe(true);
     expect(captured.admin.email).toBe("email");
+  });
+
+  it("provides the store it is given", () => {
+    const store = buildStore();
+    render(
+      <ContextProvider
+        config={{ csrfToken: "token", featureFlags: {} }}
+        store={store}
+      >
+        <CaptureStore />
+      </ContextProvider>
+    );
+    expect(capturedStore).toBe(store);
   });
 
   it("saves the enableAutoList feature flag to the store", () => {
@@ -62,8 +87,7 @@ describe("ContextProvider", () => {
     });
 
     expect(
-      captured.editorStore.getState().editor.customListEditor
-        .isAutoUpdateEnabled
+      capturedStore.getState().editor.customListEditor.isAutoUpdateEnabled
     ).toBe(true);
   });
 

@@ -17,7 +17,6 @@ interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   library: (collectionUrl, bookUrl) => string;
   canSuppress: boolean;
   // extended from TabContainerProps in superclass
-  //   store?: Store<RootState>;
   //   csrfToken?: string;
   //   tab: string;
   //   class?: string;
@@ -40,9 +39,7 @@ export type BookDetailsTabContainerProps = ConnectedProps<typeof connector> &
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
     for editing metadata, classifications, and complaints. */
-export class BookDetailsTabContainer extends TabContainer<
-  BookDetailsTabContainerProps
-> {
+export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContainerProps> {
   componentWillUnmount() {
     this.props.clearBook();
   }
@@ -58,7 +55,6 @@ export class BookDetailsTabContainer extends TabContainer<
     tabs["details"] = <div>{this.props.children}</div>;
     tabs["edit"] = (
       <BookDetailsEditor
-        store={this.props.store}
         csrfToken={this.props.csrfToken}
         bookUrl={this.props.bookUrl}
         refreshCatalog={this.props.refreshCatalog}
@@ -67,7 +63,6 @@ export class BookDetailsTabContainer extends TabContainer<
     );
     tabs["classifications"] = (
       <Classifications
-        store={this.props.store}
         csrfToken={this.props.csrfToken}
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}
@@ -77,7 +72,6 @@ export class BookDetailsTabContainer extends TabContainer<
     if (this.props.bookData && this.props.bookData.changeCoverLink) {
       tabs["cover"] = (
         <BookCoverEditor
-          store={this.props.store}
           csrfToken={this.props.csrfToken}
           bookUrl={this.props.bookUrl}
           book={this.props.bookData}
@@ -87,7 +81,6 @@ export class BookDetailsTabContainer extends TabContainer<
     }
     tabs["lists"] = (
       <CustomListsForBook
-        store={this.props.store}
         csrfToken={this.props.csrfToken}
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}

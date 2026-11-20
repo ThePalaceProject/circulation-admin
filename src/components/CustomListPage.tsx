@@ -1,10 +1,8 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import CustomLists from "./CustomLists";
-import { RootState } from "../store";
 
 export interface CustomListPageProps {
   params: {
@@ -16,7 +14,6 @@ export interface CustomListPageProps {
 }
 
 export interface CustomListPageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -28,7 +25,6 @@ export default class CustomListPage extends React.Component<
   context: CustomListPageContext;
 
   static contextTypes: React.ValidationMap<CustomListPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -54,7 +50,6 @@ export default class CustomListPage extends React.Component<
           library={this.props.params.library}
           editOrCreate={this.props.params.editOrCreate}
           identifier={this.props.params.identifier}
-          store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
           startingTitle={startingTitle}
         />

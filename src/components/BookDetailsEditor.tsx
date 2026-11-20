@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -16,7 +15,6 @@ import { bookEditorApiEndpoints } from "../features/book/bookEditorSlice";
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
   csrfToken: string;
-  store?: Store<RootState>;
   refreshCatalog?: () => Promise<any>;
   canSuppress: boolean;
 }

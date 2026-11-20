@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Provider, ProviderProps } from "react-redux";
+import { Store } from "@reduxjs/toolkit";
 import ContextProvider, {
   ContextProviderProps,
 } from "../../../src/components/ContextProvider";
@@ -8,11 +8,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
-import { store } from "../../../src/store";
+import { store, RootState } from "../../../src/store";
 import { ConfigurationSettings } from "../../../src/interfaces";
 
 export type TestProviderWrapperOptions = {
-  reduxProviderProps?: ProviderProps;
+  reduxProviderProps?: { store: Store<RootState> };
   appConfigSettings?: Partial<ConfigurationSettings>;
   queryClient?: QueryClient;
   route?: string;
@@ -21,8 +21,6 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
   renderOptions?: Omit<RenderOptions, "queries">;
 };
 
-// The `store` argument is required for the Redux Provider and should
-// be the same for both the Redux Provider and the ContextProvider.
 const defaultReduxStore = store;
 
 // Some config settings from the server are required, so we provide
@@ -37,7 +35,7 @@ const requiredAppConfigSettings: Partial<ConfigurationSettings> = {
  * a React element for testing.
  *
  * @param {TestProviderWrapperOptions} options
- * @param options.reduxProviderProps Props to pass to the Redux `Provider` wrapper
+ * @param options.reduxProviderProps Its `store` is the Redux store for the render
  * @param {ConfigurationSettings} options.appConfigSettings
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
  * @param {string} options.route If set, render inside a React Router
@@ -55,24 +53,23 @@ export const componentWithProviders = ({
   route,
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const config = { ...requiredAppConfigSettings, ...appConfigSettings };
-  const effectiveContextProviderProps = {
+  // ContextProvider gives this store to react-redux and to our store context.
+  const effectiveContextProviderProps: ContextProviderProps = {
     config: config as ConfigurationSettings,
-    ...reduxProviderProps.store, // Context and Redux Provider stores must match.
-  } as ContextProviderProps;
+    store: reduxProviderProps.store,
+  };
   const wrapper = ({ children }) => (
-    <Provider {...reduxProviderProps}>
-      <ContextProvider {...effectiveContextProviderProps}>
-        <QueryClientProvider client={queryClient}>
-          {route === undefined ? (
-            children
-          ) : (
-            <MemoryRouter initialEntries={[route]} useTransitions={false}>
-              <LegacyRouterBridge>{children}</LegacyRouterBridge>
-            </MemoryRouter>
-          )}
-        </QueryClientProvider>
-      </ContextProvider>
-    </Provider>
+    <ContextProvider {...effectiveContextProviderProps}>
+      <QueryClientProvider client={queryClient}>
+        {route === undefined ? (
+          children
+        ) : (
+          <MemoryRouter initialEntries={[route]} useTransitions={false}>
+            <LegacyRouterBridge>{children}</LegacyRouterBridge>
+          </MemoryRouter>
+        )}
+      </QueryClientProvider>
+    </ContextProvider>
   );
   wrapper.displayName = "TestWrapperComponent";
   return wrapper;

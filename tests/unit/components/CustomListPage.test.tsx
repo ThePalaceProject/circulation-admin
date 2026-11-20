@@ -24,7 +24,6 @@ vi.mock("../../../src/components/CustomLists", () => ({
       data-edit-or-create={props.editOrCreate}
       data-identifier={props.identifier}
       data-csrf-token={props.csrfToken}
-      data-has-store={String(!!props.store)}
     />
   ),
 }));
@@ -48,7 +47,5 @@ describe("CustomListPage", () => {
     expect(customLists).toHaveAttribute("data-edit-or-create", "edit");
     expect(customLists).toHaveAttribute("data-identifier", "identifier");
     expect(customLists).toHaveAttribute("data-csrf-token", "token");
-    // The redux store is forwarded from context; assert it was passed through.
-    expect(customLists).toHaveAttribute("data-has-store", "true");
   });
 });

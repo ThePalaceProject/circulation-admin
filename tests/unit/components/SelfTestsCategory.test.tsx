@@ -85,8 +85,8 @@ const renderCategory = (items: any[] = collections) =>
       linkName="collections"
       csrfToken="token"
       items={items}
-      store={buildStore()}
-    />
+    />,
+    { reduxProviderProps: { store: buildStore() } }
   );
 
 describe("SelfTestsCategory", () => {
@@ -166,7 +166,6 @@ describe("SelfTestsCategory", () => {
         linkName="collections"
         csrfToken="token"
         items={[withCollection, ...collections]}
-        store={buildStore()}
       />
     );
 

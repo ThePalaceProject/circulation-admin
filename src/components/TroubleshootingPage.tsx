@@ -1,14 +1,11 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
-import { RootState } from "../store";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 import title from "../utils/title";
 
 export interface TroubleshootingPageContext {
-  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
@@ -31,7 +28,6 @@ export default class TroubleshootingPage extends React.Component<
   context: TroubleshootingPageContext;
 
   static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -63,7 +59,6 @@ export default class TroubleshootingPage extends React.Component<
         <div className="body">
           <h2>Troubleshooting</h2>
           <TroubleshootingTabContainer
-            store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
             tab={tab}
             goToTab={this.goToTab}

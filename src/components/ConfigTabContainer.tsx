@@ -27,9 +27,7 @@ export interface ConfigTabContainerContext extends TabContainerContext {
 
 /** Body of the system configuration page, with a tab for each type of
     service that can be configured. */
-export default class ConfigTabContainer extends TabContainer<
-  ConfigTabContainerProps
-> {
+export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
   context: ConfigTabContainerContext;
   static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
     router: PropTypes.object.isRequired,
@@ -66,7 +64,6 @@ export default class ConfigTabContainer extends TabContainer<
         const ComponentClass = this.COMPONENT_CLASSES[tab];
         tabs[tab] = (
           <ComponentClass
-            store={this.props.store}
             csrfToken={this.props.csrfToken}
             editOrCreate={this.props.editOrCreate}
             identifier={this.props.identifier}

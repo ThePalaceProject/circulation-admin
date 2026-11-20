@@ -25,7 +25,6 @@ vi.mock("../../../src/components/ConfigTabContainer", () => ({
       data-edit-or-create={props.editOrCreate}
       data-identifier={props.identifier}
       data-csrf-token={props.csrfToken}
-      data-has-store={String(!!props.store)}
     />
   ),
 }));
@@ -49,7 +48,5 @@ describe("ConfigPage", () => {
     expect(tabContainer).toHaveAttribute("data-edit-or-create", "edit");
     expect(tabContainer).toHaveAttribute("data-identifier", "identifier");
     expect(tabContainer).toHaveAttribute("data-csrf-token", "token");
-    // The redux store is forwarded from context; assert it was passed through.
-    expect(tabContainer).toHaveAttribute("data-has-store", "true");
   });
 });

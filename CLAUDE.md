@@ -46,6 +46,8 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 
 `src/context/appContext.ts` provides configuration via React Context. Key hooks: `useAppContext()`, `useCsrfToken()`, `useAppAdmin()`, `useAppFeatureFlags()`. The context carries CSRF tokens, admin user info, feature flags, and support contact configuration.
 
+`ContextProvider` gives one Redux store to the react-redux `Provider` and to our store context (`src/context/appStoreContext.tsx`, read with `useAppStore()`). Connected components and react-redux hooks (`useSelector`, the RTK Query hooks) read the react-redux context, so do not pass `store` as a prop. Exception: web-opds-client's catalog puts its own store in react-redux's context around everything it renders, including the components we pass it (`Header`, `BookDetailsContainer`, `EntryPointsContainer`). Wrap our connected components there in `AppReduxProvider`, which gives them our store again. Everything under it reads our store, so do not put a part that needs the catalog store there.
+
 ### Component Patterns
 
 - Mix of class components (legacy) and functional components (newer)
@@ -76,7 +78,7 @@ Tests are written with React Testing Library (+ `@testing-library/user-event`); 
 Helpers in `tests/unit/testUtils/`:
 
 - `withProviders.tsx` — `renderWithProviders()` and `componentWithProviders()` wrap a component in Redux, app Context, and QueryClient. Use these for anything touching the store. Pass `route` (for example `{ route: "/admin/web" }`) to also render inside a React Router `MemoryRouter` with `LegacyRouterBridge`, so links and navigation work.
-- `renderWithContext.tsx` — lighter: app Context only.
+- `renderWithContext.tsx` — lighter: `ContextProvider` only, which builds a new Redux store for each `renderWithContext` call (its `rerender` keeps that store). Use `renderWithProviders` to choose the store, or to get React Query or a router.
 - `mswServer.ts` — `setupMswServer(...handlers)` starts an MSW server and returns `{ server, requests }`. `requests` holds a copy of each request the current test sent, so assert on its URL, method, headers, and body. Add per-test handlers with `server.use()`. A request with no matching handler fails the test, even if the app catches the rejected `fetch`. The helper sends `fetch(null)` as a request for the relative path "null" (`GET http://localhost/null` in tests), as a browser does, so a request built from a missing URL fails as unhandled instead of being hidden. Call it once per file, at the top level or in sibling `describe` blocks. Do not nest the calls, because two servers at once each treat the other's handlers as unhandled. Match each endpoint by path. A `"*"` catch-all matches every request, so it turns off the unhandled-request check. Use one only inside a single test, for example to hold the page in its loading state. The helper's own test, `mswServer.test.ts`, runs the files in `mswServerFixtures/` in a separate Vitest process. Some of them fail on purpose, so they end in `.fixture.ts` and the main run skips them. Do not rename them to `.test.ts`.
 - `formDataShim.ts` — `installFormDataShim()`; install it in a test that submits the reusable `<Form>`. It sends only the form's successful controls, as a browser does, and leaves out file inputs. For a file input, jsdom's own FormData puts a jsdom `File` in the payload, and Node's `fetch` rejects that object. The shim returns a real `FormData`, so MSW can read the submitted fields.
 

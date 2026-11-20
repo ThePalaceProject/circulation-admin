@@ -81,9 +81,6 @@ describe("BookDetailsTabContainer", () => {
     const push = overrides.push || vi.fn();
     const clearBook = overrides.clearBook || vi.fn();
     const context = { router: { push }, pathFor };
-    // One store for the lifetime of the render: a fresh one per element() call
-    // would hand the panels a new store identity on every rerender.
-    const store = buildStore();
     const element = (bookUrl: string, bookData: any) => (
       <LegacyContextProvider context={context}>
         <BookDetailsTabContainer
@@ -91,7 +88,6 @@ describe("BookDetailsTabContainer", () => {
           collectionUrl={TEST_COLLECTION_URL}
           csrfToken="token"
           refreshCatalog={vi.fn()}
-          store={store}
           library={() => "library"}
           canSuppress={true}
           complaintsCount={0}

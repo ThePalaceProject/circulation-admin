@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -7,7 +6,6 @@ import ErrorMessage from "./ErrorMessage";
 import ProtocolFormField from "./ProtocolFormField";
 import { BookData, CustomListData, CustomListsData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { RootState } from "../store";
 import { Link } from "react-router";
 
 export interface CustomListsForBookStateProps {
@@ -27,7 +25,6 @@ export interface CustomListsForBookOwnProps {
   bookUrl: string;
   book: BookData;
   library: string;
-  store?: Store<RootState>;
   csrfToken: string;
   refreshCatalog: () => Promise<any>;
 }

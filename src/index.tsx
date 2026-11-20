@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 import buildStore from "./store";
-import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router";
 import ContextProvider from "./components/ContextProvider";
 import AppRoutes, { quicksightPagePath } from "./components/AppRoutes";
@@ -32,27 +31,23 @@ class CirculationAdmin {
 
     const appElement = "opds-catalog";
     const app = config.settingUp ? (
-      <Provider store={store}>
-        <ContextProvider config={config} store={store}>
-          <SetupPage />
-        </ContextProvider>
-      </Provider>
+      <ContextProvider config={config} store={store}>
+        <SetupPage />
+      </ContextProvider>
     ) : (
-      <Provider store={store}>
-        <ContextProvider config={config} store={store}>
-          <QueryClientProvider client={queryClient}>
-            {/* Update on navigation at once, as react-router v3 did, instead of
-                in a React transition. Our class components (with their
-                UNSAFE_componentWillReceiveProps) expect that. */}
-            <BrowserRouter useTransitions={false}>
-              <LegacyRouterBridge>
-                <AppRoutes />
-              </LegacyRouterBridge>
-            </BrowserRouter>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </ContextProvider>
-      </Provider>
+      <ContextProvider config={config} store={store}>
+        <QueryClientProvider client={queryClient}>
+          {/* Update on navigation at once, as react-router v3 did, instead of
+              in a React transition. Our class components (with their
+              UNSAFE_componentWillReceiveProps) expect that. */}
+          <BrowserRouter useTransitions={false}>
+            <LegacyRouterBridge>
+              <AppRoutes />
+            </LegacyRouterBridge>
+          </BrowserRouter>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ContextProvider>
     );
 
     // `react-axe` should only run in development and testing mode.

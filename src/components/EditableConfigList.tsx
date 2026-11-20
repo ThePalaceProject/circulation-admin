@@ -1,9 +1,7 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { LibraryData, SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
-import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -34,7 +32,6 @@ export interface EditableConfigListDispatchProps<T> {
 }
 
 export interface EditableConfigListOwnProps {
-  store?: Store<RootState>;
   csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
@@ -63,7 +60,6 @@ export interface EditFormProps<T, U> {
 }
 
 export interface AdditionalContentProps<_T, U> {
-  store?: Store<RootState>;
   csrfToken?: string;
   item?: U;
   type?: string;
@@ -485,7 +481,6 @@ export abstract class GenericEditableConfigList<
           <AdditionalContent
             type={this.itemTypeName}
             item={item}
-            store={this.props.store}
             csrfToken={this.props.csrfToken}
           />
         )}

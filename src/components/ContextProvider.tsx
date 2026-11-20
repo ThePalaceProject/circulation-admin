@@ -1,11 +1,13 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
+import { Provider } from "react-redux";
 import buildStore, { RootState } from "../store";
 import { ConfigurationSettings, PathFor } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
+import { AppStoreProvider } from "../context/appStoreContext";
 import AppContextProvider, {
   AppContextType,
   supportContactLinkFromConfig,
@@ -81,7 +83,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   }
 
   static childContextTypes: React.ValidationMap<object> = {
-    editorStore: PropTypes.object.isRequired,
     csrfToken: PropTypes.string.isRequired,
     settingUp: PropTypes.bool.isRequired,
     admin: PropTypes.object.isRequired,
@@ -90,7 +91,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
 
   getChildContext() {
     return {
-      editorStore: this.store,
       csrfToken: this.appConfig.csrfToken,
       settingUp: this.appConfig.settingUp || false,
       admin: this.admin,
@@ -110,12 +110,18 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       tos_link_href: this.appConfig.tos_link_href,
       supportContact: supportContactLinkFromConfig(this.appConfig),
     };
+    // Give the one store to react-redux and to our store context, so that the
+    // two cannot differ.
     return (
-      <PathForProvider pathFor={this.pathFor}>
-        <AppContextProvider value={appContextValue}>
-          {React.Children.only(this.props.children) as JSX.Element}
-        </AppContextProvider>
-      </PathForProvider>
+      <Provider store={this.store}>
+        <AppStoreProvider value={this.store}>
+          <PathForProvider pathFor={this.pathFor}>
+            <AppContextProvider value={appContextValue}>
+              {React.Children.only(this.props.children) as JSX.Element}
+            </AppContextProvider>
+          </PathForProvider>
+        </AppStoreProvider>
+      </Provider>
     );
   }
 }

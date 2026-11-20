@@ -1,6 +1,4 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
-import { RootState } from "../store";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -13,18 +11,8 @@ export interface QuicksightDashboardPageProps {
   };
 }
 
-export interface QuicksightDashboardPageContext {
-  editorStore: Store<RootState>;
-}
-
 /** Page holds quicksight dashboards. */
 export default class QuicksightDashboardPage extends React.Component<QuicksightDashboardPageProps> {
-  context: QuicksightDashboardPageContext;
-
-  static contextTypes: React.ValidationMap<QuicksightDashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-  };
-
   static childContextTypes: React.ValidationMap<object> = {
     library: PropTypes.func,
   };

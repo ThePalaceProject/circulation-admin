@@ -46,10 +46,10 @@ describe("ResetAdobeId", () => {
   // store, so tests inject them directly). Wrapped in providers because the
   // ManagePatronsForm it renders is connected.
   const resetElement = (props: Record<string, unknown> = {}) => (
-    <ResetAdobeId store={store} csrfToken="token" library="nypl" {...props} />
+    <ResetAdobeId csrfToken="token" library="nypl" {...props} />
   );
   const renderReset = (props: Record<string, unknown> = {}) =>
-    renderWithProviders(resetElement(props));
+    renderWithProviders(resetElement(props), { reduxProviderProps: { store } });
 
   describe("rendering without patron", () => {
     it("has the patron-actions class", () => {
@@ -274,11 +274,8 @@ describe("ResetAdobeId", () => {
 
     it("wires state and dispatch through connect", async () => {
       renderWithProviders(
-        <ConnectedResetAdobeId
-          store={buildStore()}
-          csrfToken="token"
-          library="nypl"
-        />
+        <ConnectedResetAdobeId csrfToken="token" library="nypl" />,
+        { reduxProviderProps: { store: buildStore() } }
       );
 
       // With no patron in the store, mapStateToProps yields patron=undefined and

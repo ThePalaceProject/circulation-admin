@@ -1,9 +1,7 @@
 /* eslint-disable */
 import * as React from "react";
 import { connect } from "react-redux";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
 import Admin from "../models/Admin";
@@ -14,6 +12,7 @@ import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../utils/title";
+import { AppReduxProvider } from "../context/appStoreContext";
 import palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 
 export interface HeaderStateProps {
@@ -26,7 +25,6 @@ export interface HeaderDispatchProps {
 }
 
 export interface HeaderOwnProps {
-  store?: Store<RootState>;
   logoOnly?: boolean;
 }
 
@@ -339,25 +337,18 @@ const ConnectedHeader = connect<
   mapDispatchToProps
 )(Header);
 
-/** HeaderWithStore is a wrapper component to pass the store as a prop to the
-    ConnectedHeader, since it's not in the regular place in the context. */
 type HeaderWithStoreProps = {
   logoOnly?: boolean;
 };
 
-export default class HeaderWithStore extends React.Component<HeaderWithStoreProps> {
-  context: { editorStore: Store<RootState> };
+/** Connects the header to our store, even where react-redux's context holds
+    another store (as in web-opds-client's catalog). Everything under
+    `AppReduxProvider` reads our store, so do not render a part that needs the
+    catalog store there. */
+const HeaderWithStore = ({ logoOnly }: HeaderWithStoreProps) => (
+  <AppReduxProvider>
+    <ConnectedHeader logoOnly={logoOnly} />
+  </AppReduxProvider>
+);
 
-  static contextTypes = {
-    editorStore: PropTypes.object.isRequired,
-  };
-
-  render(): JSX.Element {
-    return (
-      <ConnectedHeader
-        store={this.context.editorStore}
-        logoOnly={this.props.logoOnly}
-      />
-    );
-  }
-}
+export default HeaderWithStore;

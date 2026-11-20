@@ -259,7 +259,6 @@ describe("BookDetailsEditor", () => {
     const store = buildStore();
     renderWithProviders(
       <BookDetailsEditor
-        store={store}
         bookUrl="works/1234"
         csrfToken="token"
         canSuppress={true}
