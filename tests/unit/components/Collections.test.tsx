@@ -350,6 +350,8 @@ describe("Collections - connected wiring, deletion, and edit form", () => {
         sysAdminConfig
       );
 
+      // The list gives the edit form its importCollection and reapCollection
+      // callbacks, so the clicks reach the mocks.
       // The edited collection has an id, so the form shows the task panels.
       // Each panel starts collapsed. Click its header to open it.
       await user.click(screen.getByRole("button", { name: "Import" }));
