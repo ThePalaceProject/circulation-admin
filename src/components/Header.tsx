@@ -1,20 +1,19 @@
 /* eslint-disable */
 import * as React from "react";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
 import Admin from "../models/Admin";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
-import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../utils/title";
 import { AppReduxProvider } from "../context/appStoreContext";
 import { useAppAdmin } from "../context/appContext";
 import { usePageLibrary } from "../context/pageContext";
+import { LegacyRouter, useLegacyRouter } from "./LegacyRouterBridge";
 import palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 
 export interface HeaderStateProps {
@@ -31,6 +30,9 @@ export interface HeaderOwnProps {
   /** The short name of the page's library, if the page is for one. */
   library?: string;
   logoOnly?: boolean;
+  /** The router to read the current path from and to push to. Read it with
+   *  `useLegacyRouter()`. */
+  router?: LegacyRouter;
 }
 
 export interface HeaderProps
@@ -38,10 +40,6 @@ export interface HeaderProps
 
 export interface HeaderState {
   showAccountDropdown: boolean;
-}
-
-export interface HeaderRouter extends Router {
-  getCurrentLocation?: Function;
 }
 
 export interface HeaderNavItem {
@@ -53,11 +51,6 @@ export interface HeaderNavItem {
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
-  context: { router: HeaderRouter };
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
   private libraryRef = React.createRef<EditableInput>();
 
   constructor(props) {
@@ -89,10 +82,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   render(): JSX.Element {
     const currentPathname =
-      (this.context.router &&
-        this.context.router.getCurrentLocation() &&
-        this.context.router.getCurrentLocation().pathname) ||
-      "";
+      this.props.router?.getCurrentLocation().pathname ?? "";
     let currentLibrary = this.props.library;
     let isLibraryManager = this.props.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.props.admin.isSystemAdmin();
@@ -232,9 +222,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   changeLibrary() {
     let library = this.libraryRef.current.getValue();
     if (library) {
-      this.context.router.push(
-        "/admin/web/collection/" + library + "%2Fgroups"
-      );
+      this.props.router?.push(`/admin/web/collection/${library}%2Fgroups`);
       this.forceUpdate();
     }
   }
@@ -346,15 +334,20 @@ type HeaderWithStoreProps = {
 /** Connects the header to our store, even where react-redux's context holds
     another store (as in web-opds-client's catalog). Everything under
     `AppReduxProvider` reads our store, so do not render a part that needs the
-    catalog store there. It also gives the header `admin` and the page's
-    `library`. The header reads `router` from legacy context, so it cannot also
-    use `static contextType`. */
+    catalog store there. It also provides the header `admin`, the page's
+    `library`, and `router`. */
 const HeaderWithStore = ({ logoOnly }: HeaderWithStoreProps) => {
   const admin = useAppAdmin();
   const library = usePageLibrary();
+  const router = useLegacyRouter();
   return (
     <AppReduxProvider>
-      <ConnectedHeader admin={admin} library={library} logoOnly={logoOnly} />
+      <ConnectedHeader
+        admin={admin}
+        library={library}
+        router={router}
+        logoOnly={logoOnly}
+      />
     </AppReduxProvider>
   );
 };

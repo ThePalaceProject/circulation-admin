@@ -1,10 +1,6 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
-import {
-  TabContainer,
-  TabContainerProps,
-  TabContainerContext,
-} from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
+import { useLegacyRouter } from "./LegacyRouterBridge";
 import TroubleshootingCategoryPage from "./TroubleshootingCategoryPage";
 
 export interface TroubleshootingTabContainerProps extends TabContainerProps {
@@ -12,15 +8,7 @@ export interface TroubleshootingTabContainerProps extends TabContainerProps {
   subtab?: string;
 }
 
-export default class TroubleshootingTabContainer extends TabContainer<
-  TroubleshootingTabContainerProps
-> {
-  context: TabContainerContext;
-  static contextTypes: React.ValidationMap<TabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
-
+export class TroubleshootingTabContainer extends TabContainer<TroubleshootingTabContainerProps> {
   tabs() {
     return {
       diagnostics: (
@@ -57,10 +45,18 @@ export default class TroubleshootingTabContainer extends TabContainer<
   }
 
   route(tab: string, subtab: string) {
-    if (this.context.router) {
-      this.context.router.push(
-        "/admin/web/troubleshooting/" + tab + "/" + subtab
-      );
+    if (this.props.router) {
+      this.props.router.push(`/admin/web/troubleshooting/${tab}/${subtab}`);
     }
   }
 }
+
+/** Provides `TroubleshootingTabContainer` the `router`, read with a hook. */
+const TroubleshootingTabContainerWithRouter = (
+  props: Omit<TroubleshootingTabContainerProps, "router">
+) => {
+  const router = useLegacyRouter();
+  return <TroubleshootingTabContainer {...props} router={router} />;
+};
+
+export default TroubleshootingTabContainerWithRouter;

@@ -4,10 +4,11 @@ import userEvent from "@testing-library/user-event";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 
-// The tab containers are connected components that fetch on mount and require
-// react-router context; TroubleshootingCategoryPage only chooses between them
-// and hands them a `csrfToken`, a `tab`, and `goToTab`. Mock them to markers that
-// surface the `csrfToken` and `tab` they receive and let us drive `goToTab`.
+// The tab containers are connected components that fetch on mount and read the
+// router from `LegacyRouterBridge`. TroubleshootingCategoryPage only chooses
+// between them and hands them a `csrfToken`, a `tab`, and `goToTab`. Mock them
+// to markers that surface the `csrfToken` and `tab` they receive and let us
+// drive `goToTab`.
 vi.mock("../../../src/components/DiagnosticsTabContainer", () => ({
   default: (props: any) => (
     <div

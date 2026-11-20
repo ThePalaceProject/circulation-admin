@@ -1,17 +1,14 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
-import { PathFor } from "../interfaces";
+import { LegacyRouter } from "./LegacyRouterBridge";
 
 export interface TabContainerProps {
   children?: React.ReactNode;
   csrfToken?: string;
   tab: string;
   class?: string;
-}
-
-export interface TabContainerContext {
-  pathFor: PathFor;
-  router: any;
+  /** For a subclass whose tab click pushes a path. Read it with
+   *  `useLegacyRouter()`. */
+  router?: LegacyRouter;
 }
 
 /** Renders a list of navigation tabs and the content of the current tab.
@@ -20,8 +17,6 @@ export interface TabContainerContext {
 export abstract class TabContainer<
   T extends TabContainerProps,
 > extends React.Component<T, any> {
-  context: TabContainerContext;
-
   constructor(props) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
@@ -32,11 +27,6 @@ export abstract class TabContainer<
     this.tabDisplayName = this.tabDisplayName.bind(this);
     this.renderTab = this.renderTab.bind(this);
   }
-
-  static contextTypes: React.ValidationMap<TabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
 
   render(): JSX.Element {
     const className = this.props.class

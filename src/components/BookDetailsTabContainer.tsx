@@ -9,6 +9,8 @@ import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "./CustomListsForBook";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import { RootState } from "../store";
+import { PathFor } from "../interfaces";
+import { LegacyRouter } from "./LegacyRouterBridge";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
@@ -16,6 +18,11 @@ interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   refreshCatalog: () => Promise<any>;
   library: string;
   canSuppress: boolean;
+  /** Builds the path of a tab, for a tab click to push. */
+  pathFor: PathFor;
+  /** The router that a tab click pushes to. Always pass it, even when
+   *  `useLegacyRouter()` returns `undefined`, so that it is not forgotten. */
+  router: LegacyRouter | undefined;
   // extended from TabContainerProps in superclass
   //   csrfToken?: string;
   //   tab: string;
@@ -38,7 +45,9 @@ export type BookDetailsTabContainerProps = ConnectedProps<typeof connector> &
   BookDetailsTabContainerOwnProps;
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
-    for editing metadata, classifications, and complaints. */
+    for editing metadata, classifications, and complaints. Provide `router`
+    from `useLegacyRouter()` and `pathFor` from `usePathFor()` through a
+    function wrapper, as `BookDetailsContainer` does. */
 export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContainerProps> {
   componentWillUnmount() {
     this.props.clearBook();
@@ -93,9 +102,9 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push(
-        this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab)
+    if (this.props.router) {
+      this.props.router.push(
+        this.props.pathFor(this.props.collectionUrl, this.props.bookUrl, tab)
       );
     }
   }

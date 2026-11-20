@@ -6,13 +6,9 @@ import { CollectionsData, PatronAuthServicesData } from "../interfaces";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import {
-  TabContainer,
-  TabContainerProps,
-  TabContainerContext,
-} from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
 import SelfTestsCategory from "./SelfTestsCategory";
-import * as PropTypes from "prop-types";
+import { useLegacyRouter } from "./LegacyRouterBridge";
 
 export interface SelfTestsTabContainerDispatchProps {
   fetchItems: () => Promise<any>;
@@ -33,15 +29,8 @@ export interface SelfTestsTabContainerProps
     SelfTestsTabContainerDispatchProps,
     SelfTestsTabContainerStateProps,
     SelfTestsTabContainerOwnProps {}
-export interface SelfTestsTabContainerContext extends TabContainerContext {}
 
 export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerProps> {
-  context: SelfTestsTabContainerContext;
-  static contextTypes: React.ValidationMap<SelfTestsTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
-
   DISPLAY_NAMES = {
     collections: "Collections",
     patronAuthServices: "Patron Authentication",
@@ -55,8 +44,8 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   async handleSelect(event) {
     const tab = event.currentTarget.dataset.tabkey;
     await this.props.goToTab(tab);
-    if (this.context.router) {
-      this.context.router.push("/admin/web/troubleshooting/self-tests/" + tab);
+    if (this.props.router) {
+      this.props.router.push(`/admin/web/troubleshooting/self-tests/${tab}`);
     }
   }
 
@@ -139,4 +128,12 @@ const ConnectedSelfTestsTabContainer = connect<
   mapDispatchToProps as any
 )(SelfTestsTabContainer as any);
 
-export default ConnectedSelfTestsTabContainer;
+/** Provides the connected tab container the `router`, read with a hook. */
+const SelfTestsTabContainerWithRouter = (
+  props: Omit<SelfTestsTabContainerOwnProps, "router">
+) => {
+  const router = useLegacyRouter();
+  return <ConnectedSelfTestsTabContainer {...props} router={router} />;
+};
+
+export default SelfTestsTabContainerWithRouter;

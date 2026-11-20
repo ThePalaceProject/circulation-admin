@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
@@ -14,6 +13,8 @@ import { http, HttpResponse } from "msw";
 import { setupMswServer } from "../testUtils/mswServer";
 import { renderWithProviders } from "../testUtils/withProviders";
 import { PageContextProvider } from "../../../src/context/pageContext";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 
 // Render react-router's Link as a marker `<div>` so we can read its target
 // (`data-to`) and text without a real Router in context. (A bare `<a>` without an
@@ -27,35 +28,6 @@ vi.mock("react-router", async () => ({
   ),
 }));
 
-// Header reads `router` from legacy React context. Supply it through a small
-// legacy context provider.
-class LegacyContextProvider extends React.Component<{
-  context: any;
-  children: React.ReactNode;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object,
-  };
-  getChildContext() {
-    return this.props.context;
-  }
-  render() {
-    return this.props.children;
-  }
-}
-
-const makeRouter = () => ({
-  createHref: vi.fn(),
-  push: vi.fn(),
-  isActive: vi.fn(),
-  replace: vi.fn(),
-  go: vi.fn(),
-  goBack: vi.fn(),
-  goForward: vi.fn(),
-  setRouteLeaveHook: vi.fn(),
-  getCurrentLocation: vi.fn(),
-});
-
 const libraryManager = new Admin([{ role: "manager", library: "nypl" }]);
 const librarian = new Admin([{ role: "librarian", library: "nypl" }]);
 const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
@@ -66,21 +38,17 @@ type RenderHeaderOptions = {
   // Header treats null and undefined alike.
   library?: string | null;
   admin?: Admin;
-  router?: ReturnType<typeof makeRouter>;
+  router?: ReturnType<typeof mockLegacyRouter>;
   props?: Record<string, unknown>;
 };
 
 const renderHeader = ({
   library = "nypl",
   admin = libraryManager,
-  router = makeRouter(),
+  router = mockLegacyRouter(),
   props = {},
 }: RenderHeaderOptions = {}) =>
-  render(
-    <LegacyContextProvider context={{ router }}>
-      <Header admin={admin} library={library} {...props} />
-    </LegacyContextProvider>
-  );
+  render(<Header admin={admin} library={library} router={router} {...props} />);
 
 describe("Header", () => {
   describe("rendering", () => {
@@ -293,7 +261,7 @@ describe("Header", () => {
 
     it("navigates to the selected library's catalog when the dropdown changes", async () => {
       const user = userEvent.setup();
-      const router = makeRouter();
+      const router = mockLegacyRouter();
       const libraries = [
         { short_name: "nypl", name: "NYPL" },
         { short_name: "bpl" },
@@ -393,18 +361,21 @@ describe("Header", () => {
       // network. The mock server answers it so mounting settles without a real
       // request.
       const store = buildStore();
-      // As in the catalog: react-redux's Provider holds web-opds-client's catalog
-      // store, which has no `editor` slice. The header must still use ours.
+      // As in the catalog, react-redux's Provider holds web-opds-client's
+      // catalog store, which has no `editor` slice. The header must still use
+      // ours.
       const catalogStore = configureStore({
         reducer: { catalog: (state = {}) => state },
       });
 
+      // The page is the library's lanes page, so the Lanes link is active.
+      const router = mockLegacyRouter("/admin/web/lanes/nypl");
       renderWithProviders(
         <Provider store={catalogStore}>
           <PageContextProvider value={{ library: "nypl" }}>
-            <LegacyContextProvider context={{ router: makeRouter() }}>
+            <LegacyRouterContext.Provider value={router}>
               <HeaderWithStore />
-            </LegacyContextProvider>
+            </LegacyRouterContext.Provider>
           </PageContextProvider>
         </Provider>,
         {
@@ -425,20 +396,22 @@ describe("Header", () => {
       expect(
         await screen.findByRole("option", { name: "NYPL" })
       ).toBeInTheDocument();
-      // The admin from the app config and the library from the page context
-      // reached the header: the email shows, and so does the Lanes link, which
-      // only a manager of the page's library sees.
+      // The email shows, and so does the Lanes link, which only a manager of
+      // the page's library sees. So the admin from the app config and the
+      // library from the page context reached the header.
       expect(screen.getByText("admin@nypl.org")).toBeInTheDocument();
-      expect(screen.getByText("Lanes")).toBeInTheDocument();
+      // The Lanes link is active, so the header read the current path from
+      // the router.
+      expect(screen.getByText("Lanes")).toHaveClass("active-link");
     });
 
     it("shows the site-wide header on a page with no page context", async () => {
       // Render with no page context, as a page that is not for one library
       // (such as the config page) should. Then the header has no library.
       renderWithProviders(
-        <LegacyContextProvider context={{ router: makeRouter() }}>
+        <LegacyRouterContext.Provider value={mockLegacyRouter()}>
           <HeaderWithStore />
-        </LegacyContextProvider>,
+        </LegacyRouterContext.Provider>,
         {
           reduxProviderProps: { store: buildStore() },
           appConfigSettings: { roles: [{ role: "manager", library: "nypl" }] },

@@ -17,6 +17,13 @@ export interface LegacyRouter {
   isActive: () => boolean;
 }
 
+/** The router that `LegacyRouterBridge` provides, typed for our components.
+ *  Read it with `useLegacyRouter()`. In a test, provide a mock router here
+ *  (see `mockLegacyRouter()`) to check what a component pushes. */
+export const LegacyRouterContext = React.createContext<
+  LegacyRouter | undefined
+>(undefined);
+
 // web-opds-client's props type predates React 18, which dropped the implicit
 // `children` prop.
 const LegacyRouterProvider = RouterProvider as React.ComponentType<
@@ -25,9 +32,13 @@ const LegacyRouterProvider = RouterProvider as React.ComponentType<
 
 /**
  * Provides a react-router v3 style `router` object, built from React Router 7,
- * through legacy context. Some of our class components, and web-opds-client
- * (which still uses its own react-router v3 `Link`), read `router` from there.
- * Remove this when nothing reads the legacy `router` context.
+ * through legacy context, web-opds-client's `RouterContext`, and our typed
+ * `LegacyRouterContext`. web-opds-client's `RouterProvider` provides the first
+ * two. web-opds-client (which still uses its own react-router v3 `Link`) reads
+ * `router` from legacy context. Our components read it from
+ * `LegacyRouterContext` with `useLegacyRouter()`. Remove this when
+ * web-opds-client no longer reads `router` and nothing calls
+ * `useLegacyRouter()`.
  *
  * Unlike v3:
  * - `push` does nothing while the app first mounts, for example from a
@@ -54,11 +65,22 @@ const LegacyRouterBridge = ({ children }: { children?: React.ReactNode }) => {
   const [router] = React.useState(() => createLegacyRouter(latest));
 
   return (
-    <LegacyRouterProvider router={router}>{children}</LegacyRouterProvider>
+    <LegacyRouterProvider router={router}>
+      <LegacyRouterContext.Provider value={router}>
+        {children}
+      </LegacyRouterContext.Provider>
+    </LegacyRouterProvider>
   );
 };
 
 export default LegacyRouterBridge;
+
+/** Returns the router that `LegacyRouterBridge` provides, or `undefined`
+ *  outside it. A class component cannot call a hook, so read the router in a
+ *  function wrapper and provide it to the class as a prop. Use the React Router
+ *  hooks instead in new code. */
+export const useLegacyRouter = (): LegacyRouter | undefined =>
+  React.useContext(LegacyRouterContext);
 
 type LatestValues = {
   navigate: ReturnType<typeof useNavigate>;

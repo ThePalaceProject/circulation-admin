@@ -7,8 +7,8 @@ import { renderWithProviders } from "../testUtils/withProviders";
 import { setupMswServer } from "../testUtils/mswServer";
 
 // Header and Footer are page chrome with no behavior worth exercising here, and
-// Header reads the legacy `router` context and fetches on mount. Mock them to
-// markers so the test stays about what AccountPage composes.
+// Header reads the router from `LegacyRouterBridge` and fetches on mount. Mock
+// them to markers so the test stays about what AccountPage composes.
 vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));

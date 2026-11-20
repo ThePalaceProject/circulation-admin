@@ -2,6 +2,7 @@ import * as React from "react";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import Admin from "../models/Admin";
 import { useAppAdmin } from "../context/appContext";
+import { useLegacyRouter } from "./LegacyRouterBridge";
 import DebugAuthentication from "./DebugAuthentication";
 import ResetAdobeId from "./ResetAdobeId";
 
@@ -12,8 +13,8 @@ export interface ManagePatronsTabContainerProps extends TabContainerProps {
 }
 
 /** Body of the Patron Manager page, with a tab for each type of
-    action that can be performed on a patron. The default export gives it
-    `admin`. */
+    action that can be performed on a patron. The default export provides it
+    `admin` and `router`. */
 export class ManagePatronsTabContainer extends TabContainer<
   ManagePatronsTabContainerProps & { admin: Admin }
 > {
@@ -42,10 +43,8 @@ export class ManagePatronsTabContainer extends TabContainer<
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push(
-        `/admin/web/patrons/${this.props.library}/${tab}`
-      );
+    if (this.props.router) {
+      this.props.router.push(`/admin/web/patrons/${this.props.library}/${tab}`);
     }
   }
 
@@ -62,13 +61,14 @@ export class ManagePatronsTabContainer extends TabContainer<
   }
 }
 
-// `ManagePatronsTabContainer` reads `router` from legacy context, so it cannot
-// also use `static contextType`. This wrapper reads `admin` with a hook instead.
-const ManagePatronsTabContainerWithAdmin = (
-  props: ManagePatronsTabContainerProps
+/** Provides `ManagePatronsTabContainer` the `admin` and `router` that it needs,
+    read with hooks. */
+const ManagePatronsTabContainerWithHooks = (
+  props: Omit<ManagePatronsTabContainerProps, "router">
 ) => {
   const admin = useAppAdmin();
-  return <ManagePatronsTabContainer {...props} admin={admin} />;
+  const router = useLegacyRouter();
+  return <ManagePatronsTabContainer {...props} admin={admin} router={router} />;
 };
 
-export default ManagePatronsTabContainerWithAdmin;
+export default ManagePatronsTabContainerWithHooks;

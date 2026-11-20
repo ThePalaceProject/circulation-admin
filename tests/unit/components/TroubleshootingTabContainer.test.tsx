@@ -12,6 +12,8 @@ vi.mock("../../../src/components/TroubleshootingCategoryPage", () => ({
 }));
 
 import TroubleshootingTabContainer from "../../../src/components/TroubleshootingTabContainer";
+import { LegacyRouterContext } from "../../../src/components/LegacyRouterBridge";
+import { mockLegacyRouter } from "../testUtils/mockLegacyRouter";
 
 describe("TroubleshootingTabContainer", () => {
   let goToTab: Mock;
@@ -64,5 +66,25 @@ describe("TroubleshootingTabContainer", () => {
     tabs = container.querySelectorAll("ul.nav-tabs li");
     expect(tabs[0]).not.toHaveClass("active");
     expect(tabs[1]).toHaveClass("active");
+  });
+
+  it("provides the container the router, so a tab click pushes the tab's path", async () => {
+    const user = userEvent.setup();
+    const router = mockLegacyRouter();
+    render(
+      <LegacyRouterContext.Provider value={router}>
+        <TroubleshootingTabContainer
+          goToTab={goToTab}
+          tab="diagnostics"
+          subtab="collections"
+        />
+      </LegacyRouterContext.Provider>
+    );
+
+    await user.click(screen.getByRole("link", { name: "Self-tests" }));
+
+    expect(router.push).toHaveBeenCalledWith(
+      "/admin/web/troubleshooting/self-tests/collections"
+    );
   });
 });

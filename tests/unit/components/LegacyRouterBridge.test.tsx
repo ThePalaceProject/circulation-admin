@@ -9,6 +9,7 @@ import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/Catalo
 
 import LegacyRouterBridge, {
   LegacyRouter,
+  useLegacyRouter,
 } from "../../../src/components/LegacyRouterBridge";
 import AppRoutes from "../../../src/components/AppRoutes";
 import { renderWithProviders } from "../testUtils/withProviders";
@@ -44,9 +45,9 @@ const BackButton = () => {
   );
 };
 
-// Reads `router` from legacy context, as our class components do, and hands
-// it to the test. Like Header, it also reads the current location while it
-// renders.
+// Reads `router` from legacy context, as web-opds-client's `CatalogLink` does,
+// and hands it to the test. Like Header, it also reads the current location
+// while it renders.
 let legacyRouter: LegacyRouter;
 let pathSeenInRender: string;
 class LegacyRouterReader extends React.Component<{ pushOnMount?: string }> {
@@ -63,6 +64,14 @@ class LegacyRouterReader extends React.Component<{ pushOnMount?: string }> {
     return null;
   }
 }
+
+// Reads the router with `useLegacyRouter()`, as our components do, and hands
+// it to the test. `null` means that it has not rendered.
+let hookRouter: LegacyRouter | undefined | null;
+const LegacyRouterHookReader = () => {
+  hookRouter = useLegacyRouter();
+  return null;
+};
 
 // Like the app, update on navigation at once instead of in a transition.
 const renderBridge = (
@@ -93,6 +102,7 @@ describe("LegacyRouterBridge", () => {
   let consoleError: MockInstance;
   beforeEach(() => {
     legacyRouter = undefined;
+    hookRouter = null;
     consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
   });
   afterEach(() => {
@@ -211,6 +221,21 @@ describe("LegacyRouterBridge", () => {
     expect(pathSeenInRender).toBe("/admin/web");
     act(() => legacyRouter.push("/admin/web/dashboard"));
     expect(pathSeenInRender).toBe("/admin/web/dashboard");
+  });
+
+  it("provides the same router to `useLegacyRouter()`", () => {
+    renderBridge(<LegacyRouterHookReader />);
+    expect(hookRouter).toBe(legacyRouter);
+
+    act(() => hookRouter.push("/admin/web/config"));
+    expect(screen.getByTestId("location")).toHaveTextContent(
+      "/admin/web/config"
+    );
+  });
+
+  it("provides no router to `useLegacyRouter()` outside the bridge", () => {
+    render(<LegacyRouterHookReader />);
+    expect(hookRouter).toBeUndefined();
   });
 
   it("makes paths into hrefs", () => {

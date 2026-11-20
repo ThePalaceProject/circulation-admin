@@ -39,10 +39,9 @@ vi.mock(
   }
 );
 
-// When there is no library, CatalogPage renders WelcomePage, which mounts the real
-// Header, which reads the legacy `router` context (see LegacyRouterBridge) and
-// fetches on mount. Mock Header to a marker so the WelcomePage path stays
-// self-contained.
+// When there is no library, CatalogPage renders WelcomePage, which mounts the
+// real Header, which reads the router from `LegacyRouterBridge` and fetches on
+// mount. Mock Header to a marker so the WelcomePage path stays self-contained.
 vi.mock("../../../src/components/Header", () => ({
   default: function Header() {
     return <div data-testid="header" />;

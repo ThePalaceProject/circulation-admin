@@ -3,8 +3,8 @@ import { screen } from "@testing-library/react";
 
 import { renderWithProviders } from "../testUtils/withProviders";
 
-// Header and Footer are page chrome; Header reads the legacy `router` context
-// and fetches on mount. Mock them to markers.
+// Header and Footer are page chrome; Header reads the router from
+// `LegacyRouterBridge` and fetches on mount. Mock them to markers.
 vi.mock("../../../src/components/Header", () => ({
   default: () => <div data-testid="header" />,
 }));
