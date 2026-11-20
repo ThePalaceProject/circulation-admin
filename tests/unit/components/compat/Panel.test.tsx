@@ -121,6 +121,23 @@ describe("compat Panel", () => {
     expect(onEnter).toHaveBeenCalledTimes(1);
   });
 
+  it("does not throw when a form inside the body is submitted with no `onEnter`", () => {
+    render(
+      <Panel
+        id="info"
+        headerText="Information"
+        openByDefault={true}
+        content={
+          <form aria-label="Inner">
+            <input name="q" />
+          </form>
+        }
+      />
+    );
+
+    fireEvent.submit(screen.getByRole("form", { name: "Inner" }));
+  });
+
   it("does not call `onEnter` when Enter submits a form around the panel", async () => {
     const user = userEvent.setup();
     const onEnter = vi.fn();
